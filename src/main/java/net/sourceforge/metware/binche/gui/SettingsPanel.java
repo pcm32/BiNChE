@@ -77,7 +77,8 @@ public class SettingsPanel extends JPanel {
     // SettingsSavePanel for option of saving BiNGO-file
     private SaveResultsPanel dataPanel;
 
-    public static final String TEST_DATA = "/BiNGO/data/sample.txt";
+    //    public static final String TEST_DATA = "/BiNGO/data/sample.txt";
+    public static final String TEST_DATA = "/BiNGO/data/7852_input.tsv";
     public static final String[] testsArray = {BingoAlgorithm.SADDLESUM, BingoAlgorithm.HYPERGEOMETRIC};
     public static final String[] correctionArray = {BingoAlgorithm.NONE, BingoAlgorithm.BONFERRONI};
     public static final String[] categoriesArray = {BingoAlgorithm.CATEGORY_CORRECTION};
@@ -255,12 +256,7 @@ public class SettingsPanel extends JPanel {
 
                 LOGGER.log(Level.INFO, "Reading input file ...");
                 try {
-                    if (inputPanel.getFilePath().equals("/BiNGO/data/sample.txt")) {
-                        String path = this.getClass().getResource(inputPanel.getFilePath()).getFile();
-                        binche.loadDesiredElementsForEnrichmentFromFile(path);
-                    } else {
                         binche.loadDesiredElementsForEnrichmentFromFile(inputPanel.getFilePath());
-                    }
                 } catch (IOException exception) {
                     LOGGER.log(Level.ERROR,
                             "Error reading file: " + inputPanel.getFilePath() + " " + exception.getMessage());
@@ -269,13 +265,11 @@ public class SettingsPanel extends JPanel {
 
                 binche.execute();
 
-                ChebiGraph chebiGraph =
-                        new ChebiGraph(binche.getClassifiedEntities(), binche.getPValueMap(), binche.getOntology(),
-                                binche.getNodes());
+                ChebiGraph chebiGraph = new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
 
                 JFrame frame = new MainFrame();
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                frame.getContentPane().add(chebiGraph.getVisualizationViewer(600, 600));
+                frame.getContentPane().add(chebiGraph.getVisualizationViewer(new Dimension(1024, 768)));
                 frame.pack();
                 frame.setVisible(true);
 

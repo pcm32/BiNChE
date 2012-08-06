@@ -29,12 +29,18 @@ import org.w3c.dom.Document;
 import java.io.FileWriter;
 import java.io.Writer;
 
+/**
+ * Class to write out JUNG graphs to SVG.
+ */
 public class SvgWriter {
 
     private static final Logger LOGGER = Logger.getLogger(PngWriter.class);
 
     private SVGGraphics2D svgGenerator;
 
+    /**
+     * Constructs the svg writer.
+     */
     public SvgWriter() {
 
         // Get a DOMImplementation.
@@ -48,6 +54,12 @@ public class SvgWriter {
         svgGenerator = new SVGGraphics2D(document);
     }
 
+    /**
+     * Writes the content from the vis. server to the file.
+     *
+     * @param server the visualisation server
+     * @param fileName the file path
+     */
     public void writeSvg(VisualizationImageServer server, String fileName) {
 
         // Ask the server to render into the SVG Graphics2D implementation.

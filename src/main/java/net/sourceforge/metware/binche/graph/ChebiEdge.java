@@ -20,27 +20,32 @@ package net.sourceforge.metware.binche.graph;
 
 public class ChebiEdge {
 
-    private int id;
+    private String id;
     private double pValue;
 
-    public ChebiEdge(int id, double pValue) {
+    public ChebiEdge(String id, double pValue) {
 
         this.id = id;
         this.pValue = pValue;
     }
 
-    public int getId() {
+    public String getId() {
 
         return id;
     }
 
-    public double getpValue() {
-
-        return pValue;
-    }
-
     public String toString() {
 
-        return String.format("%6.2e", pValue);
+        return pValue == 0 ? "" : String.format("%3.2e", pValue);
+    }
+
+    @Override public boolean equals(Object obj) {
+
+        if (obj == null || !(obj instanceof ChebiEdge)) return false;
+
+        ChebiEdge edge = (ChebiEdge) obj;
+        if (edge.getId().equals(this.getId())) return true;
+
+        return false;
     }
 }

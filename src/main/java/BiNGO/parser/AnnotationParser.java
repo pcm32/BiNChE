@@ -136,7 +136,7 @@ public class AnnotationParser {
 //        this.processGoPath = openResourceFile("GO_Biological_Process");
 //        this.functionGoPath = openResourceFile("GO_Molecular_Function");
 //        this.componentGoPath = openResourceFile("GO_Cellular_Component");
-        this.chebiPath = openResourceFile("chebi.obo");
+        this.chebiPath = openResourceFile("chebi_complete.obo");
 
         this.maxValue = -1;
     }

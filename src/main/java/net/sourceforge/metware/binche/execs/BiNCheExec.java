@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
- * @author pmoreno
+ * @author Stephan Beisken
  */
 public class BiNCheExec extends CommandLineMain {
 
@@ -81,8 +81,6 @@ public class BiNCheExec extends CommandLineMain {
 
     private void runGui() {
 
-        LOGGER.log(Level.INFO, "############ Start ############");
-
         final JFrame window = new JFrame("binche Settings");
         final SettingsPanel settingsPanel = new SettingsPanel();
         window.getContentPane().add(settingsPanel);
@@ -95,15 +93,13 @@ public class BiNCheExec extends CommandLineMain {
                 screenSize.height / 2 - (window.getHeight() / 2));
         window.setVisible(true);
         window.setResizable(true);
-
-        LOGGER.log(Level.INFO, "############ Stop ############");
     }
 
     private void runDefault(String inputPath, String outputPath) {
 
         LOGGER.log(Level.INFO, "############ Start ############");
 
-        String ontologyFile = getClass().getResource("/BiNGO/data/chebi.obo").getFile();
+        String ontologyFile = getClass().getResource("/BiNGO/data/chebi_clean.obo").getFile();
         String elementsForEnrichFile = inputPath;
 
         LOGGER.log(Level.INFO, "Setting default parameters ...");
@@ -123,13 +119,12 @@ public class BiNCheExec extends CommandLineMain {
         binche.execute();
 
         ChebiGraph chebiGraph =
-                new ChebiGraph(binche.getClassifiedEntities(), binche.getPValueMap(), binche.getOntology(),
-                        binche.getNodes());
+                new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
 
         LOGGER.log(Level.INFO, "Writing out graph ...");
         SvgWriter writer = new SvgWriter();
-        String out = "chingo";
-        writer.writeSvg(chebiGraph.getVisualisationServer(600, 600), outputPath + File.separator + out + ".svg");
+
+        writer.writeSvg(chebiGraph.getVisualisationServer(), outputPath);
 
         LOGGER.log(Level.INFO, "############ Stop ############");
     }

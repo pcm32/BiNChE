@@ -33,7 +33,7 @@ public class ChebiVertex {
         this.chebiId = chebiId;
         this.chebiName = chebiName;
 
-        color = Color.GREEN;
+        color = new Color(151, 252, 151, 128);
     }
 
     public int getId() {
@@ -63,6 +63,6 @@ public class ChebiVertex {
 
     public String toString() {
 
-        return (chebiName + " (" + chebiId + ")");
+        return (chebiName);
     }
 }

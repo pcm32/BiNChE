@@ -19,19 +19,19 @@
 package net.sourceforge.metware.binche.graph;
 
 import cytoscape.data.annotation.Ontology;
-import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
-import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
+import edu.uci.ics.jung.algorithms.layout.TreeLayout;
+import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.VisualizationImageServer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
+import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
@@ -40,77 +40,157 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ChebiGraph extends DirectedSparseMultigraph<ChebiVertex, ChebiEdge> {
+/**
+ * Class providing access to a rooted acyclic minimum spanning tree plus visualisation functionality required to write
+ * and display the graph. The graph is tailored to deal with the ChEBI ontology.
+ */
+public class ChebiGraph {
 
     private static final Logger LOGGER = Logger.getLogger(ChebiGraph.class);
 
-    private final static int WIDTH = 500;
-    private final static int HEIGHT = 500;
+    private Graph<ChebiVertex, ChebiEdge> graph;
+    private Map<Integer, ChebiVertex> vertexMap;
+    private Set<String> edgeSet;
+    private int vertexId = 0;
+
+    private ColorGradient gradient;
+
+    private Ontology ontology;
+    private Map<Integer, Double> pValueMap;
 
     private Layout<ChebiVertex, ChebiEdge> layout;
 
-    public ChebiGraph(HashMap<String, HashSet<String>> classifiedEntities, Map<Integer, Double> pValueMap,
-                      Ontology ontology, HashSet<String> nodes) {
+    /**
+     * Constructs the ChEBI graph.
+     *
+     * @param pValueMap the p values and their corresponding ChEBI ids from the enrichment analysis
+     * @param ontology  the parsed ontology
+     * @param nodes     the set of input ChEBI ids
+     */
+    public ChebiGraph(Map<Integer, Double> pValueMap, Ontology ontology, HashSet<String> nodes) {
 
-        super();
+        this.ontology = ontology;
+        this.pValueMap = pValueMap;
 
-        // tmp hack
+        this.gradient = new ColorGradient(pValueMap.values());
+
+        // extract numeral ChEBI ID
         HashSet<String> nodesMod = new HashSet<String>();
         for (String chebiId : nodes) {
             nodesMod.add(chebiId.split(":")[1]);
         }
         nodes = nodesMod;
 
-        Map<Integer, ChebiVertex> vertexMap = new HashMap<Integer, ChebiVertex>();
-        int vertexId = 0;
-        int edgeId = 0;
-
-        for (Map.Entry<String, HashSet<String>> e : classifiedEntities.entrySet()) {
-
-            String key = e.getKey();
-            Integer keyNum = new Integer(key);
-
-            if (pValueMap.containsKey(keyNum)) {
-
-                if (!vertexMap.containsKey(keyNum)) {
-                    vertexMap.put(keyNum, new ChebiVertex(vertexId, key, ontology.getTerm(keyNum).getName()));
-                    if (nodes.contains(key)) vertexMap.get(keyNum).setColor(Color.RED);
-                    vertexId++;
-                }
-
-                for (String chebiId : e.getValue()) {
-                    Integer id = new Integer(chebiId.split(":")[1]);
-
-                    if (!vertexMap.containsKey(id)) {
-                        vertexMap.put(id, new ChebiVertex(vertexId, "" + id, ontology.getTerm(id).getName()));
-                        if (nodes.contains("" + id)) vertexMap.get(id).setColor(Color.RED);
-                        vertexId++;
-                    }
-
-                    addEdge(new ChebiEdge(edgeId, pValueMap.get(keyNum)), vertexMap.get(id), vertexMap.get(keyNum),
-                            EdgeType.DIRECTED);
-                    edgeId++;
-                }
-
-//                LOGGER.log(Level.INFO, e);
-//                LOGGER.log(Level.INFO, pValueMap.get(keyNum));
-//                LOGGER.log(Level.INFO, ontology.getTerm(keyNum));
-            }
-        }
-
+        populateGraph(pValueMap, ontology, nodes);
         layoutGraph();
     }
 
-    private void layoutGraph() {
+    /**
+     * Creates and populates an undirected sparse multigraph.
+     *
+     * @param pValueMap the p values and their corresponding ChEBI ids from the enrichment analysis
+     * @param ontology  the parsed ontology
+     * @param nodes     the set of input ChEBI ids
+     */
+    private void populateGraph(Map<Integer, Double> pValueMap, Ontology ontology, HashSet<String> nodes) {
 
-        layout = new ISOMLayout<ChebiVertex, ChebiEdge>(this);
-        layout.setSize(new Dimension(WIDTH, HEIGHT));
+        graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
+
+        vertexMap = new HashMap<Integer, ChebiVertex>();
+        edgeSet = new HashSet<String>();
+
+        int previousId;
+        int currentId;
+
+        for (String node : nodes) {
+
+            int[][] hierarchy = ontology.getAllHierarchyPaths(Integer.parseInt(node));
+
+            for (int row = 0; row < hierarchy.length; row++) {
+
+                previousId = hierarchy[row][hierarchy[row].length - 1];
+                addVertex(previousId);
+
+                for (int col = hierarchy[row].length - 2; col >= 0; col--) {
+
+                    currentId = hierarchy[row][col];
+                    addVertex(currentId);
+                    addEdge(previousId, currentId);
+
+                    previousId = currentId;
+                }
+            }
+        }
     }
 
-    public VisualizationViewer<ChebiVertex, ChebiEdge> getVisualizationViewer(int width, int height) {
+    /**
+     * Adds a vertex to the vertex map if not alrady contained and sets its color depending on the estimated p value
+     * from the enrichment analysis.
+     *
+     * @param id the id of the vertex to be added
+     */
+    private void addVertex(int id) {
+
+        if (!vertexMap.containsKey(id)) {
+
+            vertexMap.put(id, new ChebiVertex(vertexId, "" + id, ontology.getTerm(id).getName()));
+            if (pValueMap.containsKey(id)) vertexMap.get(id).setColor(gradient.getGradientColor(pValueMap.get(id)));
+
+            vertexId++;
+        }
+    }
+
+    /**
+     * Adds an edge plus its two vertices to the graph if not already contained.
+     *
+     * @param previousId first partner vertex id;
+     * @param currentId  second partner vertex id
+     */
+    private void addEdge(int previousId, int currentId) {
+
+        ChebiEdge edge = new ChebiEdge(previousId + "-" + currentId, 0d);
+
+        if (!edgeSet.contains(edge.getId())) {
+
+            graph.addEdge(edge, vertexMap.get(previousId), vertexMap.get(currentId));
+            edgeSet.add(edge.getId());
+        }
+    }
+
+    /**
+     * Creates a rooted acyclic tree from the undirected sparse multigraph by calculating its minimum spanning trees.
+     * The resulting forest should ideally contain a single tree since the called ontology hierarchies should be
+     * interconnected.
+     * <p/>
+     * The size of the graph is determined by the values x, y in the tree layout.
+     * <p/>
+     * The tree is rooted to ChEBI:24431 "chemical entity" using custom implementations of the MinimumSpanningForest2
+     * (here, SpanningForest) and PrimSpanningTree (here, SpanningTree) classes.
+     */
+    private void layoutGraph() {
+
+        SpanningForest<ChebiVertex, ChebiEdge> prim =
+                new SpanningForest<ChebiVertex, ChebiEdge>(graph, new DelegateForest<ChebiVertex, ChebiEdge>(),
+                        DelegateTree.<ChebiVertex, ChebiEdge>getFactory(), new ConstantTransformer(1.0));
+
+        Forest<ChebiVertex, ChebiEdge> forest = prim.getForest();
+        layout = new TreeLayout<ChebiVertex, ChebiEdge>(forest, 80, 80);
+
+        // re-creates the original graph with the forest node coordinates
+        // Layout<ChebiVertex, ChebiEdge> treeLayout = new TreeLayout<ChebiVertex, ChebiEdge>(forest);
+        // layout = new StaticLayout<ChebiVertex, ChebiEdge>(graph, treeLayout);
+    }
+
+    /**
+     * Gets the visualisation viewer to display the graph.
+     *
+     * @param dimension size of the viewer window
+     * @return the visualisation viewer
+     */
+    public VisualizationViewer<ChebiVertex, ChebiEdge> getVisualizationViewer(Dimension dimension) {
 
         VisualizationViewer<ChebiVertex, ChebiEdge> bvs = new VisualizationViewer<ChebiVertex, ChebiEdge>(layout);
-        bvs.setSize(new Dimension(width, height));
+        bvs.setSize(dimension);
 
         setTransformer(bvs);
         setMouse(bvs);
@@ -118,23 +198,41 @@ public class ChebiGraph extends DirectedSparseMultigraph<ChebiVertex, ChebiEdge>
         return bvs;
     }
 
-    public VisualizationImageServer<ChebiVertex, ChebiEdge> getVisualisationServer(int width, int height) {
+    /**
+     * Gets the visualisation server to write the graph.
+     *
+     * @return the visualisation server
+     */
+    public VisualizationImageServer<ChebiVertex, ChebiEdge> getVisualisationServer() {
 
         VisualizationImageServer<ChebiVertex, ChebiEdge> vis =
-                new VisualizationImageServer<ChebiVertex, ChebiEdge>(layout, new Dimension(width, height));
+                new VisualizationImageServer<ChebiVertex, ChebiEdge>(layout, layout.getSize());
         setTransformer(vis);
 
         return vis;
     }
 
+    /**
+     * Sets all vertex and edge render parameters (transformers).
+     *
+     * @param bvs the visualisation server
+     */
     private void setTransformer(BasicVisualizationServer<ChebiVertex, ChebiEdge> bvs) {
 
         bvs.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<ChebiVertex>());
-        bvs.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<ChebiEdge>());
         bvs.getRenderContext().setVertexFillPaintTransformer(getVertexTransformer());
-        bvs.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
+
+        bvs.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<ChebiEdge>());
+        bvs.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line());
+
+        bvs.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.S);
     }
 
+    /**
+     * Method to return the color transformer of a node, working on its internal color value.
+     *
+     * @return the transformer
+     */
     private Transformer<ChebiVertex, Paint> getVertexTransformer() {
 
         Transformer<ChebiVertex, Paint> vertexPaint = new Transformer<ChebiVertex, Paint>() {
@@ -148,6 +246,11 @@ public class ChebiGraph extends DirectedSparseMultigraph<ChebiVertex, ChebiEdge>
         return vertexPaint;
     }
 
+    /**
+     * Adds default mouse functionality to the graph.
+     *
+     * @param bvs the visualisation viewer
+     */
     private void setMouse(VisualizationViewer<ChebiVertex, ChebiEdge> bvs) {
 
         DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
