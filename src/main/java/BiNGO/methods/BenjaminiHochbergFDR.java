@@ -36,6 +36,7 @@ package BiNGO.methods;
 
 
 import BiNGO.interfaces.CalculateCorrectionTask;
+import cytoscape.task.TaskMonitor;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -138,6 +139,10 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
         this.correctionMap = null;
 
         this.maxValue = pvalues.length;
+    }
+
+    public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     class HashEntry{

@@ -11,7 +11,19 @@
     <artifactId>binche</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <repositories></repositories>
+    <repositories>
+        <repository>
+            <id>cytoscape_snapshots</id>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <name>Cytoscape Snapshots</name>
+            <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -28,6 +40,7 @@
             <groupId>net.sf.jung</groupId>
             <artifactId>jung2</artifactId>
             <version>2.0.1</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>net.sf.jung</groupId>
@@ -53,6 +66,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

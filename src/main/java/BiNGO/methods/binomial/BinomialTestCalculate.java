@@ -35,6 +35,7 @@ package BiNGO.methods.binomial;
 
 import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.interfaces.DistributionCount;
+import cytoscape.task.TaskMonitor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -225,6 +226,10 @@ public class BinomialTestCalculate implements CalculateTestTask {
     public String getTitle() {
 
         return new String("Calculating Binomial Distribution");
+    }
+
+    public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

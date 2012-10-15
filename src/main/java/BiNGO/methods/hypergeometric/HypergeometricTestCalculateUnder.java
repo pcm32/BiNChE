@@ -35,6 +35,7 @@ package BiNGO.methods.hypergeometric;
 
 import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.interfaces.DistributionCount;
+import cytoscape.task.TaskMonitor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -235,6 +236,10 @@ public class HypergeometricTestCalculateUnder implements CalculateTestTask {
     public String getTitle() {
 
         return new String("Calculating Hypergeometric Distribution");
+    }
+
+    public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

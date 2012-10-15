@@ -36,6 +36,7 @@ package BiNGO.methods;
 import BiNGO.interfaces.DistributionCount;
 import cytoscape.data.annotation.Annotation;
 import cytoscape.data.annotation.Ontology;
+import cytoscape.task.TaskMonitor;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -355,6 +356,10 @@ public class StandardDistributionCountNeg implements DistributionCount {
     public HashMap<Integer, Double> getMapWeights() {
 
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

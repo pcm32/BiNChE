@@ -7,6 +7,7 @@ package BiNGO.methods.saddlesum;
 
 import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.interfaces.DistributionCount;
+import cytoscape.task.TaskMonitor;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -393,6 +394,10 @@ public class SaddleSumTestCalculate implements CalculateTestTask {
 
     public String getTitle() {
         return new String("Calculating SaddleSum Test");
+    }
+
+    public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
