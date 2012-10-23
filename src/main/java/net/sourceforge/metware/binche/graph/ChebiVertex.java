@@ -26,6 +26,7 @@ public class ChebiVertex {
     private String chebiId;
     private Color color;
     private String chebiName;
+    private Boolean isMolecule=false;
 
     public ChebiVertex(int id, String chebiId, String chebiName) {
 
@@ -34,6 +35,11 @@ public class ChebiVertex {
         this.chebiName = chebiName;
 
         color = new Color(151, 252, 151, 128);
+    }
+    
+    public ChebiVertex(int id, String chebiId, String chebiName, Boolean molecule) {
+        this(id, chebiId, chebiName);
+        this.isMolecule = molecule;
     }
 
     public int getId() {
@@ -64,5 +70,16 @@ public class ChebiVertex {
     public String toString() {
 
         return (chebiName);
+    }
+
+    public boolean isMolecule() {
+        return isMolecule;
+    }
+
+    /**
+     * @param isMolecule true if the node represents a molecule.
+     */
+    public void setIsMolecule(Boolean isMolecule) {
+        this.isMolecule = isMolecule;
     }
 }

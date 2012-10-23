@@ -89,6 +89,12 @@ public class BiNChe {
         if ((correction != null) && (!params.getTest().equals(NONE))) {
             correction.run();
             correctionMap = correction.getCorrectionMap();
+            pValueMap = new HashMap<Integer, Double>();
+            for (String id : correctionMap.keySet()) {
+                pValueMap.put(Integer.valueOf(id), Double.valueOf(correctionMap.get(id)));
+            }
+        } else {
+            pValueMap = ((SaddleSumTestCalculate) test).getPValueMap();
         }
 
         // these hashMaps contain the results, where the Keys are the different categories (ie. a ChEBI entry or a
@@ -101,8 +107,7 @@ public class BiNChe {
 
         LOGGER.log(Level.INFO, "Computing elements ...");
         this.computeElementsPerCategory();
-
-        pValueMap = ((SaddleSumTestCalculate) test).getPValueMap();
+        
     }
 
     /* **********************************

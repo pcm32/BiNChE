@@ -4,6 +4,7 @@
  */
 package BiNGO.reader;
 
+import cytoscape.data.annotation.ChEBIOntologyTerm;
 import cytoscape.data.annotation.Ontology;
 import cytoscape.data.annotation.OntologyTerm;
 
@@ -57,6 +58,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
             HashSet<String> has_part = new HashSet<String>();
             HashSet<String> has_role = new HashSet<String>();
             boolean obsolete = false;
+            boolean molecule=false;
             while (!lines[i].trim().equals("[Term]") && !lines[i].trim().equals("[Typedef]") && i < lines.length) {
                 if (!lines[i].trim().isEmpty()) {
                     String ref = lines[i].substring(0, lines[i].indexOf(":")).trim();
@@ -87,6 +89,8 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                         if (value.trim().equals("true")) {
                             obsolete = true;
                         }
+                    } else if (ref.equals("synonym") && value.contains("RELATED InChI")) {
+                        molecule=true;
                     }
                 }
                 i++;
@@ -97,14 +101,15 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                 // For the ChEBI namespace
                 Integer id2 = new Integer(id);
                 synonymHash.put(id2, id2);
-                OntologyTerm term;
+                ChEBIOntologyTerm term;
                 if (!ontology.containsTerm(id2)) {
-                    term = new OntologyTerm(name, id2);
+                    term = new ChEBIOntologyTerm(name, id2);
                     ontology.add(term);
                     fullOntology.add(term);
                 } else {
-                    term = ontology.getTerm(id2);
+                    term = (ChEBIOntologyTerm)ontology.getTerm(id2);
                 }
+                term.setMolecule(molecule);
                 for (String s : alt_id) {
                     synonymHash.put(new Integer(s), id2);
                 }
@@ -114,26 +119,23 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                 for (String s : has_role) {
                     term.addContainer(new Integer(s));
                 }
-                //for(String s:part_of){
-                //    term.addContainer(new Integer(s));
-                //}
                 for (String s : has_part) { // elements in has part
                     // are sub parts of the term that we are looking
                     // for. Hence, we get the "smaller" term and
                     // add the current term as a container for it.
                     Integer containedID = new Integer(s);
-                    OntologyTerm containedTerm;
+                    ChEBIOntologyTerm containedTerm;
                     if (ontology.containsTerm(containedID)) {
-                        containedTerm = ontology.getTerm(containedID);
+                        containedTerm = (ChEBIOntologyTerm)ontology.getTerm(containedID);
                     } else {
-                        containedTerm = new OntologyTerm(name, containedID);
+                        containedTerm = new ChEBIOntologyTerm(name, containedID);
                         ontology.add(containedTerm);
                         fullOntology.add(containedTerm);
                     }
 
                     containedTerm.addContainer(term.getId());
                 }
-
+                
                 /*} else {
                     Integer id2 = new Integer(id);
                     OntologyTerm term = new OntologyTerm(name, id2);

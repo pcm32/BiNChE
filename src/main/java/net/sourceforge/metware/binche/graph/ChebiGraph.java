@@ -18,6 +18,7 @@
  */
 package net.sourceforge.metware.binche.graph;
 
+import cytoscape.data.annotation.ChEBIOntologyTerm;
 import cytoscape.data.annotation.Ontology;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
@@ -35,10 +36,7 @@ import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class providing access to a rooted acyclic minimum spanning tree plus visualisation functionality required to write
@@ -82,7 +80,7 @@ public class ChebiGraph {
         nodes = nodesMod;
 
         populateGraph(pValueMap, ontology, nodes);
-        layoutGraph();
+        //layoutGraph();
     }
 
     /**
@@ -94,11 +92,12 @@ public class ChebiGraph {
      */
     private void populateGraph(Map<Integer, Double> pValueMap, Ontology ontology, HashSet<String> nodes) {
 
-        graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
+        //graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
+        graph = new DirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
 
         vertexMap = new HashMap<Integer, ChebiVertex>();
         edgeSet = new HashSet<String>();
-
+        
         int previousId;
         int currentId;
 
@@ -132,8 +131,8 @@ public class ChebiGraph {
     private void addVertex(int id) {
 
         if (!vertexMap.containsKey(id)) {
-
-            vertexMap.put(id, new ChebiVertex(vertexId, "" + id, ontology.getTerm(id).getName()));
+            ChEBIOntologyTerm term = (ChEBIOntologyTerm)ontology.getTerm(id);
+            vertexMap.put(id, new ChebiVertex(vertexId, "" + id, term.getName(),term.isMolecule()));
             if (pValueMap.containsKey(id)) vertexMap.get(id).setColor(gradient.getGradientColor(pValueMap.get(id)));
 
             vertexId++;
@@ -168,7 +167,7 @@ public class ChebiGraph {
      * (here, SpanningForest) and PrimSpanningTree (here, SpanningTree) classes.
      */
     private void layoutGraph() {
-
+        
         SpanningForest<ChebiVertex, ChebiEdge> prim =
                 new SpanningForest<ChebiVertex, ChebiEdge>(graph, new DelegateForest<ChebiVertex, ChebiEdge>(),
                         DelegateTree.<ChebiVertex, ChebiEdge>getFactory(), new ConstantTransformer(1.0));
@@ -188,7 +187,7 @@ public class ChebiGraph {
      * @return the visualisation viewer
      */
     public VisualizationViewer<ChebiVertex, ChebiEdge> getVisualizationViewer(Dimension dimension) {
-
+        layoutGraph();
         VisualizationViewer<ChebiVertex, ChebiEdge> bvs = new VisualizationViewer<ChebiVertex, ChebiEdge>(layout);
         bvs.setSize(dimension);
 
@@ -204,7 +203,7 @@ public class ChebiGraph {
      * @return the visualisation server
      */
     public VisualizationImageServer<ChebiVertex, ChebiEdge> getVisualisationServer() {
-
+        layoutGraph();
         VisualizationImageServer<ChebiVertex, ChebiEdge> vis =
                 new VisualizationImageServer<ChebiVertex, ChebiEdge>(layout, layout.getSize());
         setTransformer(vis);
@@ -257,4 +256,55 @@ public class ChebiGraph {
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         bvs.setGraphMouse(gm);
     }
+
+    /**
+     * Retrieves all vertices of the graph, for iteration purposes.
+     * 
+     * @return 
+     */
+    public Iterable<ChebiVertex> getVertices() {
+        return graph.getVertices();
+    }
+    
+    public boolean isLeaf(ChebiVertex vertex) {
+        //Collection<ChebiEdge> outEdges = graph.getOutEdges(vertex);
+        Collection<ChebiEdge> inEdges = graph.getInEdges(vertex);
+        return inEdges.isEmpty();
+    }
+
+    /**
+     * Removes a vertex and its connected edges.
+     * @param chebiVertex 
+     */
+    public void removeVertex(ChebiVertex chebiVertex) {
+        Collection<ChebiEdge> toRemove = new LinkedList<ChebiEdge>(graph.getInEdges(chebiVertex));
+        toRemove.addAll(graph.getOutEdges(chebiVertex));
+        
+        for (ChebiEdge chebiEdge : toRemove) {
+            graph.removeEdge(chebiEdge);
+        }
+        
+        graph.removeVertex(chebiVertex);
+    }
+
+    public Integer getVertexCount() {
+        return graph.getVertexCount();
+    }
+
+    public Collection<ChebiEdge> getOutEdges(ChebiVertex chebiVertex) {
+        return graph.getOutEdges(chebiVertex);
+    }
+    
+    public Collection<ChebiEdge> getInEdges(ChebiVertex chebiVertex) {
+        return graph.getInEdges(chebiVertex);
+    }
+
+    public Iterable<ChebiVertex> getChildren(ChebiVertex node) {
+        return graph.getPredecessors(node);
+    }
+
+    public Double getVertexPValue(ChebiVertex node) {
+        return pValueMap.get(node.getId());
+    }
+
 }

@@ -9,7 +9,7 @@
 
     <groupId>be.ugent.psb</groupId>
     <artifactId>binche</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
 
     <repositories>
         <repository>
@@ -24,6 +24,21 @@
             <url>http://cytoscape.wodaklab.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
+    
+    <build>
+        <pluginManagement>
+            <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+                <argLine>-Xmx500m</argLine>
+            </configuration>
+        </plugin>
+    </plugins>
+    </pluginManagement>
+    </build>
+    
 
     <dependencies>
         <dependency>

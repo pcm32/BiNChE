@@ -73,8 +73,8 @@ public class BinomialDistribution {
      * population size.
      */
     private static int bigN;
-	/*chance of success*/
-	private static double p;
+    /*chance of success*/
+    private static double p;
 
     /**
      * scale of result.
