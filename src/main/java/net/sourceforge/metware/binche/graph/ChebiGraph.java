@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Class providing access to a rooted acyclic minimum spanning tree plus visualisation functionality required to write
@@ -277,8 +278,8 @@ public class ChebiGraph {
      * @param chebiVertex 
      */
     public void removeVertex(ChebiVertex chebiVertex) {
-        Collection<ChebiEdge> toRemove = new LinkedList<ChebiEdge>(graph.getInEdges(chebiVertex));
-        toRemove.addAll(graph.getOutEdges(chebiVertex));
+        Collection<ChebiEdge> toRemove = new LinkedList<ChebiEdge>(getInEdges(chebiVertex));
+        toRemove.addAll(getOutEdges(chebiVertex));
         
         for (ChebiEdge chebiEdge : toRemove) {
             graph.removeEdge(chebiEdge);
@@ -292,19 +293,38 @@ public class ChebiGraph {
     }
 
     public Collection<ChebiEdge> getOutEdges(ChebiVertex chebiVertex) {
-        return graph.getOutEdges(chebiVertex);
+        Collection<ChebiEdge> outEdges = graph.getOutEdges(chebiVertex);
+        if(outEdges==null)
+            return new ArrayList<ChebiEdge>();
+        return outEdges;
     }
     
     public Collection<ChebiEdge> getInEdges(ChebiVertex chebiVertex) {
-        return graph.getInEdges(chebiVertex);
+        Collection<ChebiEdge> inEdges = graph.getInEdges(chebiVertex);
+        if(inEdges==null)
+            return new ArrayList<ChebiEdge>();
+        return inEdges;
     }
 
-    public Iterable<ChebiVertex> getChildren(ChebiVertex node) {
-        return graph.getPredecessors(node);
+    public Collection<ChebiVertex> getChildren(ChebiVertex node) {
+        Collection<ChebiVertex> children = graph.getPredecessors(node);
+        if(children==null)
+            return new ArrayList<ChebiVertex>();
+        return children;
     }
 
     public Double getVertexPValue(ChebiVertex node) {
-        return pValueMap.get(node.getId());
+        return pValueMap.get(Integer.valueOf(node.getChebiId()));
+    }
+
+    /**
+     * Adds an edge to the graph where the direction goes from child (less general) to parent (more general).
+     * 
+     * @param parent
+     * @param child 
+     */
+    public void addEdge(ChebiVertex parent, ChebiVertex child) {
+        addEdge(Integer.valueOf(child.getChebiId()), Integer.valueOf(parent.getChebiId()));
     }
 
 }

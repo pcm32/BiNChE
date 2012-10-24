@@ -7,19 +7,19 @@ package net.sourceforge.metware.binche.graph;
 import BiNGO.BingoParameters;
 import BiNGO.ParameterFactory;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.sourceforge.metware.binche.BiNChe;
 import org.junit.*;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author pmoreno
  */
-public class MoleculeLeavesPrunerTest {
-
-    public MoleculeLeavesPrunerTest() {
+public class LowPValueBranchPrunerTest {
+    
+    public LowPValueBranchPrunerTest() {
     }
 
     @BeforeClass
@@ -29,17 +29,17 @@ public class MoleculeLeavesPrunerTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-
+    
     @Before
     public void setUp() {
     }
-
+    
     @After
     public void tearDown() {
     }
 
     /**
-     * Test of prune method, of class MoleculeLeavesPruner.
+     * Test of prune method, of class LowPValueBranchPruner.
      */
     @Test
     public void testPrune() {
@@ -66,22 +66,26 @@ public class MoleculeLeavesPrunerTest {
 
         ChebiGraph chebiGraph =
                 new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
-        MoleculeLeavesPruner instance = new MoleculeLeavesPruner();
+
+        List<ChEBIGraphPruner> pruners = Arrays.asList(new MoleculeLeavesPruner(), new LowPValueBranchPruner(0.05));
+        //MoleculeLeavesPruner instance = new MoleculeLeavesPruner();
         int originalVertices = chebiGraph.getVertexCount();
-        System.out.println("Number of nodes before prunning : "+originalVertices);
+        System.out.println("Number of nodes before prunning : " + originalVertices);
 
-        System.out.println("Writing out graph ...");
-        SvgWriter writer = new SvgWriter();
+        //System.out.println("Writing out graph ...");
+        //SvgWriter writer = new SvgWriter();
 
-        writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/beforePrune.svg");
+        //writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/beforePrune.svg");
 
-        instance.prune(chebiGraph);
-
-        SvgWriter writer2 = new SvgWriter();
-        writer2.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/afterPrune.svg");
+        for (ChEBIGraphPruner chEBIGraphPruner : pruners) {
+            chEBIGraphPruner.prune(chebiGraph);
+            System.out.println(chEBIGraphPruner.getClass().getCanonicalName());
+            System.out.println("Removed vertices : " + (originalVertices - chebiGraph.getVertexCount()));
+            originalVertices = chebiGraph.getVertexCount();
+        }
+        
         int finalVertices = chebiGraph.getVertexCount();
         
         System.out.println("Final vertices : " + (finalVertices));
-
     }
 }
