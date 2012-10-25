@@ -90,9 +90,7 @@ public class ColorGradient {
         if (value <= pValueThreshold) {
             
             int alpha = (int)(m * Math.log10(value) + b);
-            System.out.println("Alpha : "+alpha);
             alpha = Math.min((int)MIN_ALPHA, alpha);
-            System.out.println("CAlpha : "+alpha);
             return new Color(255, 69, 0, alpha);
         } else {
             return new Color(255,255,255,255);
