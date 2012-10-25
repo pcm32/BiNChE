@@ -64,9 +64,9 @@ public class ColorGradient {
         
         double max = Math.log10(pValueThres);  
         double min = Math.min(Math.log10(minInValues), max - 1);
-        System.out.println("VS : "+minInValues);
-        System.out.println("CG Max : "+max);
-        System.out.println("Cg Min : "+min);
+        //System.out.println("VS : "+minInValues);
+        //System.out.println("CG Max : "+max);
+        //System.out.println("Cg Min : "+min);
 
         /*
         m = (MAX_ALPHA - MIN_ALPHA) / (max - min);
@@ -75,8 +75,8 @@ public class ColorGradient {
         */
         m = (MIN_ALPHA - ALPHA_TOPUP_FOR_B)/min;
         b = ALPHA_TOPUP_FOR_B;
-        System.out.println("m : "+m);
-        System.out.println("b : "+b);
+        //System.out.println("m : "+m);
+        //System.out.println("b : "+b);
     }
 
     /**
