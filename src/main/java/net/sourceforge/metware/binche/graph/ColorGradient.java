@@ -96,8 +96,4 @@ public class ColorGradient {
             return new Color(255,255,255,255);
         }
     }
-    
-    public static void main(String[] args) {
-        System.out.println(Math.min(5 * Math.log10(0),10));
-    }
 }
