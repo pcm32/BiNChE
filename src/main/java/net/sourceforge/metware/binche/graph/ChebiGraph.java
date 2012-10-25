@@ -290,8 +290,7 @@ public class ChebiGraph {
     }
     
     public boolean isLeaf(ChebiVertex vertex) {
-        //Collection<ChebiEdge> outEdges = graph.getOutEdges(vertex);
-        Collection<ChebiEdge> inEdges = graph.getInEdges(vertex);
+        Collection<ChebiEdge> inEdges = getInEdges(vertex);
         return inEdges.isEmpty();
     }
 
