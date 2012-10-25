@@ -21,6 +21,7 @@ package net.sourceforge.metware.binche.graph;
 import cytoscape.data.annotation.ChEBIOntologyTerm;
 import cytoscape.data.annotation.Ontology;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
 import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
@@ -325,6 +326,12 @@ public class ChebiGraph {
      */
     public void addEdge(ChebiVertex parent, ChebiVertex child) {
         addEdge(Integer.valueOf(child.getChebiId()), Integer.valueOf(parent.getChebiId()));
+    }
+    
+    public Collection<ChebiEdge> getEdges() {
+//    	Graph<ChebiVertex, ChebiEdge> temp = layout.getGraph();
+//    	return temp.getEdges();
+    	return graph.getEdges();
     }
 
 }
