@@ -20,7 +20,9 @@ package net.sourceforge.metware.binche.graph;
 
 import cytoscape.data.annotation.ChEBIOntologyTerm;
 import cytoscape.data.annotation.Ontology;
+import edu.uci.ics.jung.algorithms.layout.DAGLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout2;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
 import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
@@ -52,6 +54,18 @@ public class ChebiGraph {
     private Set<String> edgeSet;
     private int vertexId = 0;
 
+    private Double pValueThreshold = 0.05;
+
+    /**
+     * Only P-Values below the set threshold will be considered for the coloring scheme. P-Values above will have
+     * the default color.
+     * 
+     * @param pValueThreshold 
+     */
+    public void setpValueThreshold(Double pValueThreshold) {
+        this.pValueThreshold = pValueThreshold;
+    }
+    
     private ColorGradient gradient;
 
     private Ontology ontology;
@@ -71,7 +85,7 @@ public class ChebiGraph {
         this.ontology = ontology;
         this.pValueMap = pValueMap;
 
-        this.gradient = new ColorGradient(pValueMap.values());
+        this.gradient = new ColorGradient(pValueMap.values(),pValueThreshold);
 
         // extract numeral ChEBI ID
         HashSet<String> nodesMod = new HashSet<String>();
@@ -133,8 +147,12 @@ public class ChebiGraph {
 
         if (!vertexMap.containsKey(id)) {
             ChEBIOntologyTerm term = (ChEBIOntologyTerm)ontology.getTerm(id);
-            vertexMap.put(id, new ChebiVertex(vertexId, "" + id, term.getName(),term.isMolecule()));
-            if (pValueMap.containsKey(id)) vertexMap.get(id).setColor(gradient.getGradientColor(pValueMap.get(id)));
+            ChebiVertex v = new ChebiVertex(vertexId, "" + id, term.getName(),term.isMolecule());
+            v.setpValue(pValueMap.get(id));
+            vertexMap.put(id, v);
+            // We only color the node if it has a pValue and the pValue is below the threshold.
+            if (pValueMap.containsKey(id)) 
+                vertexMap.get(id).setColor(gradient.getGradientColor(pValueMap.get(id)));
 
             vertexId++;
         }
@@ -169,12 +187,16 @@ public class ChebiGraph {
      */
     private void layoutGraph() {
         
-        SpanningForest<ChebiVertex, ChebiEdge> prim =
-                new SpanningForest<ChebiVertex, ChebiEdge>(graph, new DelegateForest<ChebiVertex, ChebiEdge>(),
-                        DelegateTree.<ChebiVertex, ChebiEdge>getFactory(), new ConstantTransformer(1.0));
+        //SpanningForest<ChebiVertex, ChebiEdge> prim =
+        //        new SpanningForest<ChebiVertex, ChebiEdge>(graph, new DelegateForest<ChebiVertex, ChebiEdge>(),
+        //                DelegateTree.<ChebiVertex, ChebiEdge>getFactory(), new ConstantTransformer(1.0));
 
-        Forest<ChebiVertex, ChebiEdge> forest = prim.getForest();
-        layout = new TreeLayout<ChebiVertex, ChebiEdge>(forest, 80, 80);
+        //Forest<ChebiVertex, ChebiEdge> forest = prim.getForest();
+        //layout = new TreeLayout<ChebiVertex, ChebiEdge>(forest, 80, 80);
+        //layout = new DAGLayout<ChebiVertex, ChebiEdge>(graph);
+        layout = new SpringLayout2<ChebiVertex, ChebiEdge>(graph);
+        ((SpringLayout2)layout).setForceMultiplier(0.1);
+        layout.setSize(new Dimension(1920, 1100));
 
         // re-creates the original graph with the forest node coordinates
         // Layout<ChebiVertex, ChebiEdge> treeLayout = new TreeLayout<ChebiVertex, ChebiEdge>(forest);
@@ -325,6 +347,20 @@ public class ChebiGraph {
      */
     public void addEdge(ChebiVertex parent, ChebiVertex child) {
         addEdge(Integer.valueOf(child.getChebiId()), Integer.valueOf(parent.getChebiId()));
+    }
+    
+    /**
+     * Returns the root of the graph, the ChebiVertex which only has incoming edges (the most general ChEBI node).
+     * 
+     * @return root vertex or null if the graph has no root. 
+     */
+    public ChebiVertex getRoot() {
+        for (ChebiVertex chebiVertex : graph.getVertices()) {
+            if(getOutEdges(chebiVertex).isEmpty() && !getInEdges(chebiVertex).isEmpty()) {
+                return chebiVertex;
+            }
+        }
+        return null;
     }
 
 }

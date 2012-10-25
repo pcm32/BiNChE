@@ -19,6 +19,7 @@
 package net.sourceforge.metware.binche.graph;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 
 public class ChebiVertex {
 
@@ -27,6 +28,15 @@ public class ChebiVertex {
     private Color color;
     private String chebiName;
     private Boolean isMolecule=false;
+    private Double pValue;
+
+    public Double getpValue() {
+        return pValue;
+    }
+
+    public void setpValue(Double pValue) {
+        this.pValue = pValue;
+    }
 
     public ChebiVertex(int id, String chebiId, String chebiName) {
 
@@ -34,7 +44,7 @@ public class ChebiVertex {
         this.chebiId = chebiId;
         this.chebiName = chebiName;
 
-        color = new Color(151, 252, 151, 128);
+        color = new Color(255, 255, 255, 128);
     }
     
     public ChebiVertex(int id, String chebiId, String chebiName, Boolean molecule) {
@@ -67,8 +77,8 @@ public class ChebiVertex {
         return color;
     }
 
+    @Override
     public String toString() {
-
         return (chebiName);
     }
 
@@ -82,4 +92,29 @@ public class ChebiVertex {
     public void setIsMolecule(Boolean isMolecule) {
         this.isMolecule = isMolecule;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChebiVertex other = (ChebiVertex) obj;
+        if ((this.chebiId == null) ? (other.chebiId != null) : !this.chebiId.equals(other.chebiId)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + (this.chebiId != null ? this.chebiId.hashCode() : 0);
+        return hash;
+    }
+
+    
+    
 }
