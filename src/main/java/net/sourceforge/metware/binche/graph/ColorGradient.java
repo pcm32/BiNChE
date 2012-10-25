@@ -31,30 +31,52 @@ public class ColorGradient {
 
     private final double m;
     private final double b;
-
-    private static final double MAX_ALPHA = 50;
-    private static final double MIN_ALPHA = 255;
+    //private static final double MAX_ALPHA = 150; // a little transparent -> we want this for the lower p-values
+    private static final double MIN_ALPHA = 255; // no transparency
+    private Double pValueThreshold;
+    /**
+     * For us the fools: lowering ALPHA_TOPUP_FOR_B gives a wider range of transparency of red. Also, p-values close
+     * to the threshold became more transparent.
+     */
+    private int ALPHA_TOPUP_FOR_B = 25;
 
     /**
      * Constructs the gradient calculator and retrieves the linear function.
      *
      * @param values set of values containing the minimum and maximum possible value
      */
-    public ColorGradient(Collection<Double> values) {
+    public ColorGradient(Collection<Double> values, double pValueThres) {
 
-        List<Double> valueList;
-        if (values instanceof List) {
-            valueList = (List) values;
-        } else {
-            valueList = new ArrayList(values);
+        
+        
+        List<Double> valuesSorted = new ArrayList<Double>(values);
+        Collections.sort(valuesSorted);
+
+        pValueThreshold = pValueThres;
+
+        double minInValues = 0;
+        for (Double val : valuesSorted) {
+            if(val!=0) {
+                minInValues = val;
+                break;
+            }
         }
-        Collections.sort(valueList);
+        
+        double max = Math.log10(pValueThres);  
+        double min = Math.min(Math.log10(minInValues), max - 1);
+        System.out.println("VS : "+minInValues);
+        System.out.println("CG Max : "+max);
+        System.out.println("Cg Min : "+min);
 
-        double min = valueList.get(0);
-        double max = valueList.get(valueList.size() - 1);
-
+        /*
         m = (MAX_ALPHA - MIN_ALPHA) / (max - min);
-        b = MAX_ALPHA - (m * max);
+        b = -1 * m * max + ALPHA_TOPUP_FORB;
+        * 
+        */
+        m = (MIN_ALPHA - ALPHA_TOPUP_FOR_B)/min;
+        b = ALPHA_TOPUP_FOR_B;
+        System.out.println("m : "+m);
+        System.out.println("b : "+b);
     }
 
     /**
@@ -65,7 +87,19 @@ public class ColorGradient {
      */
     public Color getGradientColor(double value) {
 
-        int alpha = (int) (m * value + b);
-        return new Color(255, 69, 0, alpha);
+        if (value <= pValueThreshold) {
+            
+            int alpha = (int)(m * Math.log10(value) + b);
+            System.out.println("Alpha : "+alpha);
+            alpha = Math.min((int)MIN_ALPHA, alpha);
+            System.out.println("CAlpha : "+alpha);
+            return new Color(255, 69, 0, alpha);
+        } else {
+            return new Color(255,255,255,255);
+        }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(Math.min(5 * Math.log10(0),10));
     }
 }

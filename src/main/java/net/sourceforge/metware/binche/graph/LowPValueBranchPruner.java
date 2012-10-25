@@ -46,21 +46,12 @@ public class LowPValueBranchPruner implements ChEBIGraphPruner {
     }
 
     public void prune(ChebiGraph graph) {
-        ChebiVertex root = getRoot(graph);
+        ChebiVertex root = graph.getRoot();
         if(root==null)
             return;
         
         processNode(root,graph);
         
-    }
-
-    private ChebiVertex getRoot(ChebiGraph graph) {
-        for (ChebiVertex chebiVertex : graph.getVertices()) {
-            if(graph.getOutEdges(chebiVertex).isEmpty() && !graph.getInEdges(chebiVertex).isEmpty()) {
-                return chebiVertex;
-            }
-        }
-        return null;
     }
 
     private boolean processNode(ChebiVertex node, ChebiGraph graph) {
