@@ -69,14 +69,12 @@ public class LinearBranchCollapserPrunerTest {
 
         List<ChEBIGraphPruner> pruners = Arrays.asList(new MoleculeLeavesPruner(), new LowPValueBranchPruner(0.05)
                 , new LinearBranchCollapserPruner(), new RootChildrenPruner(3), new ZeroDegreeVertexPruner());
-        //MoleculeLeavesPruner instance = new MoleculeLeavesPruner();
         int originalVertices = chebiGraph.getVertexCount();
         System.out.println("Number of nodes before prunning : " + originalVertices);
 
-        //System.out.println("Writing out graph ...");
-        SvgWriter writer = new SvgWriter();
+        //SvgWriter writer = new SvgWriter();
 
-        writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/beforePrune.svg");
+        //writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/beforePrune.svg");
 
         int prunes=0;
         for (ChEBIGraphPruner chEBIGraphPruner : pruners) {
@@ -86,7 +84,7 @@ public class LinearBranchCollapserPrunerTest {
             System.out.println("Removed vertices : " + (originalVertices - chebiGraph.getVertexCount()));
             originalVertices = chebiGraph.getVertexCount();
             System.out.println("Writing out graph ...");
-            writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/after"+prunes+"prunes.svg");
+            //writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/after"+prunes+"prunes.svg");
         }
         
 
