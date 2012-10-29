@@ -21,12 +21,8 @@ package net.sourceforge.metware.binche.execs;
 import BiNGO.BingoParameters;
 import BiNGO.methods.BingoAlgorithm;
 import net.sourceforge.metware.binche.BiNChe;
-import net.sourceforge.metware.binche.graph.ChEBIGraphPruner;
 import net.sourceforge.metware.binche.graph.ChebiGraph;
-import net.sourceforge.metware.binche.graph.LowPValueBranchPruner;
-import net.sourceforge.metware.binche.graph.MoleculeLeavesPruner;
 import net.sourceforge.metware.binche.graph.SvgWriter;
-import net.sourceforge.metware.binche.gui.MainFrame;
 import net.sourceforge.metware.binche.gui.SettingsPanel;
 import org.apache.commons.cli.Option;
 import org.apache.log4j.Level;
@@ -34,11 +30,8 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Stephan Beisken
@@ -125,27 +118,11 @@ public class BiNCheExec extends CommandLineMain {
 
         ChebiGraph chebiGraph =
                 new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
-        
-        List<ChEBIGraphPruner> pruners = Arrays.asList(new MoleculeLeavesPruner(), new LowPValueBranchPruner(0.05));
-        //MoleculeLeavesPruner instance = new MoleculeLeavesPruner();
-        int originalVertices = chebiGraph.getVertexCount();
-        System.out.println("Number of nodes before prunning : " + originalVertices);
 
-        //System.out.println("Writing out graph ...");
-        //SvgWriter writer = new SvgWriter();
+        LOGGER.log(Level.INFO, "Writing out graph ...");
+        SvgWriter writer = new SvgWriter();
 
-        //writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/beforePrune.svg");
-
-        for (ChEBIGraphPruner chEBIGraphPruner : pruners) {
-            chEBIGraphPruner.prune(chebiGraph);
-            System.out.println(chEBIGraphPruner.getClass().getCanonicalName());
-            System.out.println("Removed vertices : " + (originalVertices - chebiGraph.getVertexCount()));
-            originalVertices = chebiGraph.getVertexCount();
-        }
-        
-        int finalVertices = chebiGraph.getVertexCount();
-        
-        System.out.println("Final vertices : " + (finalVertices));
+        writer.writeSvg(chebiGraph.getVisualisationServer(), outputPath);
 
         LOGGER.log(Level.INFO, "############ Stop ############");
     }
