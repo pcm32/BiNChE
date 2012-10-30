@@ -23,7 +23,6 @@ import BiNGO.methods.BingoAlgorithm;
 import net.sourceforge.metware.binche.BiNChe;
 import net.sourceforge.metware.binche.graph.ChebiGraph;
 import net.sourceforge.metware.binche.graph.SvgWriter;
-import net.sourceforge.metware.binche.gui.MainFrame;
 import net.sourceforge.metware.binche.gui.SettingsPanel;
 import org.apache.commons.cli.Option;
 import org.apache.log4j.Level;
@@ -31,7 +30,6 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 

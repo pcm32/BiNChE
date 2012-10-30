@@ -348,6 +348,11 @@ public class ChebiGraph {
         addEdge(Integer.valueOf(child.getChebiId()), Integer.valueOf(parent.getChebiId()));
     }
     
+    public Collection<ChebiEdge> getEdges() {
+//    	Graph<ChebiVertex, ChebiEdge> temp = layout.getGraph();
+//    	return temp.getEdges();
+    	return graph.getEdges();
+	}
     /**
      * Returns the root of the graph, the ChebiVertex which only has incoming edges (the most general ChEBI node).
      * 
