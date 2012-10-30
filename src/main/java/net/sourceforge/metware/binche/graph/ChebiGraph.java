@@ -106,7 +106,7 @@ public class ChebiGraph {
      * @param nodes     the set of input ChEBI ids
      */
     private void populateGraph(Map<Integer, Double> pValueMap, Ontology ontology, HashSet<String> nodes) {
-
+        
         //graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
         graph = new DirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
 
@@ -115,7 +115,7 @@ public class ChebiGraph {
         
         int previousId;
         int currentId;
-
+        
         for (String node : nodes) {
 
             int[][] hierarchy = ontology.getAllHierarchyPaths(Integer.parseInt(node));
