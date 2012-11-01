@@ -151,7 +151,7 @@ public class ChebiGraph {
             v.setpValue(pValueMap.get(id));
             vertexMap.put(id, v);
             // We only color the node if it has a pValue and the pValue is below the threshold.
-            if (pValueMap.containsKey(id)) 
+            if (pValueMap.containsKey(id))
                 vertexMap.get(id).setColor(gradient.getGradientColor(pValueMap.get(id)));
 
             vertexId++;
