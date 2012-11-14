@@ -94,7 +94,11 @@ public class BiNGOAnnotationFlatFileReader {
             } else {
                 TextFileReader reader = new TextFileReader(filename);
                 reader.read();
-                this.orphansFile = new FileWriter(filename+".orphans.txt");
+                File orphansFile =  new File(filename.substring(filename.indexOf("ontology"))+".orphans.txt");
+                if (!orphansFile.exists()) {
+                    orphansFile.createNewFile();
+                }
+                this.orphansFile = new FileWriter(orphansFile);
                 fullText = reader.getText();
             }
         }

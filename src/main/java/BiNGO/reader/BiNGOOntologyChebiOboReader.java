@@ -59,7 +59,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
             HashSet<String> has_role = new HashSet<String>();
             boolean obsolete = false;
             boolean molecule=false;
-            while (!lines[i].trim().equals("[Term]") && !lines[i].trim().equals("[Typedef]") && i < lines.length) {
+            while (!lines[i].trim().equals("[Term]") && !lines[i].trim().equals("[Typedef]") && !lines[i].trim().startsWith("!") && i < lines.length) {
                 if (!lines[i].trim().isEmpty()) {
                     String ref = lines[i].substring(0, lines[i].indexOf(":")).trim();
                     String value = lines[i].substring(lines[i].indexOf(":") + 1).trim();
@@ -95,7 +95,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                 }
                 i++;
             }
-            if (obsolete == false) {
+            if (obsolete == false && !id.isEmpty()) {
                 //for (String n : this.namespaces) {
                 //if (n.equals(BingoAlgorithm.NONE) || namespaces.contains(n)) {
                 // For the ChEBI namespace
@@ -135,7 +135,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
 
                     containedTerm.addContainer(term.getId());
                 }
-                
+
                 /*} else {
                     Integer id2 = new Integer(id);
                     OntologyTerm term = new OntologyTerm(name, id2);
