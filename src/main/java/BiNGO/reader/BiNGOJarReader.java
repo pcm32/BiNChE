@@ -67,7 +67,7 @@ public BiNGOJarReader(String URI) throws IOException {
   URL url = getClass().getResource("/BiNGO/data/" + filename);
   JarURLConnection juc = (JarURLConnection) url.openConnection ();
   JarFile jarFile = juc.getJarFile();
-  InputStream is = jarFile.getInputStream (jarFile.getJarEntry ("BiNGO/data/"+filename));
+  InputStream is = jarFile.getInputStream (jarFile.getJarEntry ("BiNGO/data/"+filename));    //The path of the file has been hardcoded to look in BiNChe so this class is able to access them
   reader = new InputStreamReader (is);
 
 } // ctor
