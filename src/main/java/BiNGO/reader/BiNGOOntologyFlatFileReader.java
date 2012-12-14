@@ -44,6 +44,7 @@ package BiNGO.reader;
 * */
 
 
+import cytoscape.data.annotation.ChEBIOntologyTerm;
 import cytoscape.data.annotation.Ontology;
 import cytoscape.data.annotation.OntologyTerm;
 import cytoscape.data.readers.TextFileReader;
@@ -51,7 +52,9 @@ import cytoscape.data.readers.TextHttpReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 //-------------------------------------------------------------------------
 
 public class BiNGOOntologyFlatFileReader {
@@ -76,7 +79,7 @@ public class BiNGOOntologyFlatFileReader {
             if (filename.trim().startsWith("jar:")) {
                 BiNGOJarReader reader = new BiNGOJarReader(filename);
                 reader.read();
-                fullText = reader.getText();   
+                fullText = reader.getText();
             } else if (filename.trim().startsWith("http://")) {
                 TextHttpReader reader = new TextHttpReader(filename);
                 reader.read();
@@ -173,7 +176,7 @@ public class BiNGOOntologyFlatFileReader {
             }
 
         }
-		
+
 		/*for(Object id : synonymHash.keySet()){
 			System.out.println(id + "\t" + synonymHash.get(id)) ;
 		}	*/
@@ -234,12 +237,11 @@ public class BiNGOOntologyFlatFileReader {
                 String [] allPartofs = rawPartof.split(" ");
                 for (int j = 0; j < allPartofs.length; j++) {
                     Integer id3 = new Integer(stringToInt(allPartofs[j]));
-					//if((id3 == 6944) && (id2 == 6906)){System.out.println("partof OK");}
+                    //if((id3 == 6944) && (id2 == 6906)){System.out.println("partof OK");}
                     term.addContainer(((Integer) synonymHash.get(id3)).intValue());
                 }
             } // if
         } // for i
-
     } // read
 //-------------------------------------------------------------------------
 

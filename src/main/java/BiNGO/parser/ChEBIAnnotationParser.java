@@ -7,6 +7,7 @@ package BiNGO.parser;
 
 import BiNGO.BingoParameters;
 import BiNGO.methods.BingoAlgorithm;
+import BiNGO.reader.BiNGOAnnotationFlatFileReader;
 import BiNGO.reader.BiNGOOntologyChebiOboReader;
 import BiNGO.reader.BiNGOOntologyFlatFileReader;
 import BiNGO.reader.BiNGOOntologyOboReader;
@@ -50,9 +51,12 @@ public class ChEBIAnnotationParser extends AnnotationParser {
 
         String resultString = LOADCORRECT;
 
-        HashMap<Integer, String> ontologyIDs2Names = fullOntology.getTerms();
+//        HashMap<Integer, String> ontologyIDs2Names = fullOntology.getTerms();
+        HashMap<Integer, String> ontologyIDs2Names = ontology.getTerms();
 
-        annotation = new Annotation(params.getSpecies(), "ChEBI", fullOntology);
+
+//        annotation = new Annotation(params.getSpecies(), "ChEBI", fullOntology);
+        annotation = new Annotation(params.getSpecies(), "ChEBI", ontology);
         alias = new HashMap<String, String>();
         for (Integer id : ontologyIDs2Names.keySet()) {
             String entityName = "CHEBI:" + id;
@@ -137,6 +141,57 @@ public class ChEBIAnnotationParser extends AnnotationParser {
         return resultString;
     }
 
+    /*
+     *Method that parses the custom annotation file into an annotation-object and
+     * returns a string containing whether the operation is correct or not.
+     *
+     * In the ChEBI annotation parser, this will produce the chebi to chebi
+     * entries file. The annotation in ChEBI needs to be loaded after the ontology is.
+     *
+     * Note:This method is to be used where the annotation is provided separately from role/structure ontology.
+     * If only ontology file is provided, use method setCustomAnnotation().
+     *
+     * @return string string with either loadcorrect or a parsing error.
+     */
+    private String setCustomAnnotationFromAnnotationFile() {
+
+        String fileString = params.getAnnotationFile();
+        annotation = null;
+
+        String resultString;
+
+        // flat file reader for custom annotation
+        try {
+            BiNGOAnnotationFlatFileReader readerAnnotation = new BiNGOAnnotationFlatFileReader(fileString, synonymHash);
+            annotation = readerAnnotation.getAnnotation();
+            if (readerAnnotation.getOrphans()) {
+                orphansFound = true;
+            }
+            if (readerAnnotation.getConsistency()) {
+                consistency = true;
+            }
+            alias = readerAnnotation.getAlias();
+            resultString = LOADCORRECT;
+        }
+        catch (IllegalArgumentException e) {
+            //taskMonitor.setException(e, "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:");
+            resultString = "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
+        }
+        catch (IOException e) {
+            //taskMonitor.setException(e, "Annotation file could not be located...");
+            resultString = "Annotation file could not be located...";
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            //taskMonitor.setException(e, "");
+            resultString = "" + e;
+        }
+
+        return resultString;
+
+    }
+
+
     public void calculate() {
 
         if (!params.isOntology_default()) {
@@ -167,7 +222,15 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                     if (status = true) {
                         String loadAnnotationString;
                         if (!params.isAnnotation_default()) {
-                            loadAnnotationString = setCustomAnnotation();
+
+                            if (params.getAnnotationFile()==null)
+                                loadAnnotationString = setCustomAnnotation();
+
+                                //Changed method to read annotation from an annotation file and not from the ontology
+                            else {
+                                loadAnnotationString = setCustomAnnotationFromAnnotationFile();
+                            }
+
                         } else {
                             loadAnnotationString = setDefaultAnnotation();
                         }
@@ -254,6 +317,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
         }
     }
 
+
     /**
      * Method that parses the ontology file into an ontology-object and
      * returns a string containing whether the operation is correct or not.
@@ -320,6 +384,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
 
         return resultString;
     }
+
 
 
     /**

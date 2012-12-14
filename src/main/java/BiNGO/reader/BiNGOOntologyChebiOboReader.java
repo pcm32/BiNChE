@@ -59,7 +59,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
             HashSet<String> has_role = new HashSet<String>();
             boolean obsolete = false;
             boolean molecule=false;
-            while (!lines[i].trim().equals("[Term]") && !lines[i].trim().equals("[Typedef]") && i < lines.length) {
+            while (i < lines.length && !lines[i].trim().equals("[Term]") && !lines[i].trim().equals("[Typedef]") && !lines[i].trim().startsWith("!")) {
                 if (!lines[i].trim().isEmpty()) {
                     String ref = lines[i].substring(0, lines[i].indexOf(":")).trim();
                     String value = lines[i].substring(lines[i].indexOf(":") + 1).trim();
@@ -95,7 +95,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                 }
                 i++;
             }
-            if (obsolete == false) {
+            if (obsolete == false && !id.isEmpty()) {
                 //for (String n : this.namespaces) {
                 //if (n.equals(BingoAlgorithm.NONE) || namespaces.contains(n)) {
                 // For the ChEBI namespace
@@ -135,7 +135,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
 
                     containedTerm.addContainer(term.getId());
                 }
-                
+
                 /*} else {
                     Integer id2 = new Integer(id);
                     OntologyTerm term = new OntologyTerm(name, id2);
@@ -152,7 +152,8 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                 //}
             }
         }
-        //explicitely reroute all connections (parent-child relationships) that are missing in subontologies like GOSlim
+
+        //explicitly reroute all connections (parent-child relationships) that are missing in subontologies like GOSlim
         //avoid transitive connections
         // TODO This is an undesired bias towards gene ontology.
         /*if (!namespace.equals("biological_process") && !namespace.equals("molecular_function") && !namespace.equals("cellular_component") && !namespace.equals(BingoAlgorithm.NONE)) {

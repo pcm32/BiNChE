@@ -24,6 +24,8 @@ package BiNGO;
 
 import BiNGO.methods.BingoAlgorithm;
 import java.math.BigDecimal;
+
+import net.sourceforge.metware.binche.BiNChe;
 import org.apache.log4j.Logger;
 
 /**

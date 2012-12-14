@@ -59,13 +59,13 @@ public class ChebiGraph {
     /**
      * Only P-Values below the set threshold will be considered for the coloring scheme. P-Values above will have
      * the default color.
-     * 
-     * @param pValueThreshold 
+     *
+     * @param pValueThreshold
      */
     public void setpValueThreshold(Double pValueThreshold) {
         this.pValueThreshold = pValueThreshold;
     }
-    
+
     private ColorGradient gradient;
 
     private Ontology ontology;
@@ -106,19 +106,24 @@ public class ChebiGraph {
      * @param nodes     the set of input ChEBI ids
      */
     private void populateGraph(Map<Integer, Double> pValueMap, Ontology ontology, HashSet<String> nodes) {
-        
+
         //graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
         graph = new DirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
 
         vertexMap = new HashMap<Integer, ChebiVertex>();
         edgeSet = new HashSet<String>();
-        
+
         int previousId;
         int currentId;
-        
-        for (String node : nodes) {
 
-            int[][] hierarchy = ontology.getAllHierarchyPaths(Integer.parseInt(node));
+//        for (String node : nodes) {
+
+        //Initially iterated over the the input nodes. Doesn't work when the ontology and annotation were split into
+        //two separate files, because the ontology no longer contains the chemicals.
+        //Now iterates over the pValue Map.
+        for (Integer node : pValueMap.keySet())    {
+
+            int[][] hierarchy = ontology.getAllHierarchyPaths(node);
 
             for (int row = 0; row < hierarchy.length; row++) {
 
@@ -138,7 +143,7 @@ public class ChebiGraph {
     }
 
     /**
-     * Adds a vertex to the vertex map if not alrady contained and sets its color depending on the estimated p value
+     * Adds a vertex to the vertex map if not already contained and sets its color depending on the estimated p value
      * from the enrichment analysis.
      *
      * @param id the id of the vertex to be added
@@ -146,12 +151,12 @@ public class ChebiGraph {
     private void addVertex(int id) {
 
         if (!vertexMap.containsKey(id)) {
-            ChEBIOntologyTerm term = (ChEBIOntologyTerm)ontology.getTerm(id);
+            ChEBIOntologyTerm term = (ChEBIOntologyTerm) ontology.getTerm(id);
             ChebiVertex v = new ChebiVertex(vertexId, "" + id, term.getName(),term.isMolecule());
             v.setpValue(pValueMap.get(id));
             vertexMap.put(id, v);
             // We only color the node if it has a pValue and the pValue is below the threshold.
-            if (pValueMap.containsKey(id)) 
+            if (pValueMap.containsKey(id))
                 vertexMap.get(id).setColor(gradient.getGradientColor(pValueMap.get(id)));
 
             vertexId++;
@@ -186,7 +191,7 @@ public class ChebiGraph {
      * (here, SpanningForest) and PrimSpanningTree (here, SpanningTree) classes.
      */
     private void layoutGraph() {
-        
+
         //SpanningForest<ChebiVertex, ChebiEdge> prim =
         //        new SpanningForest<ChebiVertex, ChebiEdge>(graph, new DelegateForest<ChebiVertex, ChebiEdge>(),
         //                DelegateTree.<ChebiVertex, ChebiEdge>getFactory(), new ConstantTransformer(1.0));
@@ -282,13 +287,13 @@ public class ChebiGraph {
 
     /**
      * Retrieves all vertices of the graph, for iteration purposes.
-     * 
-     * @return 
+     *
+     * @return
      */
     public Iterable<ChebiVertex> getVertices() {
         return graph.getVertices();
     }
-    
+
     public boolean isLeaf(ChebiVertex vertex) {
         Collection<ChebiEdge> inEdges = getInEdges(vertex);
         return inEdges.isEmpty();
@@ -296,16 +301,16 @@ public class ChebiGraph {
 
     /**
      * Removes a vertex and its connected edges.
-     * @param chebiVertex 
+     * @param chebiVertex
      */
     public void removeVertex(ChebiVertex chebiVertex) {
         Collection<ChebiEdge> toRemove = new LinkedList<ChebiEdge>(getInEdges(chebiVertex));
         toRemove.addAll(getOutEdges(chebiVertex));
-        
+
         for (ChebiEdge chebiEdge : toRemove) {
             graph.removeEdge(chebiEdge);
         }
-        
+
         graph.removeVertex(chebiVertex);
     }
 
@@ -319,7 +324,7 @@ public class ChebiGraph {
             return new ArrayList<ChebiEdge>();
         return outEdges;
     }
-    
+
     public Collection<ChebiEdge> getInEdges(ChebiVertex chebiVertex) {
         Collection<ChebiEdge> inEdges = graph.getInEdges(chebiVertex);
         if(inEdges==null)
@@ -340,22 +345,22 @@ public class ChebiGraph {
 
     /**
      * Adds an edge to the graph where the direction goes from child (less general) to parent (more general).
-     * 
+     *
      * @param parent
-     * @param child 
+     * @param child
      */
     public void addEdge(ChebiVertex parent, ChebiVertex child) {
         addEdge(Integer.valueOf(child.getChebiId()), Integer.valueOf(parent.getChebiId()));
     }
-    
+
     public Collection<ChebiEdge> getEdges() {
 //    	Graph<ChebiVertex, ChebiEdge> temp = layout.getGraph();
 //    	return temp.getEdges();
-    	return graph.getEdges();
-	}
+        return graph.getEdges();
+    }
     /**
      * Returns the root of the graph, the ChebiVertex which only has incoming edges (the most general ChEBI node).
-     * 
+     *
      * @return root vertex or null if the graph has no root. 
      */
     public ChebiVertex getRoot() {
