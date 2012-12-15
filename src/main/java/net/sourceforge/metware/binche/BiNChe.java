@@ -82,6 +82,7 @@ public class BiNChe {
 		CalculateTestTask test = algorithm.calculate_distribution();
 		test.run();
 		testMap = test.getTestMap();
+		System.out.println("Got result size before correction: "+testMap.size());
 
 		LOGGER.log(Level.INFO, "Calculating corrections ...");
 		CalculateCorrectionTask correction = algorithm.calculate_corrections(testMap);
@@ -96,6 +97,7 @@ public class BiNChe {
 		} else {
 			pValueMap = ((SaddleSumTestCalculate) test).getPValueMap();
 		}
+		System.out.println("Got result size after correction/weighted test: "+pValueMap.size());
 
 		// these hashMaps contain the results, where the Keys are the different categories (ie. a ChEBI entry or a
 		// GeneOntology element). These results are after the test we then need to retrieve the corrections from the
@@ -232,6 +234,7 @@ public class BiNChe {
 			Double weight = Double.valueOf(input.get(chebiId));
 
 			inputWeights.put(chebiId, weight);
+			System.out.println("Got weight "+weight+" for chebiId "+chebiId);
 		}
 		this.params.setTextInput(container);
 		this.params.setSelectedNodes(inputNodes);

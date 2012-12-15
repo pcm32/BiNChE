@@ -51,12 +51,12 @@ public class ChEBIAnnotationParser extends AnnotationParser {
 
         String resultString = LOADCORRECT;
 
-//        HashMap<Integer, String> ontologyIDs2Names = fullOntology.getTerms();
-        HashMap<Integer, String> ontologyIDs2Names = ontology.getTerms();
+        HashMap<Integer, String> ontologyIDs2Names = fullOntology.getTerms();
+//        HashMap<Integer, String> ontologyIDs2Names = ontology.getTerms();
 
 
-//        annotation = new Annotation(params.getSpecies(), "ChEBI", fullOntology);
-        annotation = new Annotation(params.getSpecies(), "ChEBI", ontology);
+        annotation = new Annotation(params.getSpecies(), "ChEBI", fullOntology);
+//        annotation = new Annotation(params.getSpecies(), "ChEBI", ontology);
         alias = new HashMap<String, String>();
         for (Integer id : ontologyIDs2Names.keySet()) {
             String entityName = "CHEBI:" + id;
