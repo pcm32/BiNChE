@@ -22,11 +22,12 @@
 package BiNGO;
 
 
-import BiNGO.methods.BingoAlgorithm;
 import java.math.BigDecimal;
+import java.util.HashMap;
 
-import net.sourceforge.metware.binche.BiNChe;
 import org.apache.log4j.Logger;
+
+import BiNGO.methods.BingoAlgorithm;
 
 /**
  * @name    ParameterFactory
@@ -78,5 +79,23 @@ public class ParameterFactory {
 		return parametersSaddle;
 	}
 
+    public static BingoParameters makeParametersForChEBISaddleSum(String ontologyFile) {
 
+    	BingoParameters parametersSaddle = new BingoParameters();
+
+    	parametersSaddle.setTest(BingoAlgorithm.SADDLESUM);
+    	parametersSaddle.setCorrection(BingoAlgorithm.NONE);
+    	parametersSaddle.setOntologyFile(ontologyFile);
+    	parametersSaddle.setOntology_default(false);
+    	parametersSaddle.setNameSpace("chebi_ontology");
+    	parametersSaddle.setOverOrUnder("Overrepresentation");
+    	parametersSaddle.setSignificance(new BigDecimal(0.05));
+    	parametersSaddle.setCategory(BingoAlgorithm.CATEGORY_CORRECTION);
+    	parametersSaddle.setReferenceSet(BingoAlgorithm.GENOME);
+    	parametersSaddle.setAllNodes(null);
+    	parametersSaddle.setSelectedNodes(null);
+
+    	return parametersSaddle;
+    }
+   
 }
