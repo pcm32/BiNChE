@@ -336,7 +336,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
         // obo file
         if (fileString.endsWith(".obo")) {
             try {
-                BiNGOOntologyOboReader readerOntology = new BiNGOOntologyChebiOboReader(fileString, namespace);
+                BiNGOOntologyOboReader readerOntology = new BiNGOOntologyChebiOboReader(new File(fileString), namespace);
                 ontology = readerOntology.getOntology();
                 if (ontology.size() == 0) {
                     throw (new IllegalArgumentException());
@@ -392,6 +392,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
      *
      * @return string string with either loadcorrect or a parsing error.
      */
+    @Override
     public String setFullOntology() {
 
         fullOntology = null;
@@ -402,7 +403,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
             // read full ontology.
             try {
                 BiNGOOntologyOboReader readerOntology =
-                        new BiNGOOntologyChebiOboReader(params.getOntologyFile(), BingoAlgorithm.NONE);
+                        new BiNGOOntologyChebiOboReader(new File(params.getOntologyFile()), BingoAlgorithm.NONE);
                 fullOntology = readerOntology.getOntology();
                 if (fullOntology.size() == 0) {
                     throw (new IllegalArgumentException());
