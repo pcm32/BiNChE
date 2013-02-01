@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is a decorator class for the AnnotationParser.
@@ -27,13 +28,10 @@ import java.util.List;
  */
 public class ChEBIAnnotationParser extends AnnotationParser {
 
-    public ChEBIAnnotationParser(BingoParameters params, HashSet<String> genes) {
+    public ChEBIAnnotationParser(BingoParameters params, Set<String> genes) {
 
         super(params, genes);
     }
-
-    //@Override
-    //public void calculate() {}
 
     /**
      * Method that parses the custom annotation file into an annotation-object and
@@ -192,6 +190,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
     }
 
 
+    @Override
     public void calculate() {
 
         if (!params.isOntology_default()) {
@@ -223,11 +222,11 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                         String loadAnnotationString;
                         if (!params.isAnnotation_default()) {
 
-                            if (params.getAnnotationFile()==null)
+                            if (params.getAnnotationFile()==null) {
                                 loadAnnotationString = setCustomAnnotation();
-
-                                //Changed method to read annotation from an annotation file and not from the ontology
+                            }                                
                             else {
+                                //Changed method to read annotation from an annotation file and not from the ontology
                                 loadAnnotationString = setCustomAnnotationFromAnnotationFile();
                             }
 

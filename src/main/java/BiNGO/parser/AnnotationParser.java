@@ -48,6 +48,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -93,16 +95,16 @@ public class AnnotationParser {
     protected Annotation annotation;
     protected Annotation parsedAnnotation;
     protected Ontology ontology;
-    protected HashMap alias;
+    protected Map alias;
     /**
      * full ontology which is used for remapping the annotations to one of the default ontologies (not for custom ontologies)
      */
     protected Ontology fullOntology;
-    protected HashMap synonymHash;
+    protected Map synonymHash;
 //    private String idOption;
 
     protected BingoParameters params;
-    protected HashSet<String> genes;
+    protected Set<String> genes;
     /**
      * boolean loading correctly ?
      */
@@ -127,7 +129,7 @@ public class AnnotationParser {
     --------------------------------------------------------------*/
 
 
-    public AnnotationParser(BingoParameters params, HashSet<String> genes) {
+    public AnnotationParser(BingoParameters params, Set<String> genes) {
 
         this.params = params;
         this.genes = genes;
@@ -471,7 +473,7 @@ public class AnnotationParser {
      * @return string string with either loadcorrect or a parsing error.
      */
 
-    public String setDefaultOntology(HashMap synonymHash) {
+    public String setDefaultOntology(Map synonymHash) {
 
         String fileString = params.getOntologyFile().toString();
         ontology = null;
@@ -572,7 +574,7 @@ public class AnnotationParser {
      * method for remapping annotation to reduced ontology e.g. GOSlim, and explicitly including genes in all parental categories
      */
 
-    public Annotation remap(Annotation annotation, Ontology ontology, HashSet<String> genes) {
+    public Annotation remap(Annotation annotation, Ontology ontology, Set<String> genes) {
 
         Annotation parsedAnnotation =
                 new Annotation(annotation.getSpecies(), annotation.getType(), annotation.getCurator());
@@ -628,7 +630,7 @@ public class AnnotationParser {
      * method for explicitly including genes in custom annotation in all parental categories of custom ontology
      */
 
-    public Annotation customRemap(Annotation annotation, Ontology ontology, HashSet<String> genes) {
+    public Annotation customRemap(Annotation annotation, Ontology ontology, Set<String> genes) {
 
         Annotation parsedAnnotation =
                 new Annotation(annotation.getSpecies(), annotation.getType(), annotation.getCurator());
@@ -742,7 +744,7 @@ public class AnnotationParser {
         return ontology;
     }
 
-    public HashMap getAlias() {
+    public Map getAlias() {
 
         return alias;
     }

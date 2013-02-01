@@ -41,6 +41,8 @@ import cytoscape.task.TaskMonitor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -62,52 +64,52 @@ public class StandardDistributionCount implements DistributionCount {
     /**
      * the annotation.
      */
-    private static Annotation annotation;
+    private Annotation annotation;
     /**
      * the ontology.
      */
-    private static Ontology ontology;
+    private Ontology ontology;
 
-    private static HashMap<String, HashSet<String>> alias;
+    private Map<String, Set<String>> alias;
 
     /**
      * the scores or weights that accompany a set of elements.
      */
-    private static HashMap<String, Double> weights;
+    private Map<String, Double> weights;
     /**
      * HashSet of selected nodes
      */
-    private static HashSet selectedNodes;
+    private Set selectedNodes;
     /**
      * HashSet of reference nodes
      */
-    private static HashSet refNodes;
+    private Set refNodes;
     /**
      * hashmap with values of small n ; keys GO labels.
      */
-    private static HashMap mapSmallN;
+    private Map mapSmallN;
     /**
      * hashmap with values of small x ; keys GO labels.
      */
-    private static HashMap mapSmallX;
+    private Map mapSmallX;
     /**
      * hashmap with values of big N.
      */
-    private static HashMap mapBigN;
+    private Map mapBigN;
     /**
      * hashmap with values of big X.
      */
-    private static HashMap mapBigX;
+    private Map mapBigX;
 
     /**
      *
      */
-    private static HashMap<Integer, Double> mapWeightSums;
+    private Map<Integer, Double> mapWeightSums;
 
     /**
      * @return the weights
      */
-    public HashMap<String, Double> getWeights() {
+    public Map<String, Double> getWeights() {
 
         return weights;
     }
@@ -115,7 +117,7 @@ public class StandardDistributionCount implements DistributionCount {
     /**
      * @param aWeights the weights to set
      */
-    public void setWeights(HashMap<String, Double> aWeights) {
+    public void setWeights(Map<String, Double> aWeights) {
 
         weights = aWeights;
     }
@@ -128,8 +130,8 @@ public class StandardDistributionCount implements DistributionCount {
     CONSTRUCTOR.
     --------------------------------------------------------------*/
 
-    public StandardDistributionCount(Annotation annotation, Ontology ontology, HashSet selectedNodes, HashSet refNodes,
-                                     HashMap alias) {
+    public StandardDistributionCount(Annotation annotation, Ontology ontology, Set selectedNodes, Set refNodes,
+                                     Map alias) {
 
         this.annotation = annotation;
         this.ontology = ontology;
@@ -147,8 +149,8 @@ public class StandardDistributionCount implements DistributionCount {
 
     }
 
-    public StandardDistributionCount(Annotation annotation, Ontology ontology, HashSet selectedNodes, HashSet refNodes,
-                                     HashMap alias, HashMap<String, Double> weights) {
+    public StandardDistributionCount(Annotation annotation, Ontology ontology, Set selectedNodes, Set refNodes,
+                                     Map alias, Map<String, Double> weights) {
 
         this(annotation, ontology, selectedNodes, refNodes, alias);
 
@@ -178,11 +180,12 @@ public class StandardDistributionCount implements DistributionCount {
      */
 
 
-    public HashSet<String> getNodeClassifications(String node) {
+    @Override
+    public Set<String> getNodeClassifications(String node) {
 
         // HashSet for the classifications of a particular node
-        HashSet<String> classifications = new HashSet();
-        HashSet identifiers = alias.get(node + "");
+        Set<String> classifications = new HashSet();
+        Set<String> identifiers = alias.get(node + "");
 
         if (identifiers != null) {
             Iterator it = identifiers.iterator();
@@ -218,6 +221,7 @@ public class StandardDistributionCount implements DistributionCount {
     /**
      * method for making the hashmap for small n.
      */
+    @Override
     public void countSmallN() {
 
         mapSmallN = this.count(refNodes);
@@ -228,6 +232,7 @@ public class StandardDistributionCount implements DistributionCount {
     /**
      * method for making the hashmap for the small x.
      */
+    @Override
     public void countSmallX() {
 
         mapSmallX = this.count(selectedNodes);
@@ -238,13 +243,13 @@ public class StandardDistributionCount implements DistributionCount {
     /**
      * method that counts for small n and small x.
      */
-    public HashMap count(HashSet nodes) {
+    public Map count(Set nodes) {
 
-        HashMap map = new HashMap();
+        Map map = new HashMap();
 
         Iterator i = nodes.iterator();
         while (i.hasNext()) {
-            HashSet classifications = getNodeClassifications(i.next().toString());
+            Set classifications = getNodeClassifications(i.next().toString());
             Iterator iterator = classifications.iterator();
             Integer id;
 
@@ -266,13 +271,14 @@ public class StandardDistributionCount implements DistributionCount {
     /**
      * counts big N. unclassified nodes are not counted ; no correction for function_unknown nodes (yet)(requires user input)
      */
+    @Override
     public void countBigN() {
 
         mapBigN = new HashMap();
         int bigN = refNodes.size();
         Iterator i = refNodes.iterator();
         while (i.hasNext()) {
-            HashSet classifications = getNodeClassifications(i.next().toString());
+            Set<String> classifications = getNodeClassifications(i.next().toString());
             Iterator iterator = classifications.iterator();
             if (!iterator.hasNext()) {
                 bigN--;
@@ -293,7 +299,7 @@ public class StandardDistributionCount implements DistributionCount {
         int bigX = selectedNodes.size();
         Iterator i = selectedNodes.iterator();
         while (i.hasNext()) {
-            HashSet classifications = getNodeClassifications(i.next().toString());
+            Set<String> classifications = getNodeClassifications(i.next().toString());
             Iterator iterator = classifications.iterator();
             if (!iterator.hasNext()) {
                 bigX--;
@@ -312,7 +318,7 @@ public class StandardDistributionCount implements DistributionCount {
         while (nodeIterator.hasNext()) {
 
             String node = nodeIterator.next().toString();
-            HashSet<String> classifications = getNodeClassifications(node);
+            Set<String> classifications = getNodeClassifications(node);
 //            System.out.println(node);
             for (String nodeClass : classifications) {
                 if (!mapWeightSums.containsKey(Integer.parseInt(nodeClass))) {
@@ -366,7 +372,8 @@ public class StandardDistributionCount implements DistributionCount {
       GETTERS.
     --------------------------------------------------------------*/
 
-    public HashMap getTestMap() {
+    @Override
+    public Map getTestMap() {
 
         return mapSmallX;
     }
@@ -376,7 +383,8 @@ public class StandardDistributionCount implements DistributionCount {
      *
      * @return hashmap mapSmallN
      */
-    public HashMap getMapSmallN() {
+    @Override
+    public Map getMapSmallN() {
 
         return mapSmallN;
     }
@@ -386,17 +394,17 @@ public class StandardDistributionCount implements DistributionCount {
      *
      * @return hashmap mapSmallX
      */
-    public HashMap getMapSmallX() {
+    public Map getMapSmallX() {
 
         return mapSmallX;
     }
 
-    public HashMap getMapBigN() {
+    public Map getMapBigN() {
 
         return mapBigN;
     }
 
-    public HashMap getMapBigX() {
+    public Map getMapBigX() {
 
         return mapBigX;
     }
@@ -422,21 +430,22 @@ public class StandardDistributionCount implements DistributionCount {
     /**
      * Non-blocking call to interrupt the task.
      */
+    @Override
     public void halt() {
-
         this.interrupted = true;
     }
 
+    @Override
     public String getTitle() {
-
-        return new String("Counting genes in GO categories...");
+        return "Counting genes in GO categories...";
     }
 
-    public HashMap<Integer, Double> getMapWeights() {
-
+    @Override
+    public Map<Integer, Double> getMapWeights() {
         return mapWeightSums;
     }
 
+    @Override
     public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
         //throw new UnsupportedOperationException("Not supported yet.");
     }

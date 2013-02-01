@@ -33,6 +33,7 @@ package BiNGO.methods.binomial;
  * * Description: Class that calculates the binomial test results for a given cluster.         
  **/
 
+import BiNGO.methods.AbstractCalculateTestTask;
 import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.interfaces.DistributionCount;
 import cytoscape.task.TaskMonitor;
@@ -42,6 +43,7 @@ import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -56,41 +58,12 @@ import java.util.Iterator;
  */
 
 
-public class BinomialTestCalculate implements CalculateTestTask {
+public class BinomialTestCalculate extends AbstractCalculateTestTask implements CalculateTestTask {
 
     /**
      * logger (replacement for cyto's task monitor)
      */
     private static final Logger LOGGER = Logger.getLogger(BinomialTestCalculate.class);
-
-    /*--------------------------------------------------------------
-    FIELDS.
-    --------------------------------------------------------------*/
-
-    /**
-     * hashmap with as values the values of small n and with as key the GO label.
-     */
-    private static HashMap mapSmallN;
-    /**
-     * hashmap with as values the values of small x and with as key the GO label.
-     */
-    private static HashMap mapSmallX;
-    /**
-     * int containing value for big N.
-     */
-    private static HashMap mapBigN;
-    /**
-     * int containing value for big X.
-     */
-    private static HashMap mapBigX;
-    /**
-     * hashmap with the Binomial Test results as values and as key the GO label.
-     */
-    private static HashMap binomialTestMap;
-
-    // Keep track of progress for monitoring:
-    private int maxValue;
-    private boolean interrupted = false;
 
     /*--------------------------------------------------------------
     CONSTRUCTOR.
@@ -104,6 +77,7 @@ public class BinomialTestCalculate implements CalculateTestTask {
     public BinomialTestCalculate(DistributionCount dc) {
         // calculates x (#genes in selection assigned to each GO class), X (total #genes in selection),
         // n (# genes in reference set assigned to each GO class) and N (total # genes in reference set) from input
+        this.title = "Calculating Binomial Distribution";
         dc.calculate();
         this.mapSmallN = dc.getMapSmallN();
         this.mapSmallX = dc.getMapSmallX();
@@ -121,10 +95,11 @@ public class BinomialTestCalculate implements CalculateTestTask {
     /**
      * method that redirects the calculation of the Binomial Tests to the BinomialDistribution class.
      */
+    @Override
     public void calculate() {
 
         BinomialDistribution bt;
-        binomialTestMap = new HashMap();
+        significanceTestMap = new HashMap();
 
         HashSet set = new HashSet(mapSmallX.keySet());
         Iterator iterator = set.iterator();
@@ -143,7 +118,7 @@ public class BinomialTestCalculate implements CalculateTestTask {
                 bigNvalue = new Integer(mapBigN.get(id).toString());
                 bt = new BinomialDistribution(smallXvalue.intValue(), bigXvalue.intValue(), smallNvalue.intValue(),
                         bigNvalue.intValue());
-                binomialTestMap.put(id, bt.calculateBinomialDistribution());
+                significanceTestMap.put(id, bt.calculateBinomialDistribution());
 
                 // set progress
 
@@ -155,81 +130,6 @@ public class BinomialTestCalculate implements CalculateTestTask {
         } catch (InterruptedException e) {
             LOGGER.log(Level.ERROR, "Binomial P-value calculation cancelled " + e);
         }
-    }
-
-    /*--------------------------------------------------------------
-      GETTERS.
-    --------------------------------------------------------------*/
-
-    /**
-     * getter for the binomial test map.
-     *
-     * @return HashMap binomialTestMap
-     */
-    public HashMap getTestMap() {
-
-        return binomialTestMap;
-    }
-
-    /**
-     * getter for mapSmallX.
-     *
-     * @return HashMap mapSmallX
-     */
-    public HashMap getMapSmallX() {
-
-        return mapSmallX;
-    }
-
-    /**
-     * getter for mapSmallN.
-     *
-     * @return HashMap mapSmallN
-     */
-    public HashMap getMapSmallN() {
-
-        return mapSmallN;
-    }
-
-    public HashMap getMapBigX() {
-
-        return mapBigX;
-    }
-
-    public HashMap getMapBigN() {
-
-        return mapBigN;
-    }
-
-
-    /**
-     * Run the Task.
-     */
-    public void run() {
-
-        calculate();
-    }
-
-    /**
-     * Non-blocking call to interrupt the task.
-     */
-    public void halt() {
-
-        this.interrupted = true;
-    }
-
-    /**
-     * Gets the Task Title.
-     *
-     * @return human readable task title.
-     */
-    public String getTitle() {
-
-        return new String("Calculating Binomial Distribution");
-    }
-
-    public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

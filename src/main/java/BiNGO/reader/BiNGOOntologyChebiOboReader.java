@@ -11,24 +11,45 @@ import cytoscape.data.annotation.OntologyTerm;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
+ * Reads the ChEBI Ontology Obo file. It requires InChIs to asses whether an entry is a molecule or not.
+ * 
  * @author pmoreno
  */
 public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
 
-    public BiNGOOntologyChebiOboReader(File file,
+    /**
+     * Initializes the reader with the given ChEBI obo file.
+     * 
+     * @param chebiOboFile
+     * @param namespace
+     * @throws IllegalArgumentException
+     * @throws IOException
+     * @throws Exception 
+     */
+    public BiNGOOntologyChebiOboReader(File chebiOboFile,
                                        String namespace) throws IllegalArgumentException, IOException, Exception {
 
-        this(file.getPath(), namespace);
+        this(chebiOboFile.getPath(), namespace);
     }
 
-    public BiNGOOntologyChebiOboReader(String filename,
+    /**
+     * Initializes the reader with the given ChEBI obo file name (path).
+     * @param chebiOboFileName
+     * @param namespace
+     * @throws IllegalArgumentException
+     * @throws IOException
+     * @throws Exception 
+     */
+    public BiNGOOntologyChebiOboReader(String chebiOboFileName,
                                        String namespace) throws IllegalArgumentException, IOException, Exception {
 
-        super(filename, namespace);
+        super(chebiOboFileName, namespace);
     }
 
+    @Override
     protected int parseHeader() throws Exception {
 
         int i = 0;
@@ -39,9 +60,9 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
         ontologyType = "unknown";
         return i;
 
-    } // parseHeader
-//-------------------------------------------------------------------------
+    } 
 
+    @Override
     protected void parse(int c) throws Exception {
 
         ontology = new Ontology(curator, ontologyType);
@@ -51,14 +72,15 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
             i++;
             String name = new String();
             String id = new String();
-            HashSet<String> namespaces = new HashSet<String>();
-            HashSet<String> alt_id = new HashSet<String>();
-            HashSet<String> is_a = new HashSet<String>();
-            //HashSet<String> part_of = new HashSet<String>();
-            HashSet<String> has_part = new HashSet<String>();
-            HashSet<String> has_role = new HashSet<String>();
+            // TODO we can remove this set
+            Set<String> namespaceSet = new HashSet<String>();
+            Set<String> alt_id = new HashSet<String>();
+            Set<String> is_a = new HashSet<String>();            
+            Set<String> has_part = new HashSet<String>();
+            Set<String> has_role = new HashSet<String>();
             boolean obsolete = false;
             boolean molecule=false;
+            // TODO we should change this for a buffered strategy.
             while (i < lines.length && !lines[i].trim().equals("[Term]") && !lines[i].trim().equals("[Typedef]") && !lines[i].trim().startsWith("!")) {
                 if (!lines[i].trim().isEmpty()) {
                     String ref = lines[i].substring(0, lines[i].indexOf(":")).trim();
@@ -66,9 +88,9 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                     if (ref.equals("name")) {
                         name = value.trim();
                     } else if (ref.equals("namespace")) {
-                        namespaces.add(value.trim());
+                        namespaceSet.add(value.trim());
                     } else if (ref.equals("subset")) {
-                        namespaces.add(value.trim());
+                        namespaceSet.add(value.trim());
                     } else if (ref.equals("id")) {
                         id = value.trim().substring(value.indexOf(":") + 1);
                     } else if (ref.equals("alt_id")) {
@@ -76,15 +98,11 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                     } else if (ref.equals("is_a")) {
                         is_a.add(value.split("!")[0].trim().substring(value.indexOf(":") + 1));
                     } else if (ref.equals("relationship")) {
-                        //if(value.startsWith("part_of")){
-                        //    part_of.add(value.substring(7).split("!")[0].trim().substring(value.indexOf(":")+1));
-                        //}
                         if (value.startsWith("has_part")) {
                             has_part.add(value.substring(value.indexOf(":") + 1));
                         } else if (value.startsWith("has_role")) {
                             has_role.add(value.substring(value.indexOf(":") + 1));
                         }
-
                     } else if (ref.equals("is_obsolete")) {
                         if (value.trim().equals("true")) {
                             obsolete = true;
@@ -95,9 +113,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                 }
                 i++;
             }
-            if (obsolete == false && !id.isEmpty()) {
-                //for (String n : this.namespaces) {
-                //if (n.equals(BingoAlgorithm.NONE) || namespaces.contains(n)) {
+            if (obsolete == false && !id.isEmpty()) {                
                 // For the ChEBI namespace
                 Integer id2 = new Integer(id);
                 synonymHash.put(id2, id2);
@@ -119,7 +135,8 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                 for (String s : has_role) {
                     term.addContainer(new Integer(s));
                 }
-                for (String s : has_part) { // elements in has part
+                for (String s : has_part) { 
+                    // elements in has part
                     // are sub parts of the term that we are looking
                     // for. Hence, we get the "smaller" term and
                     // add the current term as a container for it.

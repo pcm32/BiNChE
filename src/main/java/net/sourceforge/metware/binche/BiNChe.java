@@ -42,13 +42,13 @@ public class BiNChe {
 	private BingoParameters params;
 	private BingoAlgorithm algorithm;
 	private final String NONE = BingoAlgorithm.NONE;
-	private HashMap<Integer, String> testMap;
-	private HashMap<String, String> correctionMap = null;
-	private HashMap<Integer, String> mapSmallX = null;
-	private HashMap<Integer, String> mapSmallN = null;
-	private HashMap<Integer, String> mapBigX = null;
-	private HashMap<Integer, String> mapBigN = null;
-	private HashMap<String, HashSet<String>> classifiedEntities = null;
+	private Map<Integer, String> testMap;
+	private Map<String, String> correctionMap = null;
+	private Map<Integer, String> mapSmallX = null;
+	private Map<Integer, String> mapSmallN = null;
+	private Map<Integer, String> mapBigX = null;
+	private Map<Integer, String> mapBigN = null;
+	private Map<String, Set<String>> classifiedEntities = null;
 
 	private Map<Integer, Double> pValueMap;
 
@@ -121,7 +121,7 @@ public class BiNChe {
 		return pValueMap;
 	}
 
-	public HashMap<String, HashSet<String>> getClassifiedEntities() {
+	public Map<String, Set<String>> getClassifiedEntities() {
 
 		return classifiedEntities;
 	}
@@ -131,7 +131,7 @@ public class BiNChe {
 		return params.getOntology();
 	}
 
-	public HashSet<String> getNodes() {
+	public Set<String> getNodes() {
 
 		return params.getSelectedNodes();
 	}
@@ -146,7 +146,7 @@ public class BiNChe {
 		return Double.parseDouble(testMap.get(categoryID));
 	}
 
-	public HashSet<String> getElementsInCategory(Integer categoryID) {
+	public Set<String> getElementsInCategory(Integer categoryID) {
 
 		return this.classifiedEntities.get(categoryID + "");
 	}
@@ -163,11 +163,11 @@ public class BiNChe {
 
 	private void computeElementsPerCategory() {
 
-		this.classifiedEntities = new HashMap<String, HashSet<String>>();
+		this.classifiedEntities = new HashMap<String, Set<String>>();
 		Iterator it2 = params.getSelectedNodes().iterator();
 		while (it2.hasNext()) {
 			String name = it2.next() + "";
-			HashSet tmp = params.getAlias().get(name);
+			Set tmp = params.getAlias().get(name);
 			if (tmp != null) {
 				Iterator it = tmp.iterator();
 				while (it.hasNext()) {
@@ -218,11 +218,11 @@ public class BiNChe {
 	 * Alternative method to be used by the web-app, 
 	 * because the chebi ids (and weights, if present) input by the user will be passed in the form of a HashMap 
 	 */
-	public void loadDesiredElementsForEnrichmentFromInput(HashMap<String, String> input) throws IOException {
+	public void loadDesiredElementsForEnrichmentFromInput(Map<String, String> input) throws IOException {
 
 		String container = new String();
-		HashSet<String> inputNodes = new HashSet<String>();
-		HashMap<String, Double> inputWeights = new HashMap<String, Double>();
+		Set<String> inputNodes = new HashSet<String>();
+		Map<String, Double> inputWeights = new HashMap<String, Double>();
 
 		for (String chebiId : input.keySet()) {
 			container += chebiId.concat(input.get(chebiId));

@@ -80,7 +80,7 @@ public class ChebiGraph {
      * @param ontology  the parsed ontology
      * @param nodes     the set of input ChEBI ids
      */
-    public ChebiGraph(Map<Integer, Double> pValueMap, Ontology ontology, HashSet<String> nodes) {
+    public ChebiGraph(Map<Integer, Double> pValueMap, Ontology ontology, Set<String> nodes) {
 
         this.ontology = ontology;
         this.pValueMap = pValueMap;
@@ -88,7 +88,7 @@ public class ChebiGraph {
         this.gradient = new ColorGradient(pValueMap.values(),pValueThreshold);
 
         // extract numeral ChEBI ID
-        HashSet<String> nodesMod = new HashSet<String>();
+        Set<String> nodesMod = new HashSet<String>();
         for (String chebiId : nodes) {
             nodesMod.add(chebiId.split(":")[1]);
         }
@@ -105,7 +105,7 @@ public class ChebiGraph {
      * @param ontology  the parsed ontology
      * @param nodes     the set of input ChEBI ids
      */
-    private void populateGraph(Map<Integer, Double> pValueMap, Ontology ontology, HashSet<String> nodes) {
+    private void populateGraph(Map<Integer, Double> pValueMap, Ontology ontology, Set<String> nodes) {
 
         //graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
         graph = new DirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();

@@ -52,6 +52,7 @@ import cytoscape.data.readers.TextHttpReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 //-------------------------------------------------------------------------
 
 public class BiNGOOntologyDefaultReader {
@@ -61,16 +62,16 @@ public class BiNGOOntologyDefaultReader {
     String filename;
     String fullText;
     String [] lines;
-    HashMap synonymHash;
-    HashMap goMap;
+    Map synonymHash;
+    Map goMap;
 //-------------------------------------------------------------------------
 
-    public BiNGOOntologyDefaultReader(File file, HashMap synonymHash) throws IllegalArgumentException, IOException, Exception {
+    public BiNGOOntologyDefaultReader(File file, Map synonymHash) throws IllegalArgumentException, IOException, Exception {
         this(file.getPath(), synonymHash);
     }
 //-------------------------------------------------------------------------
 
-    public BiNGOOntologyDefaultReader(String filename, HashMap synonymHash) throws IllegalArgumentException, IOException, Exception {
+    public BiNGOOntologyDefaultReader(String filename, Map synonymHash) throws IllegalArgumentException, IOException, Exception {
         this.filename = filename;
         this.synonymHash = synonymHash;
         try {
@@ -205,7 +206,7 @@ public class BiNGOOntologyDefaultReader {
         return ontology;
     }
 
-    public HashMap getSynonymHash() {
+    public Map getSynonymHash() {
         return synonymHash;
     }
 

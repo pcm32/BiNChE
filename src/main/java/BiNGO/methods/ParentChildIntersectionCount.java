@@ -32,7 +32,6 @@ package BiNGO.methods;
  * * Date: Nov.29.2007
  * * Description: class that counts the small n, big N, small x, big X which serve as input for the statistical tests.     
  **/
-
 import BiNGO.interfaces.DistributionCount;
 import cytoscape.data.annotation.Annotation;
 import cytoscape.data.annotation.Ontology;
@@ -41,69 +40,64 @@ import cytoscape.task.TaskMonitor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ************************************************************
- * ParentChildIntersectionCount.java   Steven Maere (c) Nov 2007
- * ----------------------
+ * ParentChildIntersectionCount.java Steven Maere (c) Nov 2007 ----------------------
  * <p/>
- * class that counts the small n, big N, small x, big X which serve as input for the parent-child intersection conditional hypergeometric test (Grossmann et al. Bioinformatics 2007).
+ * class that counts the small n, big N, small x, big X which serve as input for the parent-child intersection
+ * conditional hypergeometric test (Grossmann et al. Bioinformatics 2007).
  * *************************************************************
  */
-
-
 public class ParentChildIntersectionCount implements DistributionCount {
 
     /*--------------------------------------------------------------
-    FIELDS.
-    --------------------------------------------------------------*/
-
+     FIELDS.
+     --------------------------------------------------------------*/
     /**
      * the annotation.
      */
-    private static Annotation annotation;
+    private Annotation annotation;
     /**
      * the ontology.
      */
-    private static Ontology ontology;
-
-    private static HashMap<String, HashSet<String>> alias;
+    private Ontology ontology;
+    private Map<String, Set<String>> alias;
     /**
      * HashSet of selected nodes
      */
-    private static HashSet selectedNodes;
+    private Set selectedNodes;
     /**
      * HashSet of reference nodes
      */
-    private static HashSet refNodes;
+    private Set refNodes;
     /**
      * hashmap with values of small n ; keys GO labels.
      */
-    private static HashMap mapSmallN;
+    private Map mapSmallN;
     /**
      * hashmap with values of small x ; keys GO labels.
      */
-    private static HashMap mapSmallX;
+    private Map mapSmallX;
     /**
      * int containing value for big N.
      */
-    private static HashMap mapBigN;
+    private Map mapBigN;
     /**
      * int containing value for big X.
      */
-    private static HashMap mapBigX;
-
+    private Map mapBigX;
     // Keep track of progress for monitoring:
     private int maxValue;
     private boolean interrupted = false;
 
     /*--------------------------------------------------------------
-    CONSTRUCTOR.
-    --------------------------------------------------------------*/
-
-    public ParentChildIntersectionCount(Annotation annotation, Ontology ontology, HashSet selectedNodes,
-                                        HashSet refNodes, HashMap alias) {
+     CONSTRUCTOR.
+     --------------------------------------------------------------*/
+    public ParentChildIntersectionCount(Annotation annotation, Ontology ontology, Set selectedNodes,
+            Set refNodes, Map alias) {
 
         this.annotation = annotation;
         this.ontology = ontology;
@@ -115,19 +109,17 @@ public class ParentChildIntersectionCount implements DistributionCount {
     }
 
     /*--------------------------------------------------------------
-      METHODS.
-    --------------------------------------------------------------*/
-
+     METHODS.
+     --------------------------------------------------------------*/
     /**
      * method for compiling GO classifications for given node
      */
-
-
-    public HashSet getNodeClassifications(String node) {
+    @Override
+    public Set getNodeClassifications(String node) {
 
         // HashSet for the classifications of a particular node
-        HashSet classifications = new HashSet();
-        HashSet identifiers = alias.get(node + "");
+        Set classifications = new HashSet();
+        Set identifiers = alias.get(node + "");
         if (identifiers != null) {
             Iterator it = identifiers.iterator();
             while (it.hasNext()) {
@@ -146,44 +138,44 @@ public class ParentChildIntersectionCount implements DistributionCount {
      * method for recursing through tree to root
      */
 
-/*  public void up (int goID, HashSet classifications){	
-	    OntologyTerm child  = ontology.getTerm(goID);	
-		  int [] parents =  child.getParentsAndContainers ();	
-			for(int t = 0; t < parents.length; t++){
-				classifications.add(parents[t] + "");
-				up(parents[t],classifications);
-			}	
-	}
-*/
-
+    /*  public void up (int goID, HashSet classifications){	
+     OntologyTerm child  = ontology.getTerm(goID);	
+     int [] parents =  child.getParentsAndContainers ();	
+     for(int t = 0; t < parents.length; t++){
+     classifications.add(parents[t] + "");
+     up(parents[t],classifications);
+     }	
+     }
+     */
     /**
      * method for making the hashmap for small n.
      */
+    @Override
     public void countSmallN() {
 
         mapSmallN = this.count(refNodes);
     }
 
-
     /**
      * method for making the hashmap for the small x.
      */
+    @Override
     public void countSmallX() {
 
         mapSmallX = this.count(selectedNodes);
     }
 
-
     /**
      * method that counts for small n and small x.
      */
-    public HashMap count(HashSet nodes) {
+    @Override
+    public Map count(Set nodes) {
 
         HashMap map = new HashMap();
 
         Iterator i = nodes.iterator();
         while (i.hasNext()) {
-            HashSet classifications = getNodeClassifications(i.next().toString());
+            Set classifications = getNodeClassifications(i.next().toString());
             Iterator iterator = classifications.iterator();
             Integer id;
 
@@ -205,6 +197,7 @@ public class ParentChildIntersectionCount implements DistributionCount {
     /**
      * counts big N.
      */
+    @Override
     public void countBigN() {
 
         mapBigN = new HashMap();
@@ -212,7 +205,7 @@ public class ParentChildIntersectionCount implements DistributionCount {
             int[] parents = this.ontology.getTerm(((Integer) id).intValue()).getParentsAndContainers();
             int bigN = 0;
             for (Object i : this.refNodes) {
-                HashSet classifications = getNodeClassifications(i.toString());
+                Set classifications = getNodeClassifications(i.toString());
                 boolean ok = true;
                 for (int j : parents) {
                     if (!classifications.contains(j + "")) {
@@ -230,6 +223,7 @@ public class ParentChildIntersectionCount implements DistributionCount {
     /**
      * counts big X.
      */
+    @Override
     public void countBigX() {
 
         mapBigX = new HashMap();
@@ -237,7 +231,7 @@ public class ParentChildIntersectionCount implements DistributionCount {
             int[] parents = this.ontology.getTerm(((Integer) id).intValue()).getParentsAndContainers();
             int bigX = 0;
             for (Object i : this.selectedNodes) {
-                HashSet classifications = getNodeClassifications(i.toString());
+                Set classifications = getNodeClassifications(i.toString());
                 boolean ok = true;
                 for (int j : parents) {
                     if (!classifications.contains(j + "")) {
@@ -253,10 +247,10 @@ public class ParentChildIntersectionCount implements DistributionCount {
     }
 
     /*--------------------------------------------------------------
-      GETTERS.
-    --------------------------------------------------------------*/
-
-    public HashMap getTestMap() {
+     GETTERS.
+     --------------------------------------------------------------*/
+    @Override
+    public Map getTestMap() {
 
         return mapSmallX;
     }
@@ -266,7 +260,8 @@ public class ParentChildIntersectionCount implements DistributionCount {
      *
      * @return hashmap mapSmallN
      */
-    public HashMap getMapSmallN() {
+    @Override
+    public Map getMapSmallN() {
 
         return mapSmallN;
     }
@@ -276,7 +271,8 @@ public class ParentChildIntersectionCount implements DistributionCount {
      *
      * @return hashmap mapSmallX
      */
-    public HashMap getMapSmallX() {
+    @Override
+    public Map getMapSmallX() {
 
         return mapSmallX;
     }
@@ -286,7 +282,8 @@ public class ParentChildIntersectionCount implements DistributionCount {
      *
      * @return int bigN
      */
-    public HashMap getMapBigN() {
+    @Override
+    public Map getMapBigN() {
 
         return mapBigN;
     }
@@ -296,11 +293,13 @@ public class ParentChildIntersectionCount implements DistributionCount {
      *
      * @return int bigX.
      */
-    public HashMap getMapBigX() {
+    @Override
+    public Map getMapBigX() {
 
         return mapBigX;
     }
 
+    @Override
     public void calculate() {
 
         countSmallX();
@@ -312,6 +311,7 @@ public class ParentChildIntersectionCount implements DistributionCount {
     /**
      * Run the Task.
      */
+    @Override
     public void run() {
 
         calculate();
@@ -320,28 +320,32 @@ public class ParentChildIntersectionCount implements DistributionCount {
     /**
      * Non-blocking call to interrupt the task.
      */
+    @Override
     public void halt() {
 
         this.interrupted = true;
     }
 
+    @Override
     public String getTitle() {
 
-        return new String("Counting genes in GO categories...");
+        return "Counting genes in GO categories...";
     }
 
-    public HashMap<String, Double> getWeights() {
+    @Override
+    public Map<String, Double> getWeights() {
 
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public HashMap<Integer, Double> getMapWeights() {
+    @Override
+    public Map<Integer, Double> getMapWeights() {
 
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

@@ -45,9 +45,9 @@ public class BingoParameters {
     private Annotation annotation;
     private Ontology ontology;
     private String namespace;
-    private HashSet deleteCodes;
-    private HashMap<String,HashSet<String>> alias;
-    private HashMap<String,Double> weights;
+    private Set deleteCodes;
+    private Map<String,Set<String>> alias;
+    private Map<String,Double> weights;
 
     private AnnotationParser annParser;
     //indicates whether we are using the default files (if false then we are using
@@ -74,8 +74,8 @@ public class BingoParameters {
     private boolean status = false;
 
     //stores list of selected nodes and the all nodes in the reference set
-    private HashSet selectedNodes;
-    private HashSet allNodes;
+    private Set selectedNodes;
+    private Set allNodes;
 
     public BingoParameters(String bingoDir) throws IOException {
 
@@ -323,7 +323,7 @@ public class BingoParameters {
         return annParser;
     }
 
-    public HashSet getDeleteCodes(){
+    public Set getDeleteCodes(){
         return deleteCodes;
     }
     
@@ -346,7 +346,7 @@ public class BingoParameters {
         return ontologyHash;
     }
     
-    public HashMap<String,HashSet<String>> getAlias(){
+    public Map<String,Set<String>> getAlias(){
         return alias;
     }
 
@@ -450,11 +450,11 @@ public class BingoParameters {
         return significance;
     }
 
-    public HashSet getSelectedNodes() {
+    public Set getSelectedNodes() {
         return selectedNodes;
     }
 
-    public HashSet getAllNodes() {
+    public Set getAllNodes() {
         return allNodes;
     }
     
@@ -466,11 +466,11 @@ public class BingoParameters {
         this.allNodes = allNodes;
     }
 
-    public void setSelectedNodes(HashSet selectedNodes) {
+    public void setSelectedNodes(Set selectedNodes) {
         this.selectedNodes = selectedNodes;
     }
     
-    public void setWeights(HashMap<String,Double> weights){
+    public void setWeights(Map<String, Double> weights){
         this.weights=weights;   
     }
     
@@ -551,7 +551,7 @@ public class BingoParameters {
         this.namespace = namespace;
     }
     
-    public void setAlias(HashMap alias){
+    public void setAlias(Map alias){
         this.alias = alias;
     }
     
@@ -578,7 +578,7 @@ public class BingoParameters {
     /**
      * This function retrieves the weights/score.
      */
-    public HashMap<String, Double> getWeights() {
+    public Map<String, Double> getWeights() {
         return this.weights;
     }
 }

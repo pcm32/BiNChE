@@ -10,6 +10,7 @@ import BiNGO.methods.hypergeometric.HypergeometricTestCalculateUnder;
 import BiNGO.methods.saddlesum.SaddleSumTestCalculate;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by
@@ -119,8 +120,8 @@ public class BingoAlgorithm {
         return test;
     }
 
-    public CalculateCorrectionTask calculate_corrections(HashMap testMap) {
-        HashMap correctionMap = null;
+    public CalculateCorrectionTask calculate_corrections(Map testMap) {
+        Map correctionMap = null;
         CalculateCorrectionTask correction = null;
 
         if (params.getCorrection().equals(NONE)){

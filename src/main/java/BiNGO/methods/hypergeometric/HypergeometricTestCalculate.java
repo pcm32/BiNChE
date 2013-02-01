@@ -35,6 +35,7 @@ package BiNGO.methods.hypergeometric;
 
 import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.interfaces.DistributionCount;
+import BiNGO.methods.AbstractCalculateTestTask;
 import cytoscape.task.TaskMonitor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -55,7 +56,7 @@ import java.util.Iterator;
  * *************************************************************
  */
 
-public class HypergeometricTestCalculate implements CalculateTestTask {
+public class HypergeometricTestCalculate extends AbstractCalculateTestTask implements CalculateTestTask {
 
     /*--------------------------------------------------------------
     FIELDS.
@@ -65,31 +66,6 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
      * logger (replacement for cyto's task monitor)
      */
     private static final Logger LOGGER = Logger.getLogger(HypergeometricTestCalculate.class);
-
-    /**
-     * hashmap with as values the values of small n ; keys = GO labels.
-     */
-    private static HashMap mapSmallN;
-    /**
-     * hashmap with as values the values of small x ; keys = GO labels.
-     */
-    private static HashMap mapSmallX;
-    /**
-     * hashmap containing values for big N.
-     */
-    private static HashMap mapBigN;
-    /**
-     * hashmap containing values for big X.
-     */
-    private static HashMap mapBigX;
-    /**
-     * hashmap with the hypergeometric distribution results as values ; keys = GO labels
-     */
-    private static HashMap hypergeometricTestMap;
-
-    // Keep track of progress for monitoring:
-    private int maxValue;
-    private boolean interrupted = false;
 
     /*--------------------------------------------------------------
     CONSTRUCTOR.
@@ -107,6 +83,7 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
         this.mapBigN = dc.getMapBigN();
         this.mapBigX = dc.getMapBigX();
         this.maxValue = mapSmallX.size();
+        this.title = "Calculating Hypergeometric Distribution";
 
     }
 
@@ -117,10 +94,11 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
     /**
      * method that redirects the calculation of hypergeometric distribution.
      */
+    @Override
     public void calculate() {
 
         HypergeometricDistribution hd;
-        hypergeometricTestMap = new HashMap();
+        significanceTestMap = new HashMap();
 
         HashSet set = new HashSet(mapSmallX.keySet());
         Iterator iterator = set.iterator();
@@ -139,7 +117,7 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
                 bigNvalue = new Integer(mapBigN.get(id).toString());
                 hd = new HypergeometricDistribution(smallXvalue.intValue(), bigXvalue.intValue(),
                         smallNvalue.intValue(), bigNvalue.intValue());
-                hypergeometricTestMap.put(id, hd.calculateHypergDistr());
+                significanceTestMap.put(id, hd.calculateHypergDistr());
 
                 // set progress
 
@@ -157,73 +135,6 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
       GETTERS.
     --------------------------------------------------------------*/
 
-    /**
-     * getter for the hypergeometric test map.
-     *
-     * @return HashMap hypergeometricTestMap
-     */
-    public HashMap getTestMap() {
-
-        return hypergeometricTestMap;
-    }
-
-    /**
-     * getter for the mapSmallX.
-     *
-     * @return HashMap mapSmallX
-     */
-    public HashMap getMapSmallX() {
-
-        return mapSmallX;
-    }
-
-    /**
-     * getter for the mapSmallN.
-     *
-     * @return HashMap mapSmallN
-     */
-    public HashMap getMapSmallN() {
-
-        return mapSmallN;
-    }
-
-
-    public HashMap getMapBigX() {
-
-        return mapBigX;
-    }
-
-
-    public HashMap getMapBigN() {
-
-        return mapBigN;
-    }
-
-    /**
-     * Run the Task.
-     */
-    public void run() {
-
-        calculate();
-    }
-
-    /**
-     * Non-blocking call to interrupt the task.
-     */
-    public void halt() {
-
-        this.interrupted = true;
-    }
-
-    /**
-     * Gets the Task Title.
-     *
-     * @return human readable task title.
-     */
-    public String getTitle() {
-
-        return new String("Calculating Hypergeometric Distribution");
-    }
 
     public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
         //throw new UnsupportedOperationException("Not supported yet.");

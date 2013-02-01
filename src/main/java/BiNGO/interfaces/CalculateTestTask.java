@@ -35,7 +35,7 @@ package BiNGO.interfaces;
 
 import cytoscape.task.Task;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Classes that perform statistical tests can implement this interface
@@ -46,14 +46,14 @@ import java.util.HashMap;
 public interface CalculateTestTask extends Task {
 
     //implement for statistical tests
-    public HashMap getTestMap();
+    public Map getTestMap();
 
-    public HashMap getMapSmallX();
+    public Map getMapSmallX();
 
-    public HashMap getMapSmallN();
+    public Map getMapSmallN();
 
-    public HashMap getMapBigX();
+    public Map getMapBigX();
 
-    public HashMap getMapBigN();
+    public Map getMapBigN();
 
 }//class CalculateTestTask

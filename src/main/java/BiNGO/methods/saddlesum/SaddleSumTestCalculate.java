@@ -7,57 +7,32 @@ package BiNGO.methods.saddlesum;
 
 import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.interfaces.DistributionCount;
+import BiNGO.methods.AbstractCalculateTestTask;
 import cytoscape.task.TaskMonitor;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 //import java.lang.Math;
 
 /**
  *
  * @author pmoreno
  */
-public class SaddleSumTestCalculate implements CalculateTestTask {
+public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements CalculateTestTask {
 
-    /**
-     * hashmap with as values the values of small n ; keys = GO labels.
-     */
-    private HashMap mapSmallN;
-    /**
-     * hashmap with as values the values of small x ; keys = GO labels.
-     */
-    private HashMap mapSmallX;
-    /**
-     * hashmap containing values for big N.
-     */
-    private HashMap mapBigN;
-    /**
-     * hashmap containing values for big X.
-     */
-    private HashMap mapBigX;
-    /**
-     * hashmap with the hypergeometric distribution results as values ; keys = GO labels
-     */
-    private HashMap saddleSumTestMap;
 
-    private HashMap<String, Double> weights;
-    private HashMap<Integer,Double> mapWeightSum;
+    private Map<String, Double> weights;
+    private Map<Integer,Double> mapWeightSum;
     
    // private HashMap<Integer, Double> mapD1K;  //? notwendig
    // private HashMap<Integer, Double> mapD2K;  //?
     
-    private HashMap<Integer, Double> lambdas;
-    private HashMap<Integer, Double> pVal;
+    private Map<Integer, Double> lambdas;
+    private Map<Integer, Double> pVal;
    // private HashMap<Integer, Double> zs;
-    
-    
-    
-
-    // Keep track of progress for monitoring:
-    private int maxValue;
-    private boolean interrupted = false;
 
     /**
      * constructor with as argument the selected cluster and the
@@ -71,16 +46,18 @@ public class SaddleSumTestCalculate implements CalculateTestTask {
         this.mapBigX = dc.getMapBigX();         //notwendig?
         this.maxValue = mapSmallX.size();
         weights = dc.getWeights();
-        mapWeightSum = dc.getMapWeights();        
+        mapWeightSum = dc.getMapWeights(); 
+        this.title = "Calculating Saddle Sum Test";
     }
 
     /**
      * method that redirects the calculation of hypergeometric distribution.
      */
+    @Override
     public void calculate() {
 
         SaddleSumDistribution hd;
-        saddleSumTestMap = new HashMap();
+        significanceTestMap = new HashMap();
         
         //System.out.print(mapSmallX.size());
         
@@ -95,12 +72,6 @@ public class SaddleSumTestCalculate implements CalculateTestTask {
         Integer bigXvalue;
         Integer bigNvalue;
         int currentProgress = 0;
-        
-//        System.out.println(mapSmallX);
-//        System.out.println(mapSmallX.size());
-//        System.out.println(mapWeightSum);
-//        System.out.println(mapWeightSum.size());
-        //System.out.println(mapSmallN.get(36342));
         
         
         iterateNewton();
@@ -354,46 +325,10 @@ public class SaddleSumTestCalculate implements CalculateTestTask {
             pVal.put(id,pValue);}
            
         }
-        
-//        System.out.println("pVal:\t"+pVal);
-//        System.out.println(pVal.size());
-        
     }
 
-    public HashMap getTestMap() {
-        return saddleSumTestMap;
-    }
-
-    public HashMap getMapSmallX() {
-        return this.mapSmallX;
-    }
-
-    public HashMap getMapSmallN() {
-        return this.mapSmallN;
-    }
-
-    public HashMap getMapBigX() {
-        return this.mapBigX;
-    }
-
-    public HashMap getMapBigN() {
-        return this.mapBigN;
-    }
-
-    public HashMap<Integer, Double> getPValueMap() {
+    public Map<Integer, Double> getPValueMap() {
         return this.pVal;
-    }
-
-    public void run() {
-       calculate();
-    }
-
-    public void halt() {
-        this.interrupted = true;
-    }
-
-    public String getTitle() {
-        return new String("Calculating SaddleSum Test");
     }
 
     public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {

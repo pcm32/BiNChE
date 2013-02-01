@@ -49,6 +49,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 //-------------------------------------------------------------------------
 
 public class BiNGOAnnotationFlatFileReader {
@@ -60,8 +62,8 @@ public class BiNGOAnnotationFlatFileReader {
     private File directoryAbsolute;
     private String fullText;
     private String [] lines;
-    private HashMap synonymHash;
-    private HashMap<String,HashSet<String>> alias;
+    private Map synonymHash;
+    private Map<String,Set<String>> alias;
     private FileWriter orphansFile;
     /**
      * true if there are categories in the annotation which are not defined in the ontology
@@ -73,12 +75,12 @@ public class BiNGOAnnotationFlatFileReader {
     private boolean consistency = false;
 //-------------------------------------------------------------------------
 
-    public BiNGOAnnotationFlatFileReader(File file, HashMap synonymHash) throws IllegalArgumentException, IOException, Exception {
+    public BiNGOAnnotationFlatFileReader(File file, Map synonymHash) throws IllegalArgumentException, IOException, Exception {
         this(file.getPath(), synonymHash);
     }
 //-------------------------------------------------------------------------
 
-    public BiNGOAnnotationFlatFileReader(String filename, HashMap synonymHash) throws IllegalArgumentException, IOException, Exception {
+    public BiNGOAnnotationFlatFileReader(String filename, Map synonymHash) throws IllegalArgumentException, IOException, Exception {
         //System.out.println ("AnnotationFlatFileReader on " + filename);
         this.filename = filename;
 
@@ -212,7 +214,7 @@ public class BiNGOAnnotationFlatFileReader {
         return annotation;
     }
     
-    public HashMap getAlias(){
+    public Map getAlias(){
         return alias;
     }
 
