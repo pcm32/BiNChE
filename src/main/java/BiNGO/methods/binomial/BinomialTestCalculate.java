@@ -108,7 +108,6 @@ public class BinomialTestCalculate extends AbstractCalculateTestTask implements 
         Integer smallNvalue;
         Integer bigXvalue;
         Integer bigNvalue;
-        int currentProgress = 0;
         try {
             while (iterator.hasNext()) {
                 id = new Integer(iterator.next().toString());

@@ -65,7 +65,7 @@ public class ParameterFactory {
 		BingoParameters parametersSaddle = new BingoParameters();
 
 		parametersSaddle.setTest(BingoAlgorithm.SADDLESUM);
-		parametersSaddle.setCorrection(BingoAlgorithm.NONE);
+		parametersSaddle.setCorrection(BingoAlgorithm.BENJAMINI_HOCHBERG_FDR);
 		parametersSaddle.setOntologyFile(ontologyFile);
 		parametersSaddle.setOntology_default(false);
 		parametersSaddle.setNameSpace("chebi_ontology");
@@ -84,7 +84,7 @@ public class ParameterFactory {
     	BingoParameters parametersSaddle = new BingoParameters();
 
     	parametersSaddle.setTest(BingoAlgorithm.SADDLESUM);
-    	parametersSaddle.setCorrection(BingoAlgorithm.NONE);
+    	parametersSaddle.setCorrection(BingoAlgorithm.BENJAMINI_HOCHBERG_FDR);
     	parametersSaddle.setOntologyFile(ontologyFile);
     	parametersSaddle.setOntology_default(false);
     	parametersSaddle.setNameSpace("chebi_ontology");

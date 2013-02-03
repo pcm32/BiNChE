@@ -94,9 +94,9 @@ public class BiNChe {
 			for (String id : correctionMap.keySet()) {
 				pValueMap.put(Integer.valueOf(id), Double.valueOf(correctionMap.get(id)));
 			}
-		} else {
-			pValueMap = ((SaddleSumTestCalculate) test).getPValueMap();
-		}
+		} //else {
+		//	pValueMap = ((SaddleSumTestCalculate) test).getPValueMap();
+		//}
 		System.out.println("Got result size after correction/weighted test: "+pValueMap.size());
 
 		// these hashMaps contain the results, where the Keys are the different categories (ie. a ChEBI entry or a
