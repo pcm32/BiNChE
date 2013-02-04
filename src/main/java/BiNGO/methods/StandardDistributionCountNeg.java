@@ -42,6 +42,8 @@ import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -68,36 +70,36 @@ public class StandardDistributionCountNeg implements DistributionCount {
     /**
      * the annotation.
      */
-    private static Annotation annotation;
+    private Annotation annotation;
     /**
      * the ontology.
      */
-    private static Ontology ontology;
-    private static HashMap<String, HashSet<String>> alias;
+    private Ontology ontology;
+    private Map<String, HashSet<String>> alias;
     /**
      * HashSet of selected nodes
      */
-    private static HashSet selectedNodes;
+    private Set selectedNodes;
     /**
      * HashSet of reference nodes
      */
-    private static HashSet refNodes;
+    private Set refNodes;
     /**
      * hashmap with values of small n ; keys GO labels.
      */
-    private static HashMap mapSmallN;
+    private Map mapSmallN;
     /**
      * hashmap with values of small x ; keys GO labels.
      */
-    private static HashMap mapSmallX;
+    private Map mapSmallX;
     /**
      * hashmap with values for big N.
      */
-    private static HashMap mapBigN;
+    private Map mapBigN;
     /**
      * hashmap with values for big X.
      */
-    private static HashMap mapBigX;
+    private Map mapBigX;
 
     // Keep track of progress for monitoring:
     private int maxValue;
@@ -107,8 +109,8 @@ public class StandardDistributionCountNeg implements DistributionCount {
     CONSTRUCTOR.
     --------------------------------------------------------------*/
 
-    public StandardDistributionCountNeg(Annotation annotation, Ontology ontology, HashSet selectedNodes,
-                                        HashSet refNodes, HashMap alias) {
+    public StandardDistributionCountNeg(Annotation annotation, Ontology ontology, Set selectedNodes,
+                                        Set refNodes, Map alias) {
 
         this.annotation = annotation;
         this.ontology = ontology;
@@ -127,7 +129,7 @@ public class StandardDistributionCountNeg implements DistributionCount {
      */
 
 
-    public HashSet getNodeClassifications(String node) {
+    public Set getNodeClassifications(String node) {
 
         // HashSet for the classifications of a particular node
         HashSet classifications = new HashSet();
@@ -151,7 +153,7 @@ public class StandardDistributionCountNeg implements DistributionCount {
      */
 
 
-    public HashSet getAllClassifications() {
+    public Set getAllClassifications() {
 
         HashSet classifications = new HashSet();
 
@@ -206,12 +208,12 @@ public class StandardDistributionCountNeg implements DistributionCount {
     /**
      * method that counts for small n and small x.
      */
-    public HashMap count(HashSet nodes) {
+    public Map count(Set nodes) {
 
         HashMap map = new HashMap();
         Integer id;
 
-        HashSet allClassifications = getAllClassifications();
+        Set allClassifications = getAllClassifications();
 
         Iterator iterator1 = allClassifications.iterator();
 
@@ -224,7 +226,7 @@ public class StandardDistributionCountNeg implements DistributionCount {
 
         Iterator i = nodes.iterator();
         while (i.hasNext()) {
-            HashSet classifications = getNodeClassifications(i.next().toString());
+            Set classifications = getNodeClassifications(i.next().toString());
 
             Iterator iterator = classifications.iterator();
 
@@ -248,7 +250,7 @@ public class StandardDistributionCountNeg implements DistributionCount {
         int bigN = refNodes.size();
         Iterator i = refNodes.iterator();
         while (i.hasNext()) {
-            HashSet classifications = getNodeClassifications(i.next().toString());
+            Set classifications = getNodeClassifications(i.next().toString());
             Iterator iterator = classifications.iterator();
             if (!iterator.hasNext()) {
                 bigN--;
@@ -268,7 +270,7 @@ public class StandardDistributionCountNeg implements DistributionCount {
         int bigX = selectedNodes.size();
         Iterator i = selectedNodes.iterator();
         while (i.hasNext()) {
-            HashSet classifications = getNodeClassifications(i.next().toString());
+            Set classifications = getNodeClassifications(i.next().toString());
             Iterator iterator = classifications.iterator();
             if (!iterator.hasNext()) {
                 bigX--;
@@ -282,7 +284,7 @@ public class StandardDistributionCountNeg implements DistributionCount {
     /*--------------------------------------------------------------
       GETTERS.
     --------------------------------------------------------------*/
-    public HashMap getTestMap() {
+    public Map getTestMap() {
 
         return mapSmallX;
     }
@@ -292,7 +294,7 @@ public class StandardDistributionCountNeg implements DistributionCount {
      *
      * @return hashmap mapSmallN
      */
-    public HashMap getMapSmallN() {
+    public Map getMapSmallN() {
 
         return mapSmallN;
     }
@@ -302,19 +304,19 @@ public class StandardDistributionCountNeg implements DistributionCount {
      *
      * @return hashmap mapSmallX
      */
-    public HashMap getMapSmallX() {
+    public Map getMapSmallX() {
 
         return mapSmallX;
     }
 
 
-    public HashMap getMapBigN() {
+    public Map getMapBigN() {
 
         return mapBigN;
     }
 
 
-    public HashMap getMapBigX() {
+    public Map getMapBigX() {
 
         return mapBigX;
     }

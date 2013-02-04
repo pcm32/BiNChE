@@ -36,7 +36,7 @@ package BiNGO.interfaces;
 
 import cytoscape.task.Task;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Classes that perform multiple testing corrections can implement this interface
@@ -53,7 +53,7 @@ public interface CalculateCorrectionTask extends Task {
 
     public String[] getOrdenedGOLabels();
 
-    public HashMap getCorrectionMap();
+    public Map getCorrectionMap();
 
 
 }//class CalculateCorrectionTask

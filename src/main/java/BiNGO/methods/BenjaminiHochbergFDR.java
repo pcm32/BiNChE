@@ -42,6 +42,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -65,37 +66,37 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
     /**
      * the GO labels that have been tested (constructor input).
      */
-    private static String [] goLabels;
+    private String [] goLabels;
     /**
      * the raw p-values that were given as input for the constructor, order corresponds to String [] goLabels.
      */
-    private static String [] pvalues;
+    private String [] pvalues;
     /**
      * the goLabels ordened according to the ordened pvalues.
      */
-    private static String [] ordenedGOLabels;
+    private String [] ordenedGOLabels;
     /**
      * the raw p-values ordened in ascending order.
      */
-    private static String [] ordenedPvalues;
+    private String [] ordenedPvalues;
     /**
      * the adjusted p-values ordened in ascending order.
      */
-    private static String [] adjustedPvalues;
+    private String [] adjustedPvalues;
 
     /**
      * hashmap with the results (adjusted p-values) as values and the GO labels as keys.
      */
-    private static HashMap correctionMap;
+    private Map correctionMap;
 
     /**
      * the significance level.
      */
-    private static BigDecimal alpha;
+    private BigDecimal alpha;
     /**
      * the number of tests.
      */
-    private static int m;
+    private int m;
     /**
      * scale for the division in de method 'runFDR'.
      */
@@ -118,27 +119,27 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
      * @param alpha             String with the desired significance level.
      */
 
-    public BenjaminiHochbergFDR(HashMap golabelstopvalues, String alpha) {
+    public BenjaminiHochbergFDR(Map golabelstopvalues, String alpha) {
         //Get all the go labels and their corresponding pvalues from the map
            
         Iterator iteratorGoLabelsSet = golabelstopvalues.keySet().iterator();
-        HashEntry [] hash = new HashEntry [golabelstopvalues.size()];
-        String [] pvalues = new String [golabelstopvalues.size()];
-        String [] goLabels = new String [golabelstopvalues.size()];
+        HashEntry [] tmpHash = new HashEntry [golabelstopvalues.size()];
+        String [] tmpPvalues = new String [golabelstopvalues.size()];
+        String [] tmpGoLabels = new String [golabelstopvalues.size()];
         for (int i = 0; iteratorGoLabelsSet.hasNext(); i++) {
-            goLabels[i] = iteratorGoLabelsSet.next().toString() ;
-            pvalues[i] = golabelstopvalues.get(new Integer(goLabels[i])).toString();
-            hash[i] = new HashEntry(goLabels[i], pvalues[i]) ;
+            tmpGoLabels[i] = iteratorGoLabelsSet.next().toString() ;
+            tmpPvalues[i] = golabelstopvalues.get(new Integer(tmpGoLabels[i])).toString();
+            tmpHash[i] = new HashEntry(tmpGoLabels[i], tmpPvalues[i]) ;
         }
-        this.hash = hash ;
-        this.pvalues = pvalues;
-        this.goLabels = goLabels;
+        this.hash = tmpHash ;
+        this.pvalues = tmpPvalues;
+        this.goLabels = tmpGoLabels;
         this.alpha = new BigDecimal(alpha);
-        this.m = pvalues.length;
+        this.m = tmpPvalues.length;
         this.adjustedPvalues = new String[m];
         this.correctionMap = null;
 
-        this.maxValue = pvalues.length;
+        this.maxValue = tmpPvalues.length;
     }
 
     public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
@@ -158,6 +159,7 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
     class HashComparator implements java.util.Comparator{
        /* public HashComparator(){        
         }*/
+        @Override
         public int compare(Object o1, Object o2){
             return (new BigDecimal(((HashEntry) o1).value)).compareTo(new BigDecimal(((HashEntry) o2).value)) ;
         }
@@ -225,7 +227,8 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
      *
      * @return HashMap correctionMap.
      */
-    public HashMap getCorrectionMap() {
+    @Override
+    public Map getCorrectionMap() {
         return correctionMap;
     }
 
@@ -234,6 +237,7 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
      *
      * @return String[] with the ordened p-values.
      */
+    @Override
     public String[] getOrdenedPvalues() {
         return ordenedPvalues;
     }
@@ -243,6 +247,7 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
      *
      * @return String[] with the adjusted p-values.
      */
+    @Override
     public String[] getAdjustedPvalues() {
         return adjustedPvalues;
     }
@@ -252,6 +257,7 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
      *
      * @return String[] with the ordened GOLabels.
      */
+    @Override
     public String[] getOrdenedGOLabels() {
         return ordenedGOLabels;
     }
@@ -260,6 +266,7 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
     /**
      * Run the Task.
      */
+    @Override
     public void run() {
         calculate();
     }
@@ -267,6 +274,7 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
     /**
      * Non-blocking call to interrupt the task.
      */
+    @Override
     public void halt() {
         this.interrupted = true;
     }
@@ -276,8 +284,9 @@ public class BenjaminiHochbergFDR implements CalculateCorrectionTask {
      *
      * @return human readable task title.
      */
+    @Override
     public String getTitle() {
-        return new String("Calculating FDR correction");
+        return "Calculating FDR correction";
     }
 
 

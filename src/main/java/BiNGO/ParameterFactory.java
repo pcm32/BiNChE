@@ -59,13 +59,32 @@ public class ParameterFactory {
 
         return parametersBinomial;
     }
+    
+    public static BingoParameters makeParametersForWeightedAnalysis(String ontologyFile) {
+
+		BingoParameters parametersSaddle = new BingoParameters();
+
+		parametersSaddle.setTest(BingoAlgorithm.SADDLESUM);
+		parametersSaddle.setCorrection(BingoAlgorithm.BENJAMINI_HOCHBERG_FDR);
+		parametersSaddle.setOntologyFile(ontologyFile);
+		parametersSaddle.setOntology_default(false);
+		parametersSaddle.setNameSpace("chebi_ontology");
+		parametersSaddle.setOverOrUnder("Overrepresentation");
+		parametersSaddle.setSignificance(new BigDecimal(0.05));
+		parametersSaddle.setCategory(BingoAlgorithm.CATEGORY_CORRECTION);
+		parametersSaddle.setReferenceSet(BingoAlgorithm.GENOME);
+		parametersSaddle.setAllNodes(null);
+		parametersSaddle.setSelectedNodes(null);
+
+		return parametersSaddle;
+	}
 
     public static BingoParameters makeParametersForChEBISaddleSum(String ontologyFile) {
 
     	BingoParameters parametersSaddle = new BingoParameters();
 
     	parametersSaddle.setTest(BingoAlgorithm.SADDLESUM);
-    	parametersSaddle.setCorrection(BingoAlgorithm.NONE);
+    	parametersSaddle.setCorrection(BingoAlgorithm.BENJAMINI_HOCHBERG_FDR);
     	parametersSaddle.setOntologyFile(ontologyFile);
     	parametersSaddle.setOntology_default(false);
     	parametersSaddle.setNameSpace("chebi_ontology");

@@ -23,6 +23,7 @@ package net.sourceforge.metware.binche.graph;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -47,10 +48,18 @@ public class LowPValueBranchPruner implements ChEBIGraphPruner {
 
     public void prune(ChebiGraph graph) {
         ChebiVertex root = graph.getRoot();
+        System.out.println("Root : "+root.getChebiName());
         if(root==null)
             return;
-
+        
+        int prevSize = graph.getVertexCount();
         processNode(root,graph);
+        int afterSize = graph.getVertexCount();
+        while(prevSize>afterSize) {
+            prevSize = afterSize;
+            processNode(root, graph);
+            afterSize = graph.getVertexCount();
+        }
     }
 
     private boolean processNode(ChebiVertex node, ChebiGraph graph) {
@@ -58,19 +67,24 @@ public class LowPValueBranchPruner implements ChEBIGraphPruner {
         boolean hasDescendentWithCompliantPValue = false;
 
         List<ChebiVertex> toRemVertex = new ArrayList<ChebiVertex>();
-        for (ChebiVertex childNode : graph.getChildren(node)) {
+        Collection<ChebiVertex> children = graph.getChildren(node);
+        //System.out.println("Visiting "+node.getChebiName());
+        //System.out.println("Children "+children.size()+" "+children.toString());
+        //System.out.println("PValue   "+graph.getVertexPValue(node));
+        
+        for (ChebiVertex childNode : children) {
             if(!processNode(childNode, graph)) {
                 toRemVertex.add(childNode);
             } else {
                 hasDescendentWithCompliantPValue = true;
             }
-        }
-        for (ChebiVertex chebiVertex : toRemVertex) {
-            graph.removeVertex(chebiVertex);
-        }
+        }        
 
-        if(graph.getVertexPValue(node)<=this.pvalueThreshold)
+        if(graph.getVertexPValue(node)<=this.pvalueThreshold) {
             hasDescendentWithCompliantPValue = true;
+        } else if(children.isEmpty() || children.size()==toRemVertex.size()){
+            graph.removeVertex(node);
+        }
 
         return hasDescendentWithCompliantPValue;
     }

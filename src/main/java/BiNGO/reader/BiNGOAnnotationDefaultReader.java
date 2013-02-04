@@ -47,6 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 //-------------------------------------------------------------------------
 
@@ -69,9 +71,9 @@ public class BiNGOAnnotationDefaultReader {
     String filename;
     String fullText;
     String [] lines;
-    HashMap synonymHash;
-    HashMap<String,HashSet<String>> alias;
-    HashSet deleteCodes;
+    Map synonymHash;
+    Map<String,HashSet<String>> alias;
+    Set deleteCodes;
 
 
     /**
@@ -85,12 +87,12 @@ public class BiNGOAnnotationDefaultReader {
 
 //-------------------------------------------------------------------------
 
-   public BiNGOAnnotationDefaultReader(File file, HashMap synonymHash, BingoParameters params, String annotationType, String curator) throws IllegalArgumentException, IOException, Exception {
+   public BiNGOAnnotationDefaultReader(File file, Map synonymHash, BingoParameters params, String annotationType, String curator) throws IllegalArgumentException, IOException, Exception {
         this(file.getPath(), synonymHash, params, annotationType, curator);
     }
 //-------------------------------------------------------------------------
 
-    public BiNGOAnnotationDefaultReader(String filename, HashMap synonymHash, BingoParameters params, String annotationType, String curator) throws IllegalArgumentException, IOException, Exception {
+    public BiNGOAnnotationDefaultReader(String filename, Map synonymHash, BingoParameters params, String annotationType, String curator) throws IllegalArgumentException, IOException, Exception {
         //System.out.println ("AnnotationFlatFileReader on " + filename);
         this.filename = filename;
         try {
@@ -203,7 +205,7 @@ public class BiNGOAnnotationDefaultReader {
         return consistency;
     }
     
-    public HashMap getAlias(){
+    public Map getAlias(){
         return alias;
     }
 

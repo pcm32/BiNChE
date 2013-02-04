@@ -10,8 +10,7 @@
     <groupId>be.ugent.psb</groupId>
     <artifactId>binche</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
-
+    <version>0.2</version>
     <repositories>
         <repository>
             <id>cytoscape_snapshots</id>
@@ -34,6 +33,9 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <argLine>-Xmx500m</argLine>
+                        <additionalClasspathElements>
+            			<additionalClasspathElement>src/test/resources</additionalClasspathElement>
+          				</additionalClasspathElements>
                     </configuration>
                 </plugin>
                 <plugin>

@@ -42,6 +42,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * ****************************************************************
@@ -68,37 +69,37 @@ public class Bonferroni implements CalculateCorrectionTask {
     /**
      * the GO labels that have been tested (constructor input).
      */
-    private static String[] goLabels;
+    private String[] goLabels;
     /**
      * the raw p-values that were given as input for the constructor, order corresponds to String [] goLabels.
      */
-    private static String[] pvalues;
+    private String[] pvalues;
     /**
      * the goLabels ordened according to the ordened pvalues.
      */
-    private static String[] ordenedGOLabels;
+    private String[] ordenedGOLabels;
     /**
      * the raw p-values ordened in ascending order.
      */
-    private static String[] ordenedPvalues;
+    private String[] ordenedPvalues;
     /**
      * the adjusted p-values ordened in ascending order.
      */
-    private static String[] adjustedPvalues;
+    private String[] adjustedPvalues;
 
     /**
      * hashmap with the results (adjusted p-values) as values and the GO labels as keys.
      */
-    private static HashMap correctionMap;
+    private Map correctionMap;
 
     /**
      * the significance level.
      */
-    private static BigDecimal alpha;
+    private BigDecimal alpha;
     /**
      * the number of tests.
      */
-    private static int m;
+    private int m;
     /**
      * scale for the division in de method 'runBonferroni'.
      */
@@ -120,7 +121,7 @@ public class Bonferroni implements CalculateCorrectionTask {
      */
 
 
-    public Bonferroni(HashMap golabelstopvalues, String alpha) {
+    public Bonferroni(Map golabelstopvalues, String alpha) {
 
         //Get all the go labels and their corresponding pvalues from the map
         Iterator iteratorGoLabelsSet = golabelstopvalues.keySet().iterator();
@@ -228,7 +229,7 @@ public class Bonferroni implements CalculateCorrectionTask {
      *
      * @return HashMap correctionMap.
      */
-    public HashMap getCorrectionMap() {
+    public Map getCorrectionMap() {
 
         return correctionMap;
     }

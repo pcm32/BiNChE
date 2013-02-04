@@ -45,8 +45,8 @@ public class MoleculeLeavesPrunerTest {
     public void testPrune() {
         System.out.println("prune");
 
-        String ontologyFile = BiNChe.class.getResource("/BiNGO/data/chebi_clean.obo").getFile();
-        String elementsForEnrichFile = "/BiNGO/data/enrich_set_flavonoids.txt";
+        String ontologyFile = getClass().getClassLoader().getResource("chebi_clean.obo").getFile();
+        String elementsForEnrichFile = "/enrich_set_flavonoids.txt";
 
         System.out.println("Setting default parameters ...");
         BingoParameters parametersChEBIBin = ParameterFactory.makeParametersForChEBIBinomialOverRep(ontologyFile);

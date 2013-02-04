@@ -16,6 +16,14 @@ import BiNGO.reader.BiNGOOntologyChebiOboReader;
 import BiNGO.reader.BiNGOOntologyFlatFileReader;
 import BiNGO.reader.BiNGOOntologyOboReader;
 import cytoscape.data.annotation.Annotation;
+import cytoscape.data.annotation.Ontology;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This is a decorator class for the AnnotationParser.
@@ -24,7 +32,7 @@ import cytoscape.data.annotation.Annotation;
  */
 public class ChEBIAnnotationParser extends AnnotationParser {
 
-    public ChEBIAnnotationParser(BingoParameters params, HashSet<String> genes) {
+    public ChEBIAnnotationParser(BingoParameters params, Set<String> genes) {
         super(params, genes);
     }
 
@@ -116,6 +124,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
     }
 
 
+    @Override
     public void calculate() {
     	System.out.println("In ChEBIAnnotationParser.calculate()");
 
@@ -148,11 +157,11 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                         String loadAnnotationString;
                         if (!params.isAnnotation_default()) {
 
-                            if (params.getAnnotationFile()==null)
+                            if (params.getAnnotationFile()==null) {
                                 loadAnnotationString = setCustomAnnotation();
-
-                                //Changed method to read annotation from an annotation file and not from the ontology
+                            }                                
                             else {
+                                //Changed method to read annotation from an annotation file and not from the ontology
                                 loadAnnotationString = setCustomAnnotationFromAnnotationFile();
                             }
 
@@ -206,7 +215,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
 
         if (fileString.endsWith(".obo")) {
             try {
-                BiNGOOntologyOboReader readerOntology = new BiNGOOntologyChebiOboReader(fileString, namespace);
+                BiNGOOntologyOboReader readerOntology = new BiNGOOntologyChebiOboReader(new File(fileString), namespace);
                 ontology = readerOntology.getOntology();
                 if (ontology.size() == 0) {
                     throw (new IllegalArgumentException("" ));
@@ -249,6 +258,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
      *
      * @return string string with either loadcorrect or a parsing error.
      */
+    @Override
     public String setFullOntology() {
     	System.out.println("In ChEBIAnnotationParser.setFullOntology()");
 
@@ -260,7 +270,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
             // read full ontology.
             try {
                 BiNGOOntologyOboReader readerOntology =
-                        new BiNGOOntologyChebiOboReader(params.getOntologyFile(), BingoAlgorithm.NONE);
+                        new BiNGOOntologyChebiOboReader(new File(params.getOntologyFile()), BingoAlgorithm.NONE);
                 fullOntology = readerOntology.getOntology();
                 if (fullOntology.size() == 0) {
                     throw (new IllegalArgumentException());

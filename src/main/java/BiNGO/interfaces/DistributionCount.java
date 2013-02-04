@@ -9,8 +9,9 @@
 
 package BiNGO.interfaces;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -28,7 +29,7 @@ public interface DistributionCount extends CalculateTestTask {
      */
 
 
-    public HashSet getNodeClassifications(String node);    
+    public Set getNodeClassifications(String node);    
 
     /**
      * method for making the hashmap for small n.
@@ -45,7 +46,7 @@ public interface DistributionCount extends CalculateTestTask {
     /**
      * method that counts for small n and small x.
      */
-    public HashMap count(HashSet nodes) ;
+    public Map count(Set nodes) ;
 
     /**
      * counts big N. unclassified nodes are not counted ; no correction for function_unknown nodes (yet)(requires user input)
@@ -59,8 +60,8 @@ public interface DistributionCount extends CalculateTestTask {
     
     public void calculate();
 
-    public HashMap<String,Double> getWeights();
+    public Map<String,Double> getWeights();
 
-    public HashMap<Integer,Double> getMapWeights();
+    public Map<Integer,Double> getMapWeights();
     
 }
