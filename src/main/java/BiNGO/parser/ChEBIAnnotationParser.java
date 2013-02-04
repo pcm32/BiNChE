@@ -5,6 +5,10 @@
 
 package BiNGO.parser;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import BiNGO.BingoParameters;
 import BiNGO.methods.BingoAlgorithm;
 import BiNGO.reader.BiNGOAnnotationFlatFileReader;
@@ -12,13 +16,6 @@ import BiNGO.reader.BiNGOOntologyChebiOboReader;
 import BiNGO.reader.BiNGOOntologyFlatFileReader;
 import BiNGO.reader.BiNGOOntologyOboReader;
 import cytoscape.data.annotation.Annotation;
-import cytoscape.data.annotation.Ontology;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * This is a decorator class for the AnnotationParser.
@@ -28,12 +25,8 @@ import java.util.List;
 public class ChEBIAnnotationParser extends AnnotationParser {
 
     public ChEBIAnnotationParser(BingoParameters params, HashSet<String> genes) {
-
         super(params, genes);
     }
-
-    //@Override
-    //public void calculate() {}
 
     /**
      * Method that parses the custom annotation file into an annotation-object and
@@ -46,17 +39,15 @@ public class ChEBIAnnotationParser extends AnnotationParser {
      */
     @Override
     public String setCustomAnnotation() {
-        //String fileString = params.getAnnotationFile();
-        //annotation = null;
+    	System.out.println("In ChEBIAnnotationParser.setCustomAnnotation() ");
 
         String resultString = LOADCORRECT;
 
         HashMap<Integer, String> ontologyIDs2Names = fullOntology.getTerms();
-//        HashMap<Integer, String> ontologyIDs2Names = ontology.getTerms();
 
 
         annotation = new Annotation(params.getSpecies(), "ChEBI", fullOntology);
-//        annotation = new Annotation(params.getSpecies(), "ChEBI", ontology);
+
         alias = new HashMap<String, String>();
         for (Integer id : ontologyIDs2Names.keySet()) {
             String entityName = "CHEBI:" + id;
@@ -66,77 +57,9 @@ public class ChEBIAnnotationParser extends AnnotationParser {
             alias.put(entityName, tmp);
         }
 
-        // TODO Is this correct??
         params.setAlias(alias);
 
         this.consistency = true;
-
-
-        //if fileString contains "gene_association" then assume you're using GO Consortium annotation files
-        /*if(fileString.contains("gene_association")){
-            try {
-                BiNGOConsortiumAnnotationReader readerAnnotation = new BiNGOConsortiumAnnotationReader(fileString, synonymHash, params, "Consortium", "GO");
-                annotation = readerAnnotation.getAnnotation();
-                if (readerAnnotation.getOrphans()) {
-                    orphansFound = true;
-                }
-                if (readerAnnotation.getConsistency()) {
-                    consistency = true;
-                }
-                alias = readerAnnotation.getAlias();
-                resultString = LOADCORRECT;
-            }
-            catch (IllegalArgumentException e) {
-                taskMonitor.setException(e, "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:");
-                resultString = "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
-            }
-            catch (IOException e) {
-                taskMonitor.setException(e, "Annotation file could not be located...");
-                resultString = "Annotation file could not be located...";
-            }
-            catch (Exception e) {
-                taskMonitor.setException(e, "");
-                resultString = "" + e;
-            }
-        }
-        else*//*{
-
-            // flat file reader for custom annotation
-            try {
-                // In the ChEBI case we shouldn't be reading any other new file, we should just take the ontology and
-                // make an annotation out of it.
-                BiNGOAnnotationFlatFileReader readerAnnotation = new BiNGOAnnotationFlatFileReader(fileString, synonymHash);
-                annotation = readerAnnotation.getAnnotation();
-                if (readerAnnotation.getOrphans()) {
-                   orphansFound = true;
-                }
-                if (readerAnnotation.getConsistency()) {
-                    consistency = true;
-                }
-                alias = readerAnnotation.getAlias();
-                resultString = LOADCORRECT;
-            }
-            catch (IllegalArgumentException e) {
-                //taskMonitor.setException(e, "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:");
-                resultString = "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
-            }
-            catch (IOException e) {
-                //taskMonitor.setException(e, "Annotation file could not be located...");
-                resultString = "Annotation file could not be located...";
-            }
-            catch (Exception e) {
-                System.out.println(e);
-                //taskMonitor.setException(e, "");
-                resultString = "" + e;
-            }
-        }*/
-/*        else{
-          annotation = params.getAnnotation();
-          alias = params.getAlias();
-          resultString = LOADCORRECT;
-          consistency = true;
-        }
- */
 
         return resultString;
     }
@@ -154,6 +77,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
      * @return string string with either loadcorrect or a parsing error.
      */
     private String setCustomAnnotationFromAnnotationFile() {
+    	System.out.println("In ChEBIAnnotationParser.setCustomAnnotationFromAnnotationFile() ");
 
         String fileString = params.getAnnotationFile();
         annotation = null;
@@ -174,17 +98,17 @@ public class ChEBIAnnotationParser extends AnnotationParser {
             resultString = LOADCORRECT;
         }
         catch (IllegalArgumentException e) {
-            //taskMonitor.setException(e, "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:");
             resultString = "ANNOTATION FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
+            e.printStackTrace();
         }
         catch (IOException e) {
-            //taskMonitor.setException(e, "Annotation file could not be located...");
-            resultString = "Annotation file could not be located...";
+            resultString = "Annotation file could not be located..."+e.getMessage();
+            e.printStackTrace();
         }
         catch (Exception e) {
             System.out.println(e);
-            //taskMonitor.setException(e, "");
-            resultString = "" + e;
+            e.printStackTrace();
+            resultString = e.getMessage();
         }
 
         return resultString;
@@ -193,6 +117,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
 
 
     public void calculate() {
+    	System.out.println("In ChEBIAnnotationParser.calculate()");
 
         if (!params.isOntology_default()) {
             // always perform full remap for .obo files, allows definition of custom GOSlims
@@ -200,7 +125,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                 String loadFullOntologyString = setFullOntology();
                 if (!loadFullOntologyString.equals(LOADCORRECT)) {
                     status = false;
-                    //System.out.println("Your full ontology file contains errors " + loadFullOntologyString);
+                    System.out.println("Your full ontology file contains errors " + loadFullOntologyString);
                 }
                 if (status == true) {
                     //check for cycles
@@ -214,7 +139,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                 // loaded a correct ontology file?
                 if (!loadOntologyString.equals(LOADCORRECT)) {
                     status = false;
-                    //System.out.println("Your ontology file contains errors " + loadOntologyString);
+                    System.out.println("Your ontology file contains errors " + loadOntologyString);
                 }
                 if (status == true) {
                     //check for cycles
@@ -232,19 +157,18 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                             }
 
                         } else {
-                            loadAnnotationString = setDefaultAnnotation();
+                            loadAnnotationString = "ERROR: Default annotation not supported in BiNChE";
+                        	System.out.println("ERROR: Default annotation not supported in BiNChE");
                         }
 
                         // loaded a correct annotation file?
                         if (!loadAnnotationString.equals(LOADCORRECT)) {
                             status = false;
-                            //System.out.println("Your annotation file contains errors " + loadAnnotationString);
+                            System.out.println("Your annotation file contains errors " + loadAnnotationString);
                         }
                         // annotation consistent with ontology ?
                         if ((status == true) && (consistency == false)) {
                             status = false;
-                            Exception e = new Exception();
-                            //taskMonitor.setException(e, "None of the labels in your annotation match with the chosen ontology, please check their compatibility.");
                             System.out.println(
                                     "None of the labels in your annotation match with the chosen ontology, please check their compatibility.");
                         }
@@ -259,61 +183,8 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                 }
             }
         } else {
-            String loadAnnotationString;
-            // load full ontology for full remap to GOSlim ontologies, and for defining synonymHash
-            String loadFullOntologyString = setFullOntology();
-            if (!loadFullOntologyString.equals(LOADCORRECT)) {
-                status = false;
-                //System.out.println("Your full ontology file contains errors " + loadFullOntologyString);
-            }
-            if (status == true) {
-                //check for cycles
-                checkOntology(fullOntology);
-            }
-            if (status == true) {
-                String loadOntologyString = setDefaultOntology(synonymHash);
-                if (!loadOntologyString.equals(LOADCORRECT)) {
-                    status = false;
-                    //System.out.println(loadOntologyString);
-                }
-                if (status == true) {
-                    //check for cycles
-                    checkOntology(ontology);
-                    if (status == true) {
-                        if (!params.isAnnotation_default()) {
-                            loadAnnotationString = setCustomAnnotation();
-                        } else {
-                            loadAnnotationString = setDefaultAnnotation();
-                        }
-
-                        // loaded a correct annotation file?
-                        if (!loadAnnotationString.equals(LOADCORRECT)) {
-                            status = false;
-                            // System.out.println(loadAnnotationString);
-                        }
-
-                        if ((status == true) && (consistency == false)) {
-                            status = false;
-                            Exception e = new Exception();
-                            //taskMonitor.setException(e, "None of the labels in your annotation match with the chosen ontology, please check their compatibility.");
-                            System.out.println(
-                                    "None of the labels in your annotation match with the chosen ontology, please check their compatibility.");
-                        }
-
-                        if (status == true) {
-                            // full remap not needed for non-Slim ontologies, instead custom remap
-                            // bug 20/9/2005 changed annotationPanel to ontologyPanel
-                            //if (params.getOntologyFile().equals(fullGoPath) || params.getOntologyFile().equals(processGoPath) || params.getOntologyFile().equals(functionGoPath) || params.getOntologyFile().equals(componentGoPath)){
-                            //    parsedAnnotation = customRemap(annotation, ontology,genes);
-                            //}
-                            // full remap for Slim Ontologies
-                            //else {
-                            parsedAnnotation = remap(annotation, ontology, genes);
-                            //}
-                        }
-                    }
-                }
-            }
+        	System.out.println("ERROR: Cannot use default ontology setting with BiNChe.");
+        	
         }
     }
 
@@ -326,36 +197,29 @@ public class ChEBIAnnotationParser extends AnnotationParser {
      */
     @Override
     public String setCustomOntology() {
+    	System.out.println("In ChEBIAnnotationParser.setCustomOntology()");
 
         String fileString = params.getOntologyFile();
         String namespace = params.getNameSpace();
         ontology = null;
         String resultString = "";
 
-        //if fileString == null use ontology from Cytoscape
-        //if(fileString != null){
-        // obo file
         if (fileString.endsWith(".obo")) {
             try {
                 BiNGOOntologyOboReader readerOntology = new BiNGOOntologyChebiOboReader(fileString, namespace);
                 ontology = readerOntology.getOntology();
                 if (ontology.size() == 0) {
-                    throw (new IllegalArgumentException());
+                    throw (new IllegalArgumentException("" ));
                 } else {
-                    // do not touch synonymHash, synonymHash of full .obo annotation will be used
-                    //synonymHash = readerOntology.getSynonymHash();
                     resultString = LOADCORRECT;
                 }
             } catch (IllegalArgumentException e) {
-                //taskMonitor.setException(e, "Ontology file parsing error, please check file format and validity of namespace");
                 resultString =
                         "ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT AND VALIDITY OF NAMESPACE:  \n" + e;
             } catch (IOException e) {
-                //taskMonitor.setException(e, "Ontology file could not be located...");
-                resultString = "Ontology file could not be located...";
+                resultString = "Ontology file could not be located... : "+params.getOntologyFile();
             } catch (Exception e) {
-                //taskMonitor.setException(e, "");
-                resultString = "" + e;
+                resultString = e.getMessage();
             }
         } else {
             this.synonymHash = null;
@@ -366,21 +230,13 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                 this.synonymHash = readerOntology.getSynonymHash();
                 resultString = LOADCORRECT;
             } catch (IllegalArgumentException e) {
-                //taskMonitor.setException(e, "Ontology file parsing error, please check file format");
                 resultString = "ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
             } catch (IOException e) {
-                //taskMonitor.setException(e, "Ontology file could not be located...");
                 resultString = "Ontology file could not be located...";
             } catch (Exception e) {
-                //taskMonitor.setException(e, "");
-                resultString = "" + e;
+                resultString = e.getMessage();
             }
         }
-        /*}
-        else{
-          ontology = params.getOntology();
-          resultString = LOADCORRECT;
-        }*/
 
         return resultString;
     }
@@ -394,6 +250,7 @@ public class ChEBIAnnotationParser extends AnnotationParser {
      * @return string string with either loadcorrect or a parsing error.
      */
     public String setFullOntology() {
+    	System.out.println("In ChEBIAnnotationParser.setFullOntology()");
 
         fullOntology = null;
         synonymHash = null;
@@ -415,27 +272,24 @@ public class ChEBIAnnotationParser extends AnnotationParser {
                 resultString =
                         "ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT AND VALIDITY OF NAMESPACE:  \n" + e;
             } catch (IOException e) {
-                resultString = "Ontology file could not be located...";
+                resultString = "Ontology file could not be located...: "+e.getMessage();
             } catch (Exception e) {
-                resultString = "" + e;
+                resultString = e.getMessage();
             }
         } else {
             // deserialize object
-//            try {
-//                BiNGOOntologyFlatFileReader readerOntology = new BiNGOOntologyFlatFileReader(params.getOntologyFile());
-//                fullOntology = readerOntology.getOntology();
-//                synonymHash = readerOntology.getSynonymHash();
-//                resultString = LOADCORRECT;
-//            } catch (IllegalArgumentException e) {
-//                //taskMonitor.setException(e, "Full ontology file parsing error, please check file format");
-//                resultString = "FULL ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
-//            } catch (IOException e) {
-//                //taskMonitor.setException(e, "Full ontology file could not be located...");
-//                resultString = "Full ontology file could not be located... ";
-//            } catch (Exception e) {
-//                //taskMonitor.setException(e, "");
-//                resultString = "" + e;
-//            }
+            try {
+                BiNGOOntologyFlatFileReader readerOntology = new BiNGOOntologyFlatFileReader(params.getOntologyFile());
+                fullOntology = readerOntology.getOntology();
+                synonymHash = readerOntology.getSynonymHash();
+                resultString = LOADCORRECT;
+            } catch (IllegalArgumentException e) {
+                resultString = "FULL ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
+            } catch (IOException e) {
+                resultString = "Full ontology file could not be located... :"+e.getMessage();
+            } catch (Exception e) {
+                resultString = e.getMessage();
+            }
         }
         return resultString;
 

@@ -79,15 +79,6 @@ public class AnnotationParser {
     protected final String LOADCORRECT = "LOADCORRECT";
 
     /**
-     * string with path to some GO structure files.
-     */
-    private String fullGoPath;
-    private String processGoPath;
-    private String functionGoPath;
-    private String componentGoPath;
-    private String chebiPath;
-
-    /**
      * annotation and ontology
      */
     protected Annotation annotation;
@@ -99,7 +90,6 @@ public class AnnotationParser {
      */
     protected Ontology fullOntology;
     protected HashMap synonymHash;
-//    private String idOption;
 
     protected BingoParameters params;
     protected HashSet<String> genes;
@@ -125,18 +115,10 @@ public class AnnotationParser {
     /*--------------------------------------------------------------
     CONSTRUCTOR.
     --------------------------------------------------------------*/
-
-
     public AnnotationParser(BingoParameters params, HashSet<String> genes) {
 
         this.params = params;
         this.genes = genes;
-
-//        this.fullGoPath = openResourceFile("GO_Full");
-//        this.processGoPath = openResourceFile("GO_Biological_Process");
-//        this.functionGoPath = openResourceFile("GO_Molecular_Function");
-//        this.componentGoPath = openResourceFile("GO_Cellular_Component");
-        this.chebiPath = openResourceFile("chebi_complete.obo");
 
         this.maxValue = -1;
     }
@@ -144,11 +126,6 @@ public class AnnotationParser {
     /*--------------------------------------------------------------
       METHODS.
     --------------------------------------------------------------*/
-
-    private String openResourceFile(String name) {
-
-        return getClass().getResource("/BiNGO/data/" + name).toString();
-    }
 
     /**
      * method that governs loading and remapping of annotation files
@@ -161,7 +138,7 @@ public class AnnotationParser {
                 String loadFullOntologyString = setFullOntology();
                 if (!loadFullOntologyString.equals(LOADCORRECT)) {
                     status = false;
-                    //System.out.println("Your full ontology file contains errors " + loadFullOntologyString);
+                    System.out.println("AnnotationParser: Your full ontology file contains errors " + loadFullOntologyString);
                 }
                 if (status == true) {
                     //check for cycles
@@ -175,7 +152,7 @@ public class AnnotationParser {
                 // loaded a correct ontology file?
                 if (!loadOntologyString.equals(LOADCORRECT)) {
                     status = false;
-                    //System.out.println("Your ontology file contains errors " + loadOntologyString);
+                    System.out.println("AnnotationParser: Your ontology file contains errors " + loadOntologyString);
                 }
                 if (status == true) {
                     //check for cycles
@@ -191,7 +168,7 @@ public class AnnotationParser {
                         // loaded a correct annotation file?
                         if (!loadAnnotationString.equals(LOADCORRECT)) {
                             status = false;
-                            //System.out.println("Your annotation file contains errors " + loadAnnotationString);
+                            System.out.println("AnnotationParser: Your annotation file contains errors " + loadAnnotationString);
                         }
                         // annotation consistent with ontology ?
                         if ((status == true) && (consistency == false)) {
@@ -211,65 +188,68 @@ public class AnnotationParser {
                 }
             }
         } else {
-            String loadAnnotationString;
-            // load full ontology for full remap to GOSlim ontologies, and for defining synonymHash
-            String loadFullOntologyString = setFullOntology();
-            if (!loadFullOntologyString.equals(LOADCORRECT)) {
-                status = false;
-                //System.out.println("Your full ontology file contains errors " + loadFullOntologyString);
-            }
-            if (status == true) {
-                //check for cycles
-                checkOntology(fullOntology);
-            }
-            if (status == true) {
-                String loadOntologyString = setDefaultOntology(synonymHash);
-                if (!loadOntologyString.equals(LOADCORRECT)) {
-                    status = false;
-                    //System.out.println(loadOntologyString);
-                }
-                if (status == true) {
-                    //check for cycles
-                    checkOntology(ontology);
-                    if (status == true) {
-                        if (!params.isAnnotation_default()) {
-                            loadAnnotationString = setCustomAnnotation();
-                        } else {
-                            loadAnnotationString = setDefaultAnnotation();
-                        }
-
-                        // loaded a correct annotation file?
-                        if (!loadAnnotationString.equals(LOADCORRECT)) {
-                            status = false;
-                            // System.out.println(loadAnnotationString);
-                        }
-
-                        if ((status == true) && (consistency == false)) {
-                            status = false;
-                            Exception e = new Exception();
-                            LOGGER.log(Level.ERROR,
-                                    "None of the labels in your annotation match with the chosen ontology, please check their compatibility.");
-                        }
-
-                        if (status == true) {
-                            // full remap not needed for non-Slim ontologies, instead custom remap
-                            // bug 20/9/2005 changed annotationPanel to ontologyPanel
-                            if (params.getOntologyFile().equals(fullGoPath) ||
-                                    params.getOntologyFile().equals(processGoPath) ||
-                                    params.getOntologyFile().equals(functionGoPath) ||
-                                    params.getOntologyFile().equals(componentGoPath) ||
-                                    params.getOntologyFile().equals(chebiPath)) {
-                                parsedAnnotation = customRemap(annotation, ontology, genes);
-                            }
-                            // full remap for Slim Ontologies
-                            else {
-                                parsedAnnotation = remap(annotation, ontology, genes);
-                            }
-                        }
-                    }
-                }
-            }
-            }
+        	System.out.println("ERROR: Default ontologies not supported in BiNChE, Ontology file must be explicitly set.");
+        }
+//        } else {
+//            String loadAnnotationString;
+//            // load full ontology for full remap to GOSlim ontologies, and for defining synonymHash
+//            String loadFullOntologyString = setFullOntology();
+//            if (!loadFullOntologyString.equals(LOADCORRECT)) {
+//                status = false;
+//                //System.out.println("Your full ontology file contains errors " + loadFullOntologyString);
+//            }
+//            if (status == true) {
+//                //check for cycles
+//                checkOntology(fullOntology);
+//            }
+//            if (status == true) {
+//                String loadOntologyString = setDefaultOntology(synonymHash);
+//                if (!loadOntologyString.equals(LOADCORRECT)) {
+//                    status = false;
+//                    //System.out.println(loadOntologyString);
+//                }
+//                if (status == true) {
+//                    //check for cycles
+//                    checkOntology(ontology);
+//                    if (status == true) {
+//                        if (!params.isAnnotation_default()) {
+//                            loadAnnotationString = setCustomAnnotation();
+//                        } else {
+//                            loadAnnotationString = setDefaultAnnotation();
+//                        }
+//
+//                        // loaded a correct annotation file?
+//                        if (!loadAnnotationString.equals(LOADCORRECT)) {
+//                            status = false;
+//                            // System.out.println(loadAnnotationString);
+//                        }
+//
+//                        if ((status == true) && (consistency == false)) {
+//                            status = false;
+//                            Exception e = new Exception();
+//                            LOGGER.log(Level.ERROR,
+//                                    "None of the labels in your annotation match with the chosen ontology, please check their compatibility.");
+//                        }
+//
+//                        if (status == true) {
+//                            // full remap not needed for non-Slim ontologies, instead custom remap
+//                            // bug 20/9/2005 changed annotationPanel to ontologyPanel
+//                            if (params.getOntologyFile().equals(fullGoPath) ||
+//                                    params.getOntologyFile().equals(processGoPath) ||
+//                                    params.getOntologyFile().equals(functionGoPath) ||
+//                                    params.getOntologyFile().equals(componentGoPath) ||
+//                                    params.getOntologyFile().equals(chebiPath)) {
+//                                parsedAnnotation = customRemap(annotation, ontology, genes);
+//                            }
+//                            // full remap for Slim Ontologies
+//                            else {
+//                                parsedAnnotation = remap(annotation, ontology, genes);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            }
         }
 
         /*--------------------------------------------------------------
@@ -515,7 +495,7 @@ public class AnnotationParser {
                         new BiNGOOntologyOboReader(params.getOntologyFile(), BingoAlgorithm.NONE);
                 fullOntology = readerOntology.getOntology();
                 if (fullOntology.size() == 0) {
-                    throw (new IllegalArgumentException());
+                    throw (new IllegalArgumentException("File not supported: "+params.getOntologyFile()));
                 } else {
                     synonymHash = readerOntology.getSynonymHash();
                     resultString = LOADCORRECT;
@@ -526,29 +506,33 @@ public class AnnotationParser {
                 resultString =
                         "ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT AND VALIDITY OF NAMESPACE:  \n" + e;
             } catch (IOException e) {
-                LOGGER.log(Level.ERROR, "Ontology file could not be located... " + e);
+                LOGGER.log(Level.ERROR, "Ontology file could not be located... " + e.getMessage());
                 resultString = "Ontology file could not be located...";
             } catch (Exception e) {
                 LOGGER.log(Level.ERROR, e);
-                resultString = "" + e;
+                resultString = e.getMessage();
             }
         } else {
-            // read full ontology.
-            try {
-                BiNGOOntologyFlatFileReader readerOntology = new BiNGOOntologyFlatFileReader(fullGoPath);
-                fullOntology = readerOntology.getOntology();
-                synonymHash = readerOntology.getSynonymHash();
-                resultString = LOADCORRECT;
-            } catch (IllegalArgumentException e) {
-                LOGGER.log(Level.ERROR, "Full ontology file parsing error, please check file format " + e);
-                resultString = "FULL ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
-            } catch (IOException e) {
-                LOGGER.log(Level.ERROR, "Full ontology file could not be located... " + e);
-                resultString = "Full ontology file could not be located... ";
-            } catch (Exception e) {
-                LOGGER.log(Level.ERROR, e);
-                resultString = "" + e;
-            }
+        	
+            LOGGER.log(Level.ERROR, "Ontology file not set to OBO file, not supported in BinChE");
+            resultString =
+                    "Ontology file not set to OBO file, not supported in BinChE";
+        	
+//            try {
+//                BiNGOOntologyFlatFileReader readerOntology = new BiNGOOntologyFlatFileReader(fullGoPath);
+//                fullOntology = readerOntology.getOntology();
+//                synonymHash = readerOntology.getSynonymHash();
+//                resultString = LOADCORRECT;
+//            } catch (IllegalArgumentException e) {
+//                LOGGER.log(Level.ERROR, "Full ontology file parsing error, please check file format " + e);
+//                resultString = "FULL ONTOLOGY FILE PARSING ERROR, PLEASE CHECK FILE FORMAT:  \n" + e;
+//            } catch (IOException e) {
+//                LOGGER.log(Level.ERROR, "Full ontology file could not be located... " + e);
+//                resultString = "Full ontology file could not be located... ";
+//            } catch (Exception e) {
+//                LOGGER.log(Level.ERROR, e);
+//                resultString = "" + e;
+//            }
         }
         return resultString;
 
@@ -564,7 +548,7 @@ public class AnnotationParser {
             int childNode = new Integer(it.next().toString()).intValue();
             up_go(childNode, childNode, ontology);
         }
-        //System.out.println("Ontology check finished") ;
+        System.out.println("Ontology check finished") ;
     }
 
 
