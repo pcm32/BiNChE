@@ -66,9 +66,13 @@ public class WebAppPrunersTest {
 
 		ChebiGraph chebiGraph =
 				new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
-
-		List<ChEBIGraphPruner> pruners = Arrays.asList(new MoleculeLeavesPruner(), new LowPValueBranchPruner(0.05)
-		, new LinearBranchCollapserPruner(), new RootChildrenPruner(3), new ZeroDegreeVertexPruner());
+                
+		List<ChEBIGraphPruner> pruners = Arrays.asList(
+                        //new MoleculeLeavesPruner(), 
+                        new LowPValueBranchPruner(0.05),
+                        new LinearBranchCollapserPruner(), 
+                        new RootChildrenPruner(3), 
+                        new ZeroDegreeVertexPruner());
 		int originalVertices = chebiGraph.getVertexCount();
 		System.out.println("Number of nodes before prunning : " + originalVertices);
 
