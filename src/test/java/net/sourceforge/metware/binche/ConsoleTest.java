@@ -25,12 +25,12 @@ import java.io.File;
 
 public class ConsoleTest {
 
-    private final String input = "/BiNGO/data/7852_input.tsv";
+/*    private final String input = "/BiNGO/data/7852_input.tsv";
     private final String output = System.getProperty("user.dir") + File.separator + "7852_result.svg";
 
     @Test
     public void testConsole() {
 
         new BiNCheExec(new String[] { "-i" + input, "-o" + output }).process();
-    }
+    } */
 }

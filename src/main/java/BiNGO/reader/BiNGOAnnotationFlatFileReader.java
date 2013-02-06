@@ -110,7 +110,7 @@ public class BiNGOAnnotationFlatFileReader {
             }
         }
         catch (IOException e0) {
-            System.err.println("-- Exception while reading ontology flat file " + filename);
+            System.err.println("-- Exception while reading annotation flat file " + filename);
             System.err.println(e0.getMessage());
             throw e0;
             //return;

@@ -25,7 +25,7 @@ import java.util.Scanner;
 
 public class GUITest {
 
-    @Test
+/*    @Test
     public void testGUI() {
 
         new BiNCheExec(new String[] { "-gtrue" }).process();
@@ -33,5 +33,5 @@ public class GUITest {
         // enter to finish test
         Scanner sc = new Scanner(System.in);
         sc.next();
-    }
+    } */
 }

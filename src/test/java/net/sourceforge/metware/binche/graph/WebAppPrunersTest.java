@@ -44,12 +44,12 @@ public class WebAppPrunersTest {
 	public void testPrune() {
 		System.out.println("prune");
 
-		String ontologyFile = BiNChe.class.getResource("/BiNGO/data/chebi_clean.obo").getFile();
+        String ontologyFile = getClass().getClassLoader().getResource("chebi_clean.obo").getFile();
 		//String ontologyFile = BiNChe.class.getResource("/BiNGO/data/chebiInferred_chemEnt.obo").getFile();
-		String elementsForEnrichFile = "/BiNGO/data/testdata_for_webapp.txt";
+		String elementsForEnrichFile = "/testdata_for_webapp.txt";
 
 		System.out.println("Setting default parameters ...");
-		BingoParameters parametersChEBIBin = ParameterFactory.makeParametersForWeightedAnalysis(ontologyFile);
+		BingoParameters parametersChEBIBin = ParameterFactory.makeParametersForChEBIBinomialOverRep(ontologyFile);
 
 		BiNChe binche = new BiNChe();
 		binche.setParameters(parametersChEBIBin);

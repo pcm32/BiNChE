@@ -90,7 +90,10 @@ public class ChebiGraph {
         // extract numeral ChEBI ID
         Set<String> nodesMod = new HashSet<String>();
         for (String chebiId : nodes) {
-            nodesMod.add(chebiId.split(":")[1]);
+        	if (chebiId.indexOf(":")>0)
+        		nodesMod.add(chebiId.split(":")[1]);
+        	else 
+        		nodesMod.add(chebiId);
         }
         nodes = nodesMod;
 
