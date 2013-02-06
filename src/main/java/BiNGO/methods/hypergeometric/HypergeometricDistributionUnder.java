@@ -105,8 +105,43 @@ public class HypergeometricDistributionUnder {
      * P(x or more |X,N,n) = 1 - sum{[C(n,i)*C(N-n, X-i)] / C(N,X)}
      * for i=0 ... x-1
      *
+     * @return Double with result of calculations.
+     */
+    public Double calcHypergDistr() {
+        if(bigN >= 2){
+        double sum = 0;
+		//mode of distribution, integer division (returns integer <= double result)!
+		int mode = (bigX+1)*(n+1)/(bigN+2) ;
+		if(x+1 >= mode){
+                    int i = x+1 ;
+                    while ((bigN - n >= bigX - i) && (i <= Math.min(bigX, n))) {
+			double pdfi = Math.exp(Gamma.logGamma(n+1)-Gamma.logGamma(i+1)-Gamma.logGamma(n-i+1) + Gamma.logGamma(bigN-n+1)-Gamma.logGamma(bigX-i+1)-Gamma.logGamma(bigN-n-bigX+i+1)- Gamma.logGamma(bigN+1)+Gamma.logGamma(bigX+1)+Gamma.logGamma(bigN-bigX+1)) ;
+			sum = sum+pdfi;
+                        i++;
+                    }
+                    sum = 1-sum;
+		}	
+		else{
+                    int i = x;
+                    while ((bigN - n >= bigX - i) && (i >= 0)) {
+                        double pdfi = Math.exp(Gamma.logGamma(n+1)-Gamma.logGamma(i+1)-Gamma.logGamma(n-i+1) + Gamma.logGamma(bigN-n+1)-Gamma.logGamma(bigX-i+1)-Gamma.logGamma(bigN-n-bigX+i+1)- Gamma.logGamma(bigN+1)+Gamma.logGamma(bigX+1)+Gamma.logGamma(bigN-bigX+1)) ;
+                        sum = sum+pdfi;
+                        i--;
+                    }	
+                }
+                return sum;
+        }
+	else{return 1.0d;}
+    }
+    /**
+     * method that conducts the calculations.
+     * P(x or more |X,N,n) = 1 - sum{[C(n,i)*C(N-n, X-i)] / C(N,X)}
+     * for i=0 ... x-1
+     * @deprecated use {@link #calcHypergDistr() } instead.
+     * 
      * @return String with result of calculations.
      */
+    @Deprecated
 public String calculateHypergDistr() {
       if(bigN >= 2){
         double sum = 0;

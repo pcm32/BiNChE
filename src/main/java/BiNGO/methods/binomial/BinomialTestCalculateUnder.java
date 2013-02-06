@@ -121,7 +121,7 @@ public class BinomialTestCalculateUnder extends AbstractCalculateTestTask implem
                 bigNvalue = new Integer(mapBigN.get(id).toString());
                 bt = new BinomialDistributionUnder(smallXvalue.intValue(), bigXvalue.intValue(), smallNvalue.intValue(),
                         bigNvalue.intValue());
-                significanceTestMap.put(id, bt.calculateBinomialDistribution());
+                significanceTestMap.put(id, bt.calcBinomialDistribution());
 
                 // Calculate Percentage.  This must be a value between 0..100.
                 int percentComplete = (int) (((double) currentProgress / maxValue) * 100);

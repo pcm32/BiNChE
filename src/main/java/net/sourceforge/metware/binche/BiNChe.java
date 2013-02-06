@@ -42,7 +42,7 @@ public class BiNChe {
 	private BingoParameters params;
 	private BingoAlgorithm algorithm;
 	private final String NONE = BingoAlgorithm.NONE;
-	private Map<Integer, String> testMap;
+	private Map<Integer, Double> testMap;
 	private Map<String, String> correctionMap = null;
 	private Map<Integer, String> mapSmallX = null;
 	private Map<Integer, String> mapSmallN = null;
@@ -94,9 +94,9 @@ public class BiNChe {
 			for (String id : correctionMap.keySet()) {
 				pValueMap.put(Integer.valueOf(id), Double.valueOf(correctionMap.get(id)));
 			}
-		} //else {
-		//	pValueMap = ((SaddleSumTestCalculate) test).getPValueMap();
-		//}
+		} else if(correction==null) {
+                    pValueMap = testMap;
+                }
 		System.out.println("Got result size after correction/weighted test: "+pValueMap.size());
 
 		// these hashMaps contain the results, where the Keys are the different categories (ie. a ChEBI entry or a
@@ -143,7 +143,7 @@ public class BiNChe {
 
 	public Double getPValueForCategory(Integer categoryID) {
 
-		return Double.parseDouble(testMap.get(categoryID));
+		return testMap.get(categoryID);
 	}
 
 	public Set<String> getElementsInCategory(Integer categoryID) {

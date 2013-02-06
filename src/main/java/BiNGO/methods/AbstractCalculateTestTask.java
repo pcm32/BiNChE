@@ -61,7 +61,7 @@ public abstract class AbstractCalculateTestTask {
     /**
      * hashmap with the Binomial Test results as values and as key the GO label.
      */
-    protected Map significanceTestMap;
+    protected Map<Integer,Double> significanceTestMap;
     /**
      * 
      */

@@ -8,6 +8,7 @@ import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.interfaces.DistributionCount;
 import BiNGO.methods.AbstractCalculateTestTask;
 import cytoscape.task.TaskMonitor;
+import java.math.BigDecimal;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,13 +47,13 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
     }
 
     /**
-     * method that redirects the calculation of hypergeometric distribution.
+     * Calculation of the Statistical Test on each class.
      */
     @Override
     public void calculate() {
 
         SaddleSumDistribution hd;
-        significanceTestMap = new HashMap();
+        significanceTestMap = new HashMap<Integer, Double>();
         // Here the saddleSum first part should be computed, which uses all the scores
         // from the different participating elements.
 
@@ -61,7 +62,7 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
         lugRice();
     }
 
-    public double calcSaddlepoint(int id, double lambda, int eq) {          //Fkt. zur Berechnung der ersten Ableitung von K'(t)
+    private double calcSaddlepoint(int id, double lambda, int eq) {          //Fkt. zur Berechnung der ersten Ableitung von K'(t)
         //Variable eq zur Bestimmumg, ob d1K benötigt oder d2K
 
         HashSet<String> weightSet = new HashSet(weights.keySet());
@@ -81,27 +82,18 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
 
 
         for (String idw : weightSet) {
-
             double w = weights.get(idw);
-
             tmp = Math.pow(Math.E, lambda * (w - wmax));
-
             rhoT += tmp;
-
             tmp *= w;
-
             D1RhoT += tmp;
-
             tmp *= w;
-
             D2RhoT += tmp;
         }
-
         rhoT += diff * Math.pow(Math.E, lambda * (-wmax));
 
 
         double D1K = D1RhoT / rhoT;
-
         double D2K = D2RhoT / rhoT - D1K * D1K;
 
         int m = (Integer) mapSmallN.get(id);
@@ -109,7 +101,7 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
 
 
         if (eq == 1) {
-            return m * D1K - sum;
+            return m * D1K - sum; // S hat
         }           //equation (3) of the paper
         if (eq == 2) {
             return m * D2K;
@@ -134,6 +126,64 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
         } else {
             return 0.0;
         }
+    }
+
+    private class LambdaItem {
+
+        Double expH;
+        Double C;
+        Double D;
+        Double S_hat;
+        Double mean;
+        Double D2K;
+    }
+
+    private LambdaItem calcSaddlepoint(int id, double lambda) {          //Fkt. zur Berechnung der ersten Ableitung von K'(t)
+        //Variable eq zur Bestimmumg, ob d1K benötigt oder d2K
+
+        HashSet<String> weightSet = new HashSet(weights.keySet());
+
+        double tmp = 0.0;
+        double wmax = Collections.max(weights.values());
+        int N = (Integer) Collections.max(mapSmallN.values());             //Anzahl aller Blätter der Ontologie
+        //int N = (Integer)mapSmallN.get(36342) + (Integer)mapSmallN.get(50906) + (Integer)mapSmallN.get(24431);
+        //System.out.println(N);
+        //System.out.println(wmax);       
+        double rhoT = 0.0;      //Nenner von K'(t) 
+        double D1RhoT = 0.0;    //Zähler von K'(t)
+        double D2RhoT = 0.0;
+        double sum = mapWeightSum.get(id);
+
+        double diff = N - weights.size();
+
+
+        for (String idw : weightSet) {
+            double w = weights.get(idw);
+            tmp = Math.pow(Math.E, lambda * (w - wmax));
+            rhoT += tmp;
+            tmp *= w;
+            D1RhoT += tmp;
+            tmp *= w;
+            D2RhoT += tmp;
+        }
+        rhoT += diff * Math.pow(Math.E, lambda * (-wmax));
+
+
+        double D1K = D1RhoT / rhoT;
+        double D2K = D2RhoT / rhoT - D1K * D1K;
+
+        int m = (Integer) mapSmallN.get(id);
+
+
+        LambdaItem res = new LambdaItem();
+
+        res.S_hat = m * D1K - sum; // S hat, eq 3
+        res.D2K = D2K;
+        res.expH = rhoT * Math.pow(Math.E, lambda * (wmax - D1K)) / N;
+        res.C = 2 * lambda * Math.sqrt(D2K);
+        res.D = -Math.sqrt(2) * Math.sqrt(lambda * (D1K - wmax) - Math.log(rhoT) + Math.log(N));
+
+        return res;
     }
 
     public double bisect(int id, double intervalStart, double intervalEnd) {
@@ -232,8 +282,6 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
         int m;
         double pValue;
 
-        significanceTestMap = new HashMap<Integer, Double>();
-
         HashSet<Integer> set = new HashSet(lambdas.keySet());
 
         for (Integer id : set) {
@@ -254,7 +302,12 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
 
             double z = ((D * Math.sqrt(m)) / Math.sqrt(2));
             //System.out.println("phi:\t"+phi);
-            if (D * Math.sqrt(m) < -1) {
+
+            /**
+             * This was the reason why many nodes appeared with a null p-value. p-value must be calculated for all
+             * nodes.
+             */
+            if (D * Math.sqrt(m) <= -1) {
                 double ndtr = (1 + ErrorFunction.erf(z)) / 2;
                 //System.out.println(ndtr);
                 //System.out.println(phi / C / Math.sqrt(m));
@@ -262,15 +315,19 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
                 pValue = ((1 + ErrorFunction.erf(z)) / 2) + (phi / C / Math.sqrt(m)) + (phi / D / Math.sqrt(m) / 2);
 
                 significanceTestMap.put(id, pValue);
+            } else {
+                significanceTestMap.put(id, 1.0d);
             }
 
+        }
+        for (Object id : significanceTestMap.keySet()) {
+            System.out.println("ID:" + id + " p-value: " + significanceTestMap.get(id));
         }
     }
 
     //public Map<Integer, Double> getPValueMap() {
     //    return this.significanceTestMap;
     //}
-
     public void setTaskMonitor(TaskMonitor tm) throws IllegalThreadStateException {
         //throw new UnsupportedOperationException("Not supported yet.");
     }

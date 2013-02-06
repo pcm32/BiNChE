@@ -110,15 +110,27 @@ public class BinomialDistribution {
      * p = 1 - sum{C(X,i)*(n/N)^i*(1-n/N)^(X-i)}
      * for i=0 ... x-1
      *
+     * @deprecated use {@link #calcBinomialDistribution() } instead.
      * @return String with value of calculations.
      */
-
+    @Deprecated
     public String calculateBinomialDistribution() {
 
 	double tmp = Probability.binomialComplemented(x-1 ,bigX, p);	
 	BigDecimal sum = new BigDecimal(tmp);		
         return sum.toString();
 
+    }
+    
+    /**
+     * method that conducts the calculations.
+     * p = 1 - sum{C(X,i)*(n/N)^i*(1-n/N)^(X-i)}
+     * for i=0 ... x-1
+     * 
+     * @return Double with value of calculations.
+     */
+    public Double calcBinomialDistribution() {
+        return Probability.binomialComplemented(x-1 ,bigX, p);
     }
 
 
