@@ -110,9 +110,10 @@ public class BinomialDistribution {
      * p = 1 - sum{C(X,i)*(n/N)^i*(1-n/N)^(X-i)}
      * for i=0 ... x-1
      *
+     * @deprecated use {@link #calcBinomialDistribution() } instead.
      * @return String with value of calculations.
      */
-
+    @Deprecated
     public String calculateBinomialDistribution() {
 
 	double tmp = Probability.binomialComplemented(x-1 ,bigX, p);	
@@ -120,28 +121,16 @@ public class BinomialDistribution {
         return sum.toString();
 
     }
-
-
+    
     /**
-     * Method that calulates a bigdecimal to a certain power (BigInteger).
-     * e.g. 0.002^3.
-     *
-     * @param x   the BigDecimal
-     * @param pow the power
-     * @return BigDecimal the result
+     * method that conducts the calculations.
+     * p = 1 - sum{C(X,i)*(n/N)^i*(1-n/N)^(X-i)}
+     * for i=0 ... x-1
+     * 
+     * @return Double with value of calculations.
      */
-    BigDecimal decimalPow(BigDecimal x, BigInteger pow) {
-
-        if (pow.equals(new BigInteger("0"))) {
-            return new BigDecimal("1");
-        } else {
-            BigDecimal product = x;
-
-            for (BigInteger i = new BigInteger("1"); !i.equals(pow); i = i.add(new BigInteger("1"))) {
-                product = product.multiply(x);
-            }
-            return product.setScale(SCALE_RESULT, BigDecimal.ROUND_HALF_UP);
-        }
+    public Double calcBinomialDistribution() {
+        return Probability.binomialComplemented(x-1 ,bigX, p);
     }
 
 

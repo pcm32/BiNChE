@@ -65,7 +65,7 @@ public class MoleculeLeavesPrunerTest {
         binche.execute();
 
         ChebiGraph chebiGraph =
-                new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
+                new ChebiGraph(binche.getEnrichedNodes(), binche.getOntology(), binche.getInputNodes());
         MoleculeLeavesPruner instance = new MoleculeLeavesPruner();
         int originalVertices = chebiGraph.getVertexCount();
         System.out.println("Number of nodes before prunning : "+originalVertices);

@@ -117,7 +117,7 @@ public class HypergeometricTestCalculate extends AbstractCalculateTestTask imple
                 bigNvalue = new Integer(mapBigN.get(id).toString());
                 hd = new HypergeometricDistribution(smallXvalue.intValue(), bigXvalue.intValue(),
                         smallNvalue.intValue(), bigNvalue.intValue());
-                significanceTestMap.put(id, hd.calculateHypergDistr());
+                significanceTestMap.put(id, hd.calcHypergDistr());
 
                 // set progress
 

@@ -265,7 +265,7 @@ public class SettingsPanel extends JPanel {
 
                 binche.execute();
 
-                ChebiGraph chebiGraph = new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
+                ChebiGraph chebiGraph = new ChebiGraph(binche.getEnrichedNodes(), binche.getOntology(), binche.getInputNodes());
 
                 JFrame frame = new MainFrame();
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

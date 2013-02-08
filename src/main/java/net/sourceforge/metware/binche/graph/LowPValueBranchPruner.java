@@ -46,6 +46,7 @@ public class LowPValueBranchPruner implements ChEBIGraphPruner {
         this.pvalueThreshold = pvalueThreshold;
     }
 
+    @Override
     public void prune(ChebiGraph graph) {
         ChebiVertex root = graph.getRoot();
         System.out.println("Root : "+root.getChebiName());
@@ -80,7 +81,7 @@ public class LowPValueBranchPruner implements ChEBIGraphPruner {
             }
         }        
 
-        if(graph.getVertexPValue(node)<=this.pvalueThreshold) {
+        if(node.getpValue()<=this.pvalueThreshold) {
             hasDescendentWithCompliantPValue = true;
         } else if(children.isEmpty() || children.size()==toRemVertex.size()){
             graph.removeVertex(node);

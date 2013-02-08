@@ -111,13 +111,17 @@ public class BinomialDistributionUnder {
      *
      * @return String with value of calculations.
      */
-
+    @Deprecated
     public String calculateBinomialDistribution() {
 
        	double tmp = Probability.binomial(x, bigX, p);
         BigDecimal sum = new BigDecimal(tmp);
         return sum.toString();
 
+    }
+    
+    public Double calcBinomialDistribution() {
+        return Probability.binomial(x, bigX, p);
     }
 
 

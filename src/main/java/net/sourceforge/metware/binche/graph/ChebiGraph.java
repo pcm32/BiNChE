@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import net.sourceforge.metware.binche.BiNChENode;
 
 /**
  * Class providing access to a rooted acyclic minimum spanning tree plus visualisation functionality required to write
@@ -50,7 +51,8 @@ public class ChebiGraph {
     private static final Logger LOGGER = Logger.getLogger(ChebiGraph.class);
 
     private Graph<ChebiVertex, ChebiEdge> graph;
-    private Map<Integer, ChebiVertex> vertexMap;
+    private Map<String, ChebiVertex> vertexMap;
+    private Map<String, BiNChENode> tmpBiNCheNodeMap;
     private Set<String> edgeSet;
     private int vertexId = 0;
 
@@ -69,79 +71,52 @@ public class ChebiGraph {
     private ColorGradient gradient;
 
     private Ontology ontology;
-    private Map<Integer, Double> pValueMap;
 
     private Layout<ChebiVertex, ChebiEdge> layout;
 
     /**
-     * Constructs the ChEBI graph.
-     *
-     * @param pValueMap the p values and their corresponding ChEBI ids from the enrichment analysis
-     * @param ontology  the parsed ontology
-     * @param nodes     the set of input ChEBI ids
+     * Constructs the ChEBI graph relying on the new {@link BiNChENode} instead of the maps. Each node contains its p-value
+     * and corrected p-value among others.
+     * 
+     * @param enrichmentNodes the list of nodes produced as a result of the execution of {@link BiNChE}
+     * @param ontology        the parsed ontology
+     * @param inputNodes      the set of input ChEBI ids
      */
-    public ChebiGraph(Map<Integer, Double> pValueMap, Ontology ontology, Set<String> nodes) {
-
+    public ChebiGraph(List<BiNChENode> enrichmentNodes, Ontology ontology, Set<String> inputNodes) {
         this.ontology = ontology;
-        this.pValueMap = pValueMap;
-
-        this.gradient = new ColorGradient(pValueMap.values(),pValueThreshold);
-
-        // extract numeral ChEBI ID
-        Set<String> nodesMod = new HashSet<String>();
-        for (String chebiId : nodes) {
-        	if (chebiId.indexOf(":")>0)
-        		nodesMod.add(chebiId.split(":")[1]);
-        	else 
-        		nodesMod.add(chebiId);
-        }
-        nodes = nodesMod;
-
-        populateGraph(pValueMap, ontology, nodes);
-        //layoutGraph();
-    }
+        this.gradient = new ColorGradient(getListOfPValues(enrichmentNodes), pValueThreshold);
+        
+        populateGraph(enrichmentNodes, ontology, formatNodeNames(inputNodes));
+    } 
 
     /**
      * Creates and populates an undirected sparse multigraph.
-     *
-     * @param pValueMap the p values and their corresponding ChEBI ids from the enrichment analysis
-     * @param ontology  the parsed ontology
-     * @param nodes     the set of input ChEBI ids
+     * 
+     * @param enrichmentNodes all the nodes of the enrichment analysis
+     * @param ontology        the parsed ontology
+     * @param nodes           the set of input ChEBI ids
      */
-    private void populateGraph(Map<Integer, Double> pValueMap, Ontology ontology, Set<String> nodes) {
+    private void populateGraph(List<BiNChENode> enrichmentNodes, Ontology ontology, Set<String> nodes) {
 
         //graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
         graph = new DirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
+        this.tmpBiNCheNodeMap = new HashMap<String, BiNChENode>();
 
-        vertexMap = new HashMap<Integer, ChebiVertex>();
+        vertexMap = new HashMap<String, ChebiVertex>();
         edgeSet = new HashSet<String>();
 
         int previousId;
         int currentId;
-
-//        for (String node : nodes) {
-
+        
+        addTermsToTmpMap(enrichmentNodes);
+        
         //Initially iterated over the the input nodes. Doesn't work when the ontology and annotation were split into
         //two separate files, because the ontology no longer contains the chemicals.
         //Now iterates over the pValue Map.
-        for (Integer node : pValueMap.keySet())    {
-
-            int[][] hierarchy = ontology.getAllHierarchyPaths(node);
-
-            for (int row = 0; row < hierarchy.length; row++) {
-
-                previousId = hierarchy[row][hierarchy[row].length - 1];
-                addVertex(previousId);
-
-                for (int col = hierarchy[row].length - 2; col >= 0; col--) {
-
-                    currentId = hierarchy[row][col];
-                    addVertex(currentId);
-                    addEdge(previousId, currentId);
-
-                    previousId = currentId;
-                }
-            }
+        for (BiNChENode node : enrichmentNodes)    {
+            // TODO this is risky (String2Integer), at some point we should avoid relying on the cytoscape 
+            // ontology object to get rid of the numerical identifier restriction. 
+            addTermWithRelationsToGraph(ontology, node);
         }
     }
 
@@ -151,16 +126,23 @@ public class ChebiGraph {
      *
      * @param id the id of the vertex to be added
      */
-    private void addVertex(int id) {
+    private void addVertex(BiNChENode node) {
 
-        if (!vertexMap.containsKey(id)) {
-            ChEBIOntologyTerm term = (ChEBIOntologyTerm) ontology.getTerm(id);
-            ChebiVertex v = new ChebiVertex(vertexId, "" + id, term.getName(),term.isMolecule());
-            v.setpValue(pValueMap.get(id));
-            vertexMap.put(id, v);
+        if (!vertexMap.containsKey(node.getIdentifier())) {
+            ChEBIOntologyTerm term = (ChEBIOntologyTerm) ontology.getTerm(Integer.parseInt(node.getIdentifier()));
+            ChebiVertex v = new ChebiVertex(vertexId, node.getIdentifier(), term.getName(),term.isMolecule());
+            v.setpValue(node.getPValue());
+            v.setCorrPValue(node.getCorrPValue());
+            v.setFoldOfEnrichment(node.getFoldOfEnrichment());
+            v.setSamplePercentage(node.getSamplePercentage());
             // We only color the node if it has a pValue and the pValue is below the threshold.
-            if (pValueMap.containsKey(id))
-                vertexMap.get(id).setColor(gradient.getGradientColor(pValueMap.get(id)));
+            // TODO here again we get the case where we could either be working with corrected and un-corrected pvalues.
+            // this needs a better solution, as it might generate problems.
+            Double pVal = node.getCorrPValue()!=null ? node.getCorrPValue() : node.getPValue();
+            if (pVal!=null) {
+                v.setColor(gradient.getGradientColor(pVal));
+            }
+            vertexMap.put(node.getIdentifier(), v);
 
             vertexId++;
         }
@@ -172,7 +154,7 @@ public class ChebiGraph {
      * @param previousId first partner vertex id;
      * @param currentId  second partner vertex id
      */
-    private void addEdge(int previousId, int currentId) {
+    private void addEdge(String previousId, String currentId) {
 
         ChebiEdge edge = new ChebiEdge(previousId + "-" + currentId, 0d);
 
@@ -342,8 +324,13 @@ public class ChebiGraph {
         return children;
     }
 
+    /**
+     * @deprecated now the vertex pValue can be obtained directly from the node.
+     * @param node
+     * @return 
+     */
     public Double getVertexPValue(ChebiVertex node) {
-        return pValueMap.get(Integer.valueOf(node.getChebiId()));
+        return node.getCorrPValue()!=null ? node.getCorrPValue() : node.getpValue();
     }
 
     /**
@@ -353,7 +340,7 @@ public class ChebiGraph {
      * @param child
      */
     public void addEdge(ChebiVertex parent, ChebiVertex child) {
-        addEdge(Integer.valueOf(child.getChebiId()), Integer.valueOf(parent.getChebiId()));
+        addEdge(child.getChebiId(), parent.getChebiId());
     }
 
     public Collection<ChebiEdge> getEdges() {
@@ -373,6 +360,78 @@ public class ChebiGraph {
             }
         }
         return null;
+    }
+
+    /**
+     * Removes the CHEBI: part from CHEBI:\d+
+     * @param nodes
+     * @return 
+     */
+    private Set<String> formatNodeNames(Set<String> nodes) {
+        // extract numeral ChEBI ID
+        Set<String> nodesMod = new HashSet<String>();
+        for (String chebiId : nodes) {
+                if (chebiId.indexOf(":")>0)
+                        nodesMod.add(chebiId.split(":")[1]);
+                else 
+                        nodesMod.add(chebiId);
+        }
+        return nodesMod;
+    }
+
+    /**
+     * This will be part of a different class, something like a BiNCheNode list processor.
+     * 
+     * @param enrichmentNodes
+     * @return 
+     */
+    private Collection<Double> getListOfPValues(List<BiNChENode> enrichmentNodes) {
+        // for this application, we only need the different values.
+        Set<Double> pValues = new HashSet<Double>();
+        boolean usedCorr = false;
+        // either we use all corrected or all non-corrected, but never a mixture!!!
+        if(enrichmentNodes.size()>0 && enrichmentNodes.get(0).getCorrPValue()!=null) {
+            usedCorr=true;
+        }
+        for (BiNChENode biNChENode : enrichmentNodes) {
+            if(usedCorr) {
+                pValues.add(biNChENode.getCorrPValue());
+            }
+            else {
+                pValues.add(biNChENode.getPValue());                
+            }
+        }
+        
+        return pValues;
+    }
+
+    private void addTermWithRelationsToGraph(Ontology ontology, BiNChENode nodeToAdd) {
+        BiNChENode previousNode;
+        BiNChENode currentNode;
+        int[][] hierarchy = ontology.getAllHierarchyPaths(Integer.parseInt(nodeToAdd.getIdentifier()));
+        for (int row = 0; row < hierarchy.length; row++) {
+
+            int previousId = hierarchy[row][hierarchy[row].length - 1];
+            previousNode = tmpBiNCheNodeMap.get(previousId+"");             
+            addVertex(previousNode);
+
+            for (int col = hierarchy[row].length - 2; col >= 0; col--) {
+
+                int currentId = hierarchy[row][col];
+                currentNode = tmpBiNCheNodeMap.get(currentId+"");
+                addVertex(currentNode);
+                addEdge(previousNode.getIdentifier(), currentNode.getIdentifier());
+
+                previousId = currentId;   
+                previousNode = tmpBiNCheNodeMap.get(previousId+"");
+            }
+        }
+    }
+
+    private void addTermsToTmpMap(List<BiNChENode> enrichmentNodes) {
+        for (BiNChENode biNChENode : enrichmentNodes) {
+            this.tmpBiNCheNodeMap.put(biNChENode.getIdentifier(), biNChENode);
+        }
     }
 
 }

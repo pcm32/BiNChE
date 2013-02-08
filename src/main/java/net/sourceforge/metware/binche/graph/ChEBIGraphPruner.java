@@ -10,6 +10,11 @@ package net.sourceforge.metware.binche.graph;
  */
 public interface ChEBIGraphPruner {
     
+    /**
+     * Prunes the graph given, leaving the changes in the same graph.
+     * 
+     * @param graph 
+     */
     public void prune(ChebiGraph graph);
     
 }

@@ -29,6 +29,9 @@ public class ChebiVertex {
     private String chebiName;
     private Boolean isMolecule=false;
     private Double pValue;
+    private Double corrPValue;
+    private Double foldOfEnrichment;
+    private Double samplePercentage;
 
     public Double getpValue() {
         return pValue;
@@ -113,6 +116,48 @@ public class ChebiVertex {
         int hash = 7;
         hash = 83 * hash + (this.chebiId != null ? this.chebiId.hashCode() : 0);
         return hash;
+    }
+
+    /**
+     * @return the corrPValue
+     */
+    public Double getCorrPValue() {
+        return corrPValue;
+    }
+
+    /**
+     * @param corrPValue the corrPValue to set
+     */
+    public void setCorrPValue(Double corrPValue) {
+        this.corrPValue = corrPValue;
+    }
+
+    /**
+     * @return the foldOfEnrichment
+     */
+    public Double getFoldOfEnrichment() {
+        return foldOfEnrichment;
+    }
+
+    /**
+     * @param foldOfEnrichment the foldOfEnrichment to set
+     */
+    public void setFoldOfEnrichment(Double foldOfEnrichment) {
+        this.foldOfEnrichment = foldOfEnrichment;
+    }
+
+    /**
+     * @return the samplePercentage
+     */
+    public Double getSamplePercentage() {
+        return samplePercentage;
+    }
+
+    /**
+     * @param samplePercentage the samplePercentage to set
+     */
+    public void setSamplePercentage(Double samplePercentage) {
+        this.samplePercentage = samplePercentage;
     }
 
     

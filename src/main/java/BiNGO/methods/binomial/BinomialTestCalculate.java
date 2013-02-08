@@ -117,7 +117,7 @@ public class BinomialTestCalculate extends AbstractCalculateTestTask implements 
                 bigNvalue = new Integer(mapBigN.get(id).toString());
                 bt = new BinomialDistribution(smallXvalue.intValue(), bigXvalue.intValue(), smallNvalue.intValue(),
                         bigNvalue.intValue());
-                significanceTestMap.put(id, bt.calculateBinomialDistribution());
+                significanceTestMap.put(id, bt.calcBinomialDistribution());
 
                 // set progress
 

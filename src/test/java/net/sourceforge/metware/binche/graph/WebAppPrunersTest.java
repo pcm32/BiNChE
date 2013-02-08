@@ -49,7 +49,7 @@ public class WebAppPrunersTest {
 		String elementsForEnrichFile = "/testdata_for_webapp.txt";
 
 		System.out.println("Setting default parameters ...");
-		BingoParameters parametersChEBIBin = ParameterFactory.makeParametersForChEBIBinomialOverRep(ontologyFile);
+		BingoParameters parametersChEBIBin = ParameterFactory.makeParametersForWeightedAnalysis(ontologyFile);
 
 		BiNChe binche = new BiNChe();
 		binche.setParameters(parametersChEBIBin);
@@ -65,10 +65,14 @@ public class WebAppPrunersTest {
 		binche.execute();
 
 		ChebiGraph chebiGraph =
-				new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
-
-		List<ChEBIGraphPruner> pruners = Arrays.asList(new MoleculeLeavesPruner(), new LowPValueBranchPruner(0.05)
-		, new LinearBranchCollapserPruner(), new RootChildrenPruner(3), new ZeroDegreeVertexPruner());
+				new ChebiGraph(binche.getEnrichedNodes(), binche.getOntology(), binche.getInputNodes());
+                
+		List<ChEBIGraphPruner> pruners = Arrays.asList(
+                        //new MoleculeLeavesPruner(), 
+                        new LowPValueBranchPruner(0.05),
+                        new LinearBranchCollapserPruner(), 
+                        new RootChildrenPruner(3), 
+                        new ZeroDegreeVertexPruner());
 		int originalVertices = chebiGraph.getVertexCount();
 		System.out.println("Number of nodes before prunning : " + originalVertices);
 

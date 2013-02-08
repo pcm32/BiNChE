@@ -20,6 +20,10 @@ package net.sourceforge.metware.binche.execs;
 
 import BiNGO.BingoParameters;
 import BiNGO.methods.BingoAlgorithm;
+import java.awt.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import javax.swing.*;
 import net.sourceforge.metware.binche.BiNChe;
 import net.sourceforge.metware.binche.graph.ChebiGraph;
 import net.sourceforge.metware.binche.graph.SvgWriter;
@@ -27,11 +31,6 @@ import net.sourceforge.metware.binche.gui.SettingsPanel;
 import org.apache.commons.cli.Option;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
-import java.math.BigDecimal;
 
 /**
  * @author Stephan Beisken
@@ -117,7 +116,8 @@ public class BiNCheExec extends CommandLineMain {
         binche.execute();
 
         ChebiGraph chebiGraph =
-                new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
+                new ChebiGraph(binche.getEnrichedNodes(), binche.getOntology(), binche.getInputNodes());
+                //new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getInputNodes());
 
         LOGGER.log(Level.INFO, "Writing out graph ...");
         SvgWriter writer = new SvgWriter();
@@ -127,6 +127,11 @@ public class BiNCheExec extends CommandLineMain {
         LOGGER.log(Level.INFO, "############ Stop ############");
     }
 
+    /**
+     * This should be set through the parameters factory. This should be removed.
+     * @param ontologyFile
+     * @return 
+     */
     private BingoParameters getDefaultParameters(String ontologyFile) {
 
         BingoParameters parametersSaddle = new BingoParameters();
