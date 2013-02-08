@@ -63,13 +63,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-      <extensions>
-         <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav</artifactId>
-            <version>1.0-beta-1</version>
-         </extension>
-      </extensions>
     </build>
 
     <dependencies>
@@ -126,22 +119,4 @@
    	  <version>0.2.1-SNAPSHOT</version>
    	  </dependency> 
     </dependencies>
-    <distributionManagement>
-    <repository>
-      <id>chebi-repo</id>
-      <name>ChEBI Internal Repository</name>
-      <url>scp://prod.ebi.ac.uk:/ebi/sp/pro1/chebi/maven2_repo</url>
-    </repository>
-		<snapshotRepository>
-				<uniqueVersion>false</uniqueVersion>
-				<id>chebi-repo</id>
-				<name>ChEBI Internal Repository</name>
-				<url>scp://prod.ebi.ac.uk/ebi/sp/pro1/chebi/maven2_repo</url>
-	  </snapshotRepository>       
-    <site>
-         <name>chebi</name>
-         <id>prod.ebi.ac.uk</id>
-         <url>scp://prod.ebi.ac.uk:/ebi/extserv/seqdb/internal/seqdb/projects/chebi/chebi-prg/${project.artifactId}</url>
-     </site>
-	</distributionManagement>
 </project>
