@@ -101,8 +101,10 @@ public class BiNGOAnnotationFlatFileReader {
                     System.out.println("-----Creating directory " +outputDir +"-----");
                     outputDir.mkdir();
                 }
-                File orphansFile =  new File(outputDir + "/" + filename.substring(filename.indexOf("ontology"))+".orphans.txt");
+                File orphansFile =  new File(outputDir + "/" + 
+                		filename.substring(filename.lastIndexOf("/"))+".orphans.txt");
                 if (!orphansFile.exists()) {
+                	System.out.println("Creating orphans file: "+orphansFile);
                     orphansFile.createNewFile();
                 }
                 this.orphansFile = new FileWriter(orphansFile);
