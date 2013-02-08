@@ -42,6 +42,8 @@ public class ColorGradient {
 
     /**
      * Constructs the gradient calculator and retrieves the linear function.
+     * 
+     * TODO : the constructor only requires the minimum value, we could avoid passing them all.
      *
      * @param values set of values containing the minimum and maximum possible value
      */

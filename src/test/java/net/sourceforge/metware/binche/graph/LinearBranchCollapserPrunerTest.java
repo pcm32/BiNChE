@@ -65,7 +65,7 @@ public class LinearBranchCollapserPrunerTest {
         binche.execute();
 
         ChebiGraph chebiGraph =
-                new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
+                new ChebiGraph(binche.getEnrichedNodes(), binche.getOntology(), binche.getInputNodes());
 
         List<ChEBIGraphPruner> pruners = Arrays.asList(new MoleculeLeavesPruner(), new LowPValueBranchPruner(0.05)
                 , new LinearBranchCollapserPruner(), new RootChildrenPruner(3), new ZeroDegreeVertexPruner());

@@ -65,7 +65,7 @@ public class WebAppPrunersTest {
 		binche.execute();
 
 		ChebiGraph chebiGraph =
-				new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getNodes());
+				new ChebiGraph(binche.getEnrichedNodes(), binche.getOntology(), binche.getInputNodes());
                 
 		List<ChEBIGraphPruner> pruners = Arrays.asList(
                         //new MoleculeLeavesPruner(), 

@@ -167,7 +167,7 @@ public class BiNChe {
         return params.getOntology();
     }
 
-    public Set<String> getNodes() {
+    public Set<String> getInputNodes() {
 
         return params.getSelectedNodes();
     }

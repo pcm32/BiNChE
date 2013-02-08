@@ -101,5 +101,9 @@ public class BiNChENode {
         this.pValue = pValue;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
 
 }
