@@ -46,14 +46,14 @@ import java.util.Map;
 public interface CalculateTestTask extends Task {
 
     //implement for statistical tests
-    public Map getTestMap();
+    public Map<Integer,Double> getTestMap();
 
-    public Map getMapSmallX();
+    public Map<Integer,Integer> getMapSmallX();
 
-    public Map getMapSmallN();
+    public Map<Integer,Integer> getMapSmallN();
 
-    public Map getMapBigX();
+    public Map<Integer,Integer> getMapBigX();
 
-    public Map getMapBigN();
+    public Map<Integer,Integer> getMapBigN();
 
 }//class CalculateTestTask

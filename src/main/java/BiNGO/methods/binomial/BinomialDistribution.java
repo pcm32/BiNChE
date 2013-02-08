@@ -134,29 +134,6 @@ public class BinomialDistribution {
     }
 
 
-    /**
-     * Method that calulates a bigdecimal to a certain power (BigInteger).
-     * e.g. 0.002^3.
-     *
-     * @param x   the BigDecimal
-     * @param pow the power
-     * @return BigDecimal the result
-     */
-    BigDecimal decimalPow(BigDecimal x, BigInteger pow) {
-
-        if (pow.equals(new BigInteger("0"))) {
-            return new BigDecimal("1");
-        } else {
-            BigDecimal product = x;
-
-            for (BigInteger i = new BigInteger("1"); !i.equals(pow); i = i.add(new BigInteger("1"))) {
-                product = product.multiply(x);
-            }
-            return product.setScale(SCALE_RESULT, BigDecimal.ROUND_HALF_UP);
-        }
-    }
-
-
 }
 		
 	    

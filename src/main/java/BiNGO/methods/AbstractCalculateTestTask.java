@@ -40,22 +40,22 @@ public abstract class AbstractCalculateTestTask {
     /**
      * int containing value for big N.
      */
-    protected Map mapBigN;
+    protected Map<Integer,Integer> mapBigN;
     /**
      * int containing value for big X.
      */
-    protected Map mapBigX;
+    protected Map<Integer,Integer> mapBigX;
     /*--------------------------------------------------------------
     FIELDS.
     --------------------------------------------------------------*/
     /**
      * hashmap with as values the values of small n and with as key the GO label.
      */
-    protected Map mapSmallN;
+    protected Map<Integer,Integer> mapSmallN;
     /**
      * hashmap with as values the values of small x and with as key the GO label.
      */
-    protected Map mapSmallX;
+    protected Map<Integer,Integer> mapSmallX;
     // Keep track of progress for monitoring:
     protected int maxValue;
     /**
@@ -70,11 +70,11 @@ public abstract class AbstractCalculateTestTask {
     public AbstractCalculateTestTask() {
     }
 
-    public Map getMapBigN() {
+    public Map<Integer,Integer> getMapBigN() {
         return mapBigN;
     }
 
-    public Map getMapBigX() {
+    public Map<Integer,Integer> getMapBigX() {
         return mapBigX;
     }
 
@@ -83,7 +83,7 @@ public abstract class AbstractCalculateTestTask {
      *
      * @return HashMap mapSmallN
      */
-    public Map getMapSmallN() {
+    public Map<Integer,Integer> getMapSmallN() {
         return mapSmallN;
     }
 
@@ -92,7 +92,7 @@ public abstract class AbstractCalculateTestTask {
      *
      * @return HashMap mapSmallX
      */
-    public Map getMapSmallX() {
+    public Map<Integer,Integer> getMapSmallX() {
         return mapSmallX;
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractCalculateTestTask {
      *
      * @return HashMap significanceTestMap
      */
-    public Map getTestMap() {
+    public Map<Integer,Double> getTestMap() {
         return significanceTestMap;
     }
 
