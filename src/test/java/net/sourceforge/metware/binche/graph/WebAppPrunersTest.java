@@ -49,7 +49,7 @@ public class WebAppPrunersTest {
 		String elementsForEnrichFile = "/testdata_for_webapp.txt";
 
 		System.out.println("Setting default parameters ...");
-		BingoParameters parametersChEBIBin = ParameterFactory.makeParametersForChEBIBinomialOverRep(ontologyFile);
+		BingoParameters parametersChEBIBin = ParameterFactory.makeParametersForWeightedAnalysis(ontologyFile);
 
 		BiNChe binche = new BiNChe();
 		binche.setParameters(parametersChEBIBin);
