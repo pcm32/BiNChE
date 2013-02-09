@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="BiNChE" basedir="." default="preProcessOboFiles">
+    <property name="lib" value="dependencies"/>
+
+    <target name="preProcessOboFiles">
+        <echo>
+            Executing the OBO File Pre-processor.
+            Parameters: ${arg0} ${arg1} ${arg2} ${arg3}  ${arg4} ${arg5} ${arg6}
+        </echo>
+        <java classname="net.sourceforge.metware.binche.execs.PreProcessOboFile" output="${outputfile}">
+            <classpath refid="java"/>
+        	<arg value="${arg0}"/>
+        	<arg value="${arg1}"/>
+        	<arg value="${arg2}"/>
+        	<arg value="${arg3}"/>
+        	<arg value="${arg4}"/>
+        	<arg value="${arg5}"/>
+        	<arg value="${arg6}"/>
+        </java>
+    </target>
+
+    <path id="java">
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+</project>

@@ -23,6 +23,21 @@
             <name>Cytoscape Snapshots</name>
             <url>http://cytoscape.wodaklab.org/nexus/content/repositories/public/</url>
         </repository>
+        <repository>
+                        <id>BerkeleyBOP</id>
+                        <name>Berkeley BOP maven repository</name>
+                        <url>http://code.berkeleybop.org/maven/repository/</url>
+                        <snapshots>
+                                <enabled>true</enabled>
+                        </snapshots>
+                </repository>
+                <repository>
+                        <id>BerkeleyBOPSnapshot</id>
+                        <url>http://code.berkeleybop.org/maven/snapshot-repository/</url>
+                        <snapshots>
+                                <enabled>true</enabled>
+                        </snapshots>
+                </repository>
     </repositories>
 
     <build>
@@ -98,5 +113,10 @@
             <version>1.2.16</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+   	  <groupId>org.bbop</groupId>
+   	  <artifactId>OWLTools-Core</artifactId>
+   	  <version>0.2.1-SNAPSHOT</version>
+   	  </dependency> 
     </dependencies>
 </project>
