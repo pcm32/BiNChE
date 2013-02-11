@@ -67,7 +67,7 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
 
         HashSet<String> weightSet = new HashSet(weights.keySet());
 
-        double tmp = 0.0;
+        double tmp = 0.0d;
         double wmax = Collections.max(weights.values());
         int N = (Integer) Collections.max(mapSmallN.values());             //Anzahl aller Blätter der Ontologie
         //int N = (Integer)mapSmallN.get(36342) + (Integer)mapSmallN.get(50906) + (Integer)mapSmallN.get(24431);
@@ -192,7 +192,7 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
         double b = intervalEnd;
 
         int n = 0;
-        double c = 0.0;
+        double c;
         //System.out.println(n);
         //System.out.println(mapWeightSum.get(id)+"\t"+mapSmallN.get(id));
         //System.out.println(calcSaddlepoint(id,a,1)+ "\t"+calcSaddlepoint(id,b,1)); 
