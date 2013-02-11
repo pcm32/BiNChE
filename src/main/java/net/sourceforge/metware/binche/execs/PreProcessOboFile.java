@@ -6,14 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.*;
-
 import org.coode.owlapi.obo.parser.OBOOntologyFormat;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.*;
-import org.semanticweb.owlapi.util.*;
-
 import owltools.graph.OWLGraphWrapper;
 import owltools.io.ParserWrapper;
 import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
@@ -174,13 +171,16 @@ public class PreProcessOboFile {
 							Set<OWLClass> classesInSignature = exists.getClassesInSignature();
 							boolean inTree = true;
 							for (OWLClass referencedClass : classesInSignature){
-								if(!classSubSet.contains(referencedClass))
-									inTree = false;
+								if(!classSubSet.contains(referencedClass)) {
+                                                                inTree = false;
+                                                            }
 							}
 							if (inTree && (propertiesOfInterest.contains(exists.getProperty()))){
 								// Class is in the right subtree , so add the relation
 								man.applyChange(new AddAxiom(infOnt, factory.getOWLSubClassOfAxiom(current, exists)));
-								if (writeSeparateAnnotationFile) writeToAnnotationFile(cout, current, exists);
+								if (writeSeparateAnnotationFile) {
+                                                                writeToAnnotationFile(cout, current, exists);
+                                                            }
 								
 //COMMENTED OUT AS THIS USES THE WRONG DIRECTION, CURRENTLY CARRIES UP THE TARGET HIERARCHY RATHER THAN DOWN THE SOURCE HIERARCHY
 //TODO: 								
@@ -210,12 +210,14 @@ public class PreProcessOboFile {
 						Set<OWLClass> classesInSignature = x.getClassesInSignature();
 						boolean inTree = true;
 						for (OWLClass referencedClass : classesInSignature){
-							if(!classSubSet.contains(referencedClass))
-								inTree = false;
+							if(!classSubSet.contains(referencedClass)) {
+                                                        inTree = false;
+                                                    }
 						}
 						Set<OWLObjectProperty> propertiesInSignature = x.getObjectPropertiesInSignature();
-						if (inTree && (propertiesOfInterest.containsAll(propertiesInSignature) || propertiesInSignature.size() == 0))
-							man.applyChange(new AddAxiom(infOnt, x));
+						if (inTree && (propertiesOfInterest.containsAll(propertiesInSignature) || propertiesInSignature.isEmpty())) {
+                                                    man.applyChange(new AddAxiom(infOnt, x));
+                                                }
 					}
 					// get annotations from the source ontology
 					Set<OWLAnnotation> annotations = current.getAnnotations(ont);
@@ -235,7 +237,9 @@ public class PreProcessOboFile {
 			man.saveOntology(infOnt, new OBOOntologyFormat(), IRI.create(new File(newOntIRI+".temp").toURI()));
 			System.out.println("Ontology saved. Need to do some post-processing corrections now.");
 			postProcess(newOntIRI+".temp", newOntIRI);
-			if (writeSeparateAnnotationFile) cout.close();
+			if (writeSeparateAnnotationFile) {
+                            cout.close();
+                        }
 			System.out.println("Finished all " + (System.currentTimeMillis() - start) + " milliseconds. ");
 			System.exit(0);
 		} catch (Exception e) {
@@ -254,8 +258,9 @@ public class PreProcessOboFile {
 			BufferedWriter cout = new BufferedWriter (new FileWriter(outputFile));
 			String line;
 			while ((line = cin.readLine()) != null){
-				if (!line.contains("is_a: Thing"))
-					cout.write(line.replaceAll("CHEBI_", "CHEBI:") + "\n");
+				if (!line.contains("is_a: Thing")) {
+                                cout.write(line.replaceAll("CHEBI_", "CHEBI:") + "\n");
+                            }
 			}
 			cout.flush();
 			cout.close();
@@ -268,11 +273,13 @@ public class PreProcessOboFile {
 	public static void writeToAnnotationFile(BufferedWriter cout, OWLClass subjectClass, OWLObjectSomeValuesFrom axiom){
 		try{
 			Set<OWLClass> object = axiom.getClassesInSignature();
-			if (object.size() > 1)
-				System.out.println("__________________________________________________________");
+			if (object.size() > 1) {
+                            System.out.println("__________________________________________________________");
+                        }
 			String objectID = "";
-			for (OWLClass dirObj : object)
-				objectID = dirObj.toStringID();
+			for (OWLClass dirObj : object) {
+                            objectID = dirObj.toStringID();
+                        }
 			objectID = objectID.replace("http://purl.obolibrary.org/obo/CHEBI_", "");
 			String subjectID = subjectClass.toStringID();
 			subjectID = subjectID.replace("http://purl.obolibrary.org/obo/CHEBI_", "CHEBI:");
