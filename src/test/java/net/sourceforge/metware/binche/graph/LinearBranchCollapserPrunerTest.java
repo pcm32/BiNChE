@@ -9,7 +9,12 @@ import BiNGO.ParameterFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import net.sourceforge.metware.binche.BiNChe;
+import net.sourceforge.metware.binche.loader.BiNChEOntologyPrefs;
+import net.sourceforge.metware.binche.loader.OfficialChEBIOboLoader;
+import org.apache.log4j.Logger;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -18,6 +23,8 @@ import static org.junit.Assert.*;
  * @author pmoreno
  */
 public class LinearBranchCollapserPrunerTest {
+    
+    private static final Logger LOGGER = Logger.getLogger(LinearBranchCollapserPrunerTest.class);
     
     public LinearBranchCollapserPrunerTest() {
     }
@@ -44,8 +51,22 @@ public class LinearBranchCollapserPrunerTest {
     @Test
     public void testPrune() {
         System.out.println("prune");
+        
+        Preferences binchePrefs = Preferences.userNodeForPackage(BiNChe.class);
+        try {
+            if (binchePrefs.keys().length == 0) {
+                new OfficialChEBIOboLoader();
+            }
+        } catch (BackingStoreException e) {
+            LOGGER.error("Problems loading preferences", e);
+            return;
+        } catch (IOException e) {
+            LOGGER.error("Problems loading preferences", e);
+            return;
+        }
 
-        String ontologyFile = getClass().getClassLoader().getResource("chebi_clean.obo").getFile();
+        //String ontologyFile = getClass().getClassLoader().getResource("chebi_clean.obo").getFile();
+        String ontologyFile = binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null);
         String elementsForEnrichFile = "/enrich_set_flavonoids.txt";
 
         System.out.println("Setting default parameters ...");

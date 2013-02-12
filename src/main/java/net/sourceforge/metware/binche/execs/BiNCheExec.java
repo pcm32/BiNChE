@@ -23,11 +23,15 @@ import BiNGO.methods.BingoAlgorithm;
 import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javax.swing.*;
 import net.sourceforge.metware.binche.BiNChe;
 import net.sourceforge.metware.binche.graph.ChebiGraph;
 import net.sourceforge.metware.binche.graph.SvgWriter;
 import net.sourceforge.metware.binche.gui.SettingsPanel;
+import net.sourceforge.metware.binche.loader.BiNChEOntologyPrefs;
+import net.sourceforge.metware.binche.loader.OfficialChEBIOboLoader;
 import org.apache.commons.cli.Option;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -49,7 +53,8 @@ public class BiNCheExec extends CommandLineMain {
         super(args);
     }
 
-    @Override public void setupOptions() {
+    @Override
+    public void setupOptions() {
 
         add(new Option("g", "true", true, "run graphical user interface"));
         add(new Option("i", "file to load", true, "association file to load"));
@@ -59,7 +64,8 @@ public class BiNCheExec extends CommandLineMain {
     /**
      * Main processing method
      */
-    @Override public void process() {
+    @Override
+    public void process() {
 
         if (!(hasOption("g") || (hasOption("i") && hasOption("o")))) {
             printHelp();
@@ -96,7 +102,21 @@ public class BiNCheExec extends CommandLineMain {
 
         LOGGER.log(Level.INFO, "############ Start ############");
 
-        String ontologyFile = getClass().getResource("/BiNGO/data/chebi_clean.obo").getFile();
+        Preferences binchePrefs = Preferences.userNodeForPackage(BiNChe.class);
+        try {
+            if (binchePrefs.keys().length == 0) {
+                new OfficialChEBIOboLoader();
+            }
+        } catch (BackingStoreException e) {
+            LOGGER.error("Problems loading preferences", e);
+            return;
+        } catch (IOException e) {
+            LOGGER.error("Problems loading preferences", e);
+            return;
+        }
+
+        //String ontologyFile = getClass().getResource("/BiNGO/data/chebi_clean.obo").getFile();
+        String ontologyFile = binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(), null);
         String elementsForEnrichFile = inputPath;
 
         LOGGER.log(Level.INFO, "Setting default parameters ...");
@@ -117,7 +137,7 @@ public class BiNCheExec extends CommandLineMain {
 
         ChebiGraph chebiGraph =
                 new ChebiGraph(binche.getEnrichedNodes(), binche.getOntology(), binche.getInputNodes());
-                //new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getInputNodes());
+        //new ChebiGraph(binche.getPValueMap(), binche.getOntology(), binche.getInputNodes());
 
         LOGGER.log(Level.INFO, "Writing out graph ...");
         SvgWriter writer = new SvgWriter();
@@ -129,8 +149,9 @@ public class BiNCheExec extends CommandLineMain {
 
     /**
      * This should be set through the parameters factory. This should be removed.
+     *
      * @param ontologyFile
-     * @return 
+     * @return
      */
     private BingoParameters getDefaultParameters(String ontologyFile) {
 

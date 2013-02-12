@@ -9,7 +9,11 @@ import BiNGO.ParameterFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import net.sourceforge.metware.binche.BiNChe;
+import net.sourceforge.metware.binche.loader.BiNChEOntologyPrefs;
+import net.sourceforge.metware.binche.loader.OfficialChEBIOboLoader;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -44,8 +48,24 @@ public class LowPValueBranchPrunerTest {
     @Test
     public void testPrune() {
         System.out.println("prune");
+        
+        Preferences binchePrefs = Preferences.userNodeForPackage(BiNChe.class);
+        try {
+            if (binchePrefs.keys().length == 0) {
+                new OfficialChEBIOboLoader();
+            }
+        } catch (BackingStoreException e) {
+            System.err.println("Problems loading preferences");
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            System.err.println("Problems loading preferences");
+            e.printStackTrace();
+            return;
+        }
 
-        String ontologyFile = getClass().getClassLoader().getResource("chebi_clean.obo").getFile();
+        //String ontologyFile = getClass().getClassLoader().getResource("chebi_clean.obo").getFile();
+        String ontologyFile = binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null);
         String elementsForEnrichFile = "/enrich_set_flavonoids.txt";
 
         System.out.println("Setting default parameters ...");

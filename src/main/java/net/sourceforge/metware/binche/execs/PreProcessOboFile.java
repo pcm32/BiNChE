@@ -82,13 +82,23 @@ public class PreProcessOboFile {
 			metadataList.add(tokenizer.nextToken());
 		}		
 
-
-		getTransitiveClosure(sourceFile, outputOboFile, carryDownInferredRelations, writeSeparateAnnotationFile,  
+                PreProcessOboFile ppof = new PreProcessOboFile();
+		ppof.getTransitiveClosure(sourceFile, outputOboFile, carryDownInferredRelations, writeSeparateAnnotationFile,  
 				rootsList, metadataList, relationList);
 
 	}
 
-	public static void getTransitiveClosure(String ontologyIRI, String newOntIRI,  
+        /**
+         * 
+         * @param ontologyIRI path to the ontology file
+         * @param newOntIRI obo file OUTPUT
+         * @param carryDownInferredRelations
+         * @param writeSeparateAnnotationFile true if a separate annotation file needs to be written.
+         * @param chebiIDsForSubtrees
+         * @param metadatas
+         * @param propertiesToInferUpon 
+         */
+	public void getTransitiveClosure(String ontologyIRI, String newOntIRI,  
 			boolean carryDownInferredRelations, boolean writeSeparateAnnotationFile, 
 			List<String> chebiIDsForSubtrees,  
 			List<String> metadatas, List<String> propertiesToInferUpon){
@@ -97,8 +107,10 @@ public class PreProcessOboFile {
 		 * 	- all subclassOf relations
 		 * 	- for each class inherited properties are "re-assigned" directly
 		 * 	- for the properties specified in the list, the class of the object property is followed up
-		 * 	- all relations are restricted to classes belonging to the subtrees of the classes passed as parameters in chebiIDsForSubtrees; any other class is simply ignored
-		 * Janna's description of the task: "compute the transitive closure of the has-role (and other, but mostly has-role) relationship over the is-a relationship." 
+		 * 	- all relations are restricted to classes belonging to the subtrees of the classes passed as 
+                 *        parameters in chebiIDsForSubtrees; any other class is simply ignored
+		 * Janna's description of the task: "compute the transitive closure of the has-role (and other, 
+                 * but mostly has-role) relationship over the is-a relationship." 
 		 * 
 		 *EXAMPLE
 		 *Input: 
@@ -115,7 +127,7 @@ public class PreProcessOboFile {
 		BufferedWriter cout = null; 
 		try{
 			if (writeSeparateAnnotationFile) {
-				cout = new BufferedWriter(new FileWriter(newOntIRI.replace(".obo", ".txt")));
+				cout = new BufferedWriter(new FileWriter(getAnnotationNameForOntology(newOntIRI)));
 				cout.write("(species=ALL)(type=CHEBIROLES)(curator=ChEBI)\n");
 				cout.flush();
 			}
@@ -125,7 +137,7 @@ public class PreProcessOboFile {
 			OWLOntology ont = graph.getSourceOntology();
 			// Create the REASONER			
 			OWLReasonerFactory reasonerFactory = new ElkReasonerFactory();
-			OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+			OWLOntologyManager man = OWLManager.createOWLOntologyManager();                        
 			OWLReasoner reasoner = reasonerFactory.createReasoner(ont);
 			graph.setReasoner(reasoner);
 
@@ -247,7 +259,7 @@ public class PreProcessOboFile {
 		}
 	}	
 
-	public static void postProcess(String oboFile, String outputFile){
+	public void postProcess(String oboFile, String outputFile){
 		/**
 		 * We need to change some things in the file we created with getTransitiveClosure(...)
 		 * - IDs are changed into CHEBI_123 and don't match the original notation any more (CHEBI:123)
@@ -270,7 +282,7 @@ public class PreProcessOboFile {
 		}
 	}
 
-	public static void writeToAnnotationFile(BufferedWriter cout, OWLClass subjectClass, OWLObjectSomeValuesFrom axiom){
+	public void writeToAnnotationFile(BufferedWriter cout, OWLClass subjectClass, OWLObjectSomeValuesFrom axiom){
 		try{
 			Set<OWLClass> object = axiom.getClassesInSignature();
 			if (object.size() > 1) {
@@ -288,5 +300,9 @@ public class PreProcessOboFile {
 			e.printStackTrace();
 		}
 	}
+
+    public String getAnnotationNameForOntology(String newOntIRI) {
+        return newOntIRI.replace(".obo", ".txt");
+    }
 
 }
