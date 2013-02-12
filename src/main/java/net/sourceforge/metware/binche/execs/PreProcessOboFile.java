@@ -85,6 +85,7 @@ public class PreProcessOboFile {
                 PreProcessOboFile ppof = new PreProcessOboFile();
 		ppof.getTransitiveClosure(sourceFile, outputOboFile, carryDownInferredRelations, writeSeparateAnnotationFile,  
 				rootsList, metadataList, relationList);
+                System.exit(0);
 
 	}
 
@@ -253,7 +254,6 @@ public class PreProcessOboFile {
                             cout.close();
                         }
 			System.out.println("Finished all " + (System.currentTimeMillis() - start) + " milliseconds. ");
-			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

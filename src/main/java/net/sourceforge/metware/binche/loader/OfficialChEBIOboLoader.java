@@ -61,19 +61,30 @@ public class OfficialChEBIOboLoader {
         FileUtils.copyURLToFile(new URL(oboURL), tmpFileObo);
         ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.RoleOntology.name(), null), 
                 false, 
-                true, BiNChEOntologyPrefs.RoleOntology.getRootChEBIEntries(), 
+                true, 
+                BiNChEOntologyPrefs.RoleOntology.getRootChEBIEntries(), 
                 Arrays.asList("rdfs:label"), new ArrayList<String>());
         File tmpRoleOnt = new File(BiNChEOntologyPrefs.RoleOntology.name()+".temp");
         tmpRoleOnt.delete();
-        ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.StructureOntology.name(), null), false, 
-                false, BiNChEOntologyPrefs.StructureOntology.getRootChEBIEntries(), Arrays.asList("rdfs:label","InChI"), new ArrayList<String>());
+        
+        ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.StructureOntology.name(), null), 
+                false, 
+                false, 
+                BiNChEOntologyPrefs.StructureOntology.getRootChEBIEntries(), 
+                Arrays.asList("rdfs:label","InChI"), 
+                new ArrayList<String>());
         File tmpStructOnt = new File(BiNChEOntologyPrefs.StructureOntology.name()+".temp");
         tmpStructOnt.delete();
-        ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null), false, 
-                false, BiNChEOntologyPrefs.RoleAndStructOntology.getRootChEBIEntries(), Arrays.asList("rdfs:label","InChI"), 
+        
+        ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null), 
+                false, 
+                false, 
+                BiNChEOntologyPrefs.RoleAndStructOntology.getRootChEBIEntries(), 
+                Arrays.asList("rdfs:label","InChI"), 
                 Arrays.asList("http://purl.obolibrary.org/obo/chebi#has_role"));
         File tmpStructRoleOnt = new File(BiNChEOntologyPrefs.RoleAndStructOntology.name()+".temp");
         tmpStructRoleOnt.delete();
+        
         tmpFileObo.delete();
     }
     
