@@ -33,12 +33,15 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
      */
     public BiNGOOntologyChebiOboReader(File chebiOboFile,
                                        String namespace) throws IllegalArgumentException, IOException, Exception {
-
-        this(chebiOboFile.getPath(), namespace);
+        super(chebiOboFile, namespace);
     }
 
     /**
      * Initializes the reader with the given ChEBI obo file name (path).
+     * 
+     * @deprecated use {@link #BiNGOOntologyChebiOboReader(java.io.File, java.lang.String) } or 
+     * {@link #BiNGOOntologyChebiOboReader(java.io.InputStream, java.lang.String) } instead.
+     * 
      * @param chebiOboFileName
      * @param namespace
      * @throws IllegalArgumentException
@@ -47,7 +50,6 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
      */
     public BiNGOOntologyChebiOboReader(String chebiOboFileName,
                                        String namespace) throws IllegalArgumentException, IOException, Exception {
-
         super(chebiOboFileName, namespace);
     }
     
@@ -113,7 +115,8 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                         if (value.trim().equals("true")) {
                             obsolete = true;
                         }
-                    } else if (ref.equals("synonym") && value.contains("RELATED InChI")) {
+                    //} else if (ref.equals("synonym") && value.contains("RELATED InChI")) {
+                    } else if (ref.equals("hasRelatedSynonym") && value.startsWith("InChI=1")) {
                         molecule=true;
                     }
                 }
@@ -189,7 +192,8 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
         ontology = new Ontology(curator, ontologyType);
         fullOntology = new Ontology(curator, ontologyType);
         
-        while(line!=null && !line.trim().equals("[Typedef]")){            
+        while(line!=null && !line.trim().equals("[Typedef]")){       
+            line = inputReader.readLine();
             String name = new String();
             String id = new String();
             // TODO we can remove this set
@@ -227,7 +231,8 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
                         if (value.trim().equals("true")) {
                             obsolete = true;
                         }
-                    } else if (ref.equals("synonym") && value.contains("RELATED InChI")) {
+                    //} else if (ref.equals("synonym") && value.contains("RELATED InChI")) {
+                    } else if (ref.equals("hasRelatedSynonym") && value.startsWith("InChI=1")) {
                         molecule=true;
                     }
                 }
@@ -272,21 +277,6 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
 
                     containedTerm.addContainer(term.getId());
                 }
-
-                /*} else {
-                    Integer id2 = new Integer(id);
-                    OntologyTerm term = new OntologyTerm(name, id2);
-                    if (!fullOntology.containsTerm(id2)) {
-                        fullOntology.add(term);
-                        for (String s : is_a) {
-                            term.addParent(new Integer(s));
-                        }
-                        //for (String s : part_of) {
-                        //    term.addContainer(new Integer(s));
-                        //}
-                    }
-                }*/
-                //}
             }
         }
 

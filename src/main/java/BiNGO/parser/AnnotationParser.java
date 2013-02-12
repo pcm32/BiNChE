@@ -41,6 +41,7 @@ import BiNGO.reader.*;
 import cytoscape.data.annotation.Annotation;
 import cytoscape.data.annotation.Ontology;
 import cytoscape.data.annotation.OntologyTerm;
+import java.io.File;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -393,7 +394,8 @@ public class AnnotationParser {
         // obo file
         if (fileString.endsWith(".obo")) {
             try {
-                BiNGOOntologyOboReader readerOntology = new BiNGOOntologyOboReader(fileString, namespace);
+                //BiNGOOntologyOboReader readerOntology = new BiNGOOntologyOboReader(fileString, namespace);
+                BiNGOOntologyOboReader readerOntology = new BiNGOOntologyOboReader(new File(fileString), namespace);
                 ontology = readerOntology.getOntology();
                 if (ontology.size() == 0) {
                     throw (new IllegalArgumentException());
@@ -493,7 +495,8 @@ public class AnnotationParser {
             // read full ontology.
             try {
                 BiNGOOntologyOboReader readerOntology =
-                        new BiNGOOntologyOboReader(params.getOntologyFile(), BingoAlgorithm.NONE);
+                        //new BiNGOOntologyOboReader(params.getOntologyFile(), BingoAlgorithm.NONE);
+                        new BiNGOOntologyOboReader(new File(params.getOntologyFile()), BingoAlgorithm.NONE);
                 fullOntology = readerOntology.getOntology();
                 if (fullOntology.size() == 0) {
                     throw (new IllegalArgumentException("File not supported: "+params.getOntologyFile()));
