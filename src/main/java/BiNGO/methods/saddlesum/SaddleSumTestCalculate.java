@@ -280,7 +280,7 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
         double lmbd;
         double phi;
         int m;
-        double pValue;
+        Double pValue;
 
         HashSet<Integer> set = new HashSet(lambdas.keySet());
 
@@ -312,7 +312,11 @@ public class SaddleSumTestCalculate extends AbstractCalculateTestTask implements
                 //System.out.println(ndtr);
                 //System.out.println(phi / C / Math.sqrt(m));
                 //System.out.println(phi / D / Math.sqrt(m));
-                pValue = ((1 + ErrorFunction.erf(z)) / 2) + (phi / C / Math.sqrt(m)) + (phi / D / Math.sqrt(m) / 2);
+                pValue = ndtr + (phi / C / Math.sqrt(m)) + (phi / D / Math.sqrt(m) / 2);
+                
+                if(pValue.isInfinite() || pValue.isNaN()) {
+                    pValue = 1.0d;
+                }
 
                 significanceTestMap.put(id, pValue);
             } else {
