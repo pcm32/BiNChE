@@ -17,33 +17,41 @@
  */
 package net.sourceforge.metware.binche.graph;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 import org.apache.log4j.Logger;
 
 /**
- * @name RootChildrenPruner @date 2012.10.25
+ * @name RootChildrenPruner
+ * @date 2012.10.25
  *
  * @version $Rev$ : Last Changed $Date$
  * @author pmoreno
- * @author $Author$ (this version) @brief ...class description...
+ * @author $Author$ (this version)
+ * @brief ...class description...
  *
  * Removes the defined level of children from the root class of the ontology.
- * 
+ *
  */
 public class RootChildrenPruner implements ChEBIGraphPruner {
 
     private static final Logger LOGGER = Logger.getLogger(RootChildrenPruner.class);
     private int level;
-    
-    public RootChildrenPruner(int level) {
+    private boolean reExecution;
+    private int executionCount = 0;
+
+    public RootChildrenPruner(int level, boolean allowReExecution) {
         this.level = level;
+        this.reExecution = allowReExecution;
     }
 
     public void prune(ChebiGraph graph) {
-        ChebiVertex root = graph.getRoot();
-        deleteChildren(root, graph, level);
+        if (reExecution || executionCount == 0) {
+            Collection<ChebiVertex> roots = graph.getRoots();
+            for (ChebiVertex root : roots) {
+                deleteChildren(root, graph, level);
+            }
+        }
+        executionCount++;
     }
 
     private void deleteChildren(ChebiVertex vertex, ChebiGraph graph, int nextLevel) {
