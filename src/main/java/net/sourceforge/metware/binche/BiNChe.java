@@ -289,7 +289,7 @@ public class BiNChe {
             Double weight = Double.valueOf(input.get(chebiId));
 
             inputWeights.put(chebiId, weight);
-            System.out.println("Got weight " + weight + " for chebiId " + chebiId);
+            //System.out.println("Got weight " + weight + " for chebiId " + chebiId);
         }
         this.params.setTextInput(container);
         this.params.setSelectedNodes(inputNodes);

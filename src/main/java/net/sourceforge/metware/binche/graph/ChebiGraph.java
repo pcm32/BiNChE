@@ -351,6 +351,8 @@ public class ChebiGraph {
     /**
      * Returns the root of the graph, the ChebiVertex which only has incoming edges (the most general ChEBI node).
      *
+     * @deprecated use {@link #getRoots() } instead.
+     * 
      * @return root vertex or null if the graph has no root. 
      */
     public ChebiVertex getRoot() {
@@ -360,6 +362,20 @@ public class ChebiGraph {
             }
         }
         return null;
+    }
+    
+    /**
+     * Returns the roots of the graph, the ChebiVertexes which only have incoming edges (the most general ChEBI nodes).
+     * @return 
+     */
+    public Collection<ChebiVertex> getRoots() {
+        Collection<ChebiVertex> roots = new HashSet<ChebiVertex>();
+        for (ChebiVertex chebiVertex : graph.getVertices()) {
+            if(getOutEdges(chebiVertex).isEmpty() && !getInEdges(chebiVertex).isEmpty()) {
+                roots.add(chebiVertex);
+            }
+        }
+        return roots;
     }
 
     /**
