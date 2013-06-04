@@ -114,8 +114,8 @@ public class BiNChe {
             pValueMap = testMap;
             for (Integer idAsInteger : testMap.keySet()) {
                 String id = idAsInteger + "";
-                Double corrAsDouble = Double.valueOf(correctionMap.get(id));
-                pValueMap.put(idAsInteger, corrAsDouble);
+                //Double corrAsDouble = Double.valueOf(correctionMap.get(id));
+                //pValueMap.put(idAsInteger, corrAsDouble);
                 enrichmentNodes.add(
                         new BiNChENode(testMap.get(idAsInteger), null,
                         test.getMapBigX().get(idAsInteger),
