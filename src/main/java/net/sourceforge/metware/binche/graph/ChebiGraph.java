@@ -98,15 +98,11 @@ public class ChebiGraph {
      */
     private void populateGraph(List<BiNChENode> enrichmentNodes, Ontology ontology, Set<String> nodes) {
 
-        //graph = new UndirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
         graph = new DirectedOrderedSparseMultigraph<ChebiVertex, ChebiEdge>();
         this.tmpBiNCheNodeMap = new HashMap<String, BiNChENode>();
 
         vertexMap = new HashMap<String, ChebiVertex>();
         edgeSet = new HashSet<String>();
-
-        int previousId;
-        int currentId;
         
         addTermsToTmpMap(enrichmentNodes);
         
@@ -177,20 +173,9 @@ public class ChebiGraph {
      */
     private void layoutGraph() {
 
-        //SpanningForest<ChebiVertex, ChebiEdge> prim =
-        //        new SpanningForest<ChebiVertex, ChebiEdge>(graph, new DelegateForest<ChebiVertex, ChebiEdge>(),
-        //                DelegateTree.<ChebiVertex, ChebiEdge>getFactory(), new ConstantTransformer(1.0));
-
-        //Forest<ChebiVertex, ChebiEdge> forest = prim.getForest();
-        //layout = new TreeLayout<ChebiVertex, ChebiEdge>(forest, 80, 80);
-        //layout = new DAGLayout<ChebiVertex, ChebiEdge>(graph);
         layout = new SpringLayout2<ChebiVertex, ChebiEdge>(graph);
         ((SpringLayout2)layout).setForceMultiplier(0.1);
         layout.setSize(new Dimension(1920, 1100));
-
-        // re-creates the original graph with the forest node coordinates
-        // Layout<ChebiVertex, ChebiEdge> treeLayout = new TreeLayout<ChebiVertex, ChebiEdge>(forest);
-        // layout = new StaticLayout<ChebiVertex, ChebiEdge>(graph, treeLayout);
     }
 
     /**
