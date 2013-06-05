@@ -95,7 +95,8 @@ public class ColorGradient {
             alpha = Math.min((int)MIN_ALPHA, alpha);
             return new Color(255, 69, 0, alpha);
         } else {
-            return new Color(255,255,255,255);
+            // use alpha corresponding to p-value 0.5 for p-values above the threshold (non significant)
+            return new Color(255,255,255,(int)(m * Math.log10(0.09) + b));
         }
     }
 }
