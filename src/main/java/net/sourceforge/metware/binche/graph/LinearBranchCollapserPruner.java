@@ -43,7 +43,6 @@ public class LinearBranchCollapserPruner implements ChEBIGraphPruner {
             // If a node has more than one child, then it can only be a head or a last member, head nodes
             // of a linear branch shouldn't return their branches, but collapse them. Only inner members (and last
             // members) should return them. Consider that a node can be both last member and head of different branches.
-
         }
     }
 

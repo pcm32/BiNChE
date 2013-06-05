@@ -15,11 +15,16 @@ public class FragmentEnrichPruningStrategy extends Abstract3PhasePruningStrategy
 
     public FragmentEnrichPruningStrategy() {
         finalPruners = new LinkedList<ChEBIGraphPruner>();
-        loopPruners = Arrays.asList(new LowPValueBranchPruner(0.05)
-                , new LinearBranchCollapserPruner(), new ZeroDegreeVertexPruner());
-        preLoopPruners = Arrays.asList(new LowPValueBranchPruner(0.05),
-                new LinearBranchCollapserPruner(),
-                new RootChildrenPruner(3,false));
+        loopPruners = Arrays.asList(
+                new LowPValueBranchPruner(0.05)
+                , new LinearBranchCollapserPruner()
+                //, new ZeroDegreeVertexPruner()
+        );
+        preLoopPruners = Arrays.asList(
+                new LowPValueBranchPruner(0.05)
+                , new LinearBranchCollapserPruner()
+                //, new RootChildrenPruner(3,false)
+        );
 
     }
 
