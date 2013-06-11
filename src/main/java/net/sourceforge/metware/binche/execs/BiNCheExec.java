@@ -56,7 +56,7 @@ public class BiNCheExec extends CommandLineMain {
     @Override
     public void setupOptions() {
 
-        add(new Option("g", "true", true, "run graphical user interface"));
+        add(new Option("g", "true", false, "run graphical user interface"));
         add(new Option("i", "file to load", true, "association file to load"));
         add(new Option("o", "output directory", true, "directory to write output to"));
     }
