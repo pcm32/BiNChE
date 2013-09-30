@@ -89,7 +89,7 @@ public class WebAppPrunersTest {
                 //new MoleculeLeavesPruner(), 
                 new LowPValueBranchPruner(0.05),
                 new LinearBranchCollapserPruner(),
-                new RootChildrenPruner(3),
+                new RootChildrenPruner(3, true),
                 new ZeroDegreeVertexPruner());
         int originalVertices = chebiGraph.getVertexCount();
         System.out.println("Number of nodes before prunning : " + originalVertices);

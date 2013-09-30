@@ -93,15 +93,16 @@ public class LowPValueBranchPrunerTest {
         System.out.println("Number of nodes before prunning : " + originalVertices);
 
         //System.out.println("Writing out graph ...");
-        //SvgWriter writer = new SvgWriter();
+        SvgWriter writer = new SvgWriter();
 
-        //writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/beforePrune.svg");
+        writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/beforePrune.svg");
 
         for (ChEBIGraphPruner chEBIGraphPruner : pruners) {
             chEBIGraphPruner.prune(chebiGraph);
             System.out.println(chEBIGraphPruner.getClass().getCanonicalName());
             System.out.println("Removed vertices : " + (originalVertices - chebiGraph.getVertexCount()));
             originalVertices = chebiGraph.getVertexCount();
+            writer.writeSvg(chebiGraph.getVisualisationServer(), "/tmp/"+chEBIGraphPruner.getClass().getCanonicalName()+".svg");
         }
         
         int finalVertices = chebiGraph.getVertexCount();

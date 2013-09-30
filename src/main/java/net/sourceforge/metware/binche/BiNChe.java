@@ -114,8 +114,8 @@ public class BiNChe {
             pValueMap = testMap;
             for (Integer idAsInteger : testMap.keySet()) {
                 String id = idAsInteger + "";
-                Double corrAsDouble = Double.valueOf(correctionMap.get(id));
-                pValueMap.put(idAsInteger, corrAsDouble);
+                //Double corrAsDouble = Double.valueOf(correctionMap.get(id));
+                //pValueMap.put(idAsInteger, corrAsDouble);
                 enrichmentNodes.add(
                         new BiNChENode(testMap.get(idAsInteger), null,
                         test.getMapBigX().get(idAsInteger),
@@ -289,7 +289,7 @@ public class BiNChe {
             Double weight = Double.valueOf(input.get(chebiId));
 
             inputWeights.put(chebiId, weight);
-            System.out.println("Got weight " + weight + " for chebiId " + chebiId);
+            //System.out.println("Got weight " + weight + " for chebiId " + chebiId);
         }
         this.params.setTextInput(container);
         this.params.setSelectedNodes(inputNodes);

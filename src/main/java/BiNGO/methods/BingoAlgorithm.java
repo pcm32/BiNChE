@@ -121,7 +121,6 @@ public class BingoAlgorithm {
     }
 
     public CalculateCorrectionTask calculate_corrections(Map testMap) {
-        Map correctionMap = null;
         CalculateCorrectionTask correction = null;
 
         if (params.getCorrection().equals(NONE)){
@@ -131,19 +130,8 @@ public class BingoAlgorithm {
             } else if (params.getCorrection().equals(BENJAMINI_HOCHBERG_FDR)) {
                 correction = new BenjaminiHochbergFDR(testMap, params.getSignificance().toString());
             } else {
-                correctionMap = null;
+                correction = null;
             }
-            //  Configure JTask
-            /*JTaskConfig config = new JTaskConfig();
-
-            //  Show Cancel/Close Buttons
-            config.displayCancelButton(true);
-            config.displayStatus(true); */
-
-            //  Execute Task via TaskManager
-            //  This automatically pops-open a JTask Dialog Box.
-            //  This method will block until the JTask Dialog Box is disposed.
-            //only perform if a correction method has been chosen
 
         }
         return correction;
