@@ -46,12 +46,6 @@ public class BiNChe {
      */
     private Map<Integer, Double> testMap;
     private Map<String, String> correctionMap = null;
-    /*
-     private Map<Integer, String> mapSmallX = null;
-     private Map<Integer, String> mapSmallN = null;
-     private Map<Integer, String> mapBigX = null;
-     private Map<Integer, String> mapBigN = null;
-     */
     private Map<Integer, Double> pValueMap; // how is this not redundant to one of the previous ones?
     /**
      * to be replaced by:
@@ -59,6 +53,9 @@ public class BiNChe {
     private List<BiNChENode> enrichmentNodes;
     private Map<String, Set<String>> classifiedEntities = null;
 
+    /**
+     * Runs the execution of the enrichment method, as set through the parameters and given files.
+     */
     public void execute() {
 
         LOGGER.log(Level.INFO, "Parsing annotation ...");
@@ -126,15 +123,6 @@ public class BiNChe {
         }
         System.out.println("Got result size after correction/weighted test: " + enrichmentNodes.size());
 
-        // these hashMaps contain the results, where the Keys are the different categories (ie. a ChEBI entry or a
-        // GeneOntology element). These results are after the test we then need to retrieve the corrections from the
-        // correction object.
-                /*
-         mapSmallX = test.getMapSmallX();
-         mapSmallN = test.getMapSmallN();
-         mapBigX = test.getMapBigX();
-         mapBigN = test.getMapBigN();
-         */
 
         LOGGER.log(Level.INFO, "Computing elements ...");
         this.computeElementsPerCategory();
@@ -153,22 +141,28 @@ public class BiNChe {
      */
     @Deprecated
     public Map<Integer, Double> getPValueMap() {
-
         return pValueMap;
     }
 
     public Map<String, Set<String>> getClassifiedEntities() {
-
         return classifiedEntities;
     }
 
+    /**
+     * Returns the ontology object that was set as part of the parameters.
+     *
+     * @return
+     */
     public Ontology getOntology() {
-
         return params.getOntology();
     }
 
+    /**
+     * Returns the set of input nodes that were set as part of the parameters given.
+     *
+     * @return
+     */
     public Set<String> getInputNodes() {
-
         return params.getSelectedNodes();
     }
 
@@ -194,29 +188,42 @@ public class BiNChe {
      */
     @Deprecated
     public Double getPValueForCategory(Integer categoryID) {
-
         return testMap.get(categoryID);
     }
 
+    /**
+     * Given a categoryID (ChEBI Identifier number), this method returns the entities that where classified into that
+     * category.
+     *
+     * @param categoryID
+     * @return
+     */
     public Set<String> getElementsInCategory(Integer categoryID) {
-
         return this.classifiedEntities.get(categoryID + "");
     }
 
+    /**
+     * Deprecated, use {@link #getEnrichedNodes()} instead. From those nodes, p-values can be obtained.
+     *
+     * @param categoryID
+     * @return
+     */
     @Deprecated
     public Double getCorrectedPValueForCategory(Integer categoryID) {
-
         return Double.parseDouble(correctionMap.get(categoryID + ""));
     }
 
+    /**
+     * Gets all the categories in which the enrichment analysis run and produced results.
+     *
+     * @return a set containing all the ChEBI Identifiers of the categories where results where produced.
+     */
     @Deprecated
     public Set<Integer> getCategories() {
-
         return testMap.keySet();
     }
 
     private void computeElementsPerCategory() {
-
         this.classifiedEntities = new HashMap<String, Set<String>>();
         Iterator it2 = params.getSelectedNodes().iterator();
         while (it2.hasNext()) {
@@ -240,10 +247,14 @@ public class BiNChe {
         }
     }
 
-    public void loadDesiredElementsForEnrichmentFromFile(String fileName) throws IOException {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
-
+    /**
+     * Loads the ChEBI identifiers to be analyzed from the provided file path.
+     *
+     * @param pathToFileWithChEBIIDs path to the file containing the identifiers to analyze.
+     * @throws IOException if there are problems when loading/reading the file provided.
+     */
+    public void loadDesiredElementsForEnrichmentFromFile(String pathToFileWithChEBIIDs) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(pathToFileWithChEBIIDs)));
         String container = new String();
         HashSet<String> inputNodes = new HashSet<String>();
         HashMap<String, Double> inputWeights = new HashMap<String, Double>();
@@ -270,8 +281,11 @@ public class BiNChe {
     }
 
     /**
-     * Alternative method to be used by the web-app, because the chebi ids (and weights, if present) input by the user
-     * will be passed in the form of a HashMap
+     * Alternative method to {@link #loadDesiredElementsForEnrichmentFromFile(String)} for the web-app, because the
+     * ChEBI ids (and weights, if present) input by the user will be passed in the form of a HashMap
+     *
+     * Each ChEBI Identifier is a Key, and the value is the weight (which although a numeric is handled in the web app
+     * as a String.
      */
     public void loadDesiredElementsForEnrichmentFromInput(Map<String, String> input) throws IOException {
 
@@ -281,15 +295,9 @@ public class BiNChe {
 
         for (String chebiId : input.keySet()) {
             container += chebiId.concat(input.get(chebiId));
-
             inputNodes.add(chebiId);
-            String name[] = new String[chebiId.split(":").length];
-            name = chebiId.split(":");
-
             Double weight = Double.valueOf(input.get(chebiId));
-
             inputWeights.put(chebiId, weight);
-            //System.out.println("Got weight " + weight + " for chebiId " + chebiId);
         }
         this.params.setTextInput(container);
         this.params.setSelectedNodes(inputNodes);
@@ -297,8 +305,7 @@ public class BiNChe {
         this.params.setWeights(inputWeights);
     }
 
-    public void setAllNodes() {
-
+    private void setAllNodes() {
         String[] nodes = params.getAnnotation().getNames();
         // HashSet for storing the canonical names
         HashSet canonicalNameVector = new HashSet();
@@ -307,12 +314,17 @@ public class BiNChe {
                 canonicalNameVector.add(nodes[i].toUpperCase());
             }
         }
-
         params.setAllNodes(canonicalNameVector);
     }
 
+    /**
+     * Sets the parameters for the execution of the enrichment analysis. This doesn't include the set of ChEBI Identifiers
+     * to be analyzed, which is given by {@link #loadDesiredElementsForEnrichmentFromFile(String)} or by
+     * {@link #loadDesiredElementsForEnrichmentFromInput(java.util.Map)}
+     *
+     * @param parameters - the {@link BingoParameters} object holding the parameters for the execution of the enrichment.
+     */
     public void setParameters(BingoParameters parameters) {
-
         this.params = parameters;
     }
 }
