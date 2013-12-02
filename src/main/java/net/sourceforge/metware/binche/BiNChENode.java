@@ -30,8 +30,7 @@ import org.apache.log4j.Logger;
  *
  * @name    BiNChENode
  * @date    2013.02.07
- * @version $Rev$ : Last Changed $Date$
- * @author  pmoreno
+ * @author  Pablo Moreno
  */
 public class BiNChENode {
 
@@ -44,7 +43,8 @@ public class BiNChENode {
     private Double corrPValue;
 
     /**
-     * Get the value of corrPValue. This value can be null.
+     * Get the value of corrected P-Value (after multiple hypothesis correction). This value can be null if no
+     * correction was used.
      *
      * @return the value of corrPValue
      */

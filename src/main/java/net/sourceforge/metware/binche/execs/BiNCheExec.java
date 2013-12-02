@@ -38,12 +38,12 @@ import org.apache.log4j.Logger;
 
 /**
  * This class handles the command line execution of BiNChE, with or without deployment of the BiNChE graphical interface.
- *
+ *<p>
  * Arguments are:
- *   [-g flag, if given, the graphical interface is used]
- *   -i Path to a file with ChEBI identifiers, to calculate enrichment analysis for.
- *   -o Output path, the directory where results will be written to.
- *
+ *   <br>[-g flag, if given, the graphical interface is used]
+ *   <br>-i Path to a file with ChEBI identifiers, to calculate enrichment analysis for.
+ *   <br>-o Output path, the directory where results will be written to.
+ *<p>
  * Options -i and -o are required if -g is not used. For customizing settings to be used, this file can be replicated and
  * modified.
  *

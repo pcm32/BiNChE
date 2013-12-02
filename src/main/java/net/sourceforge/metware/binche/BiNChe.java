@@ -22,7 +22,6 @@ import BiNGO.BingoParameters;
 import BiNGO.interfaces.CalculateCorrectionTask;
 import BiNGO.interfaces.CalculateTestTask;
 import BiNGO.methods.BingoAlgorithm;
-import BiNGO.methods.saddlesum.SaddleSumTestCalculate;
 import BiNGO.parser.AnnotationParser;
 import BiNGO.parser.ChEBIAnnotationParser;
 import cytoscape.data.annotation.Ontology;
@@ -30,11 +29,32 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+/**
+ * This is the main class for the BiNChE enrichment analysis. This class receives the parameter setting, reads the
+ * identifiers to run the enrichment for, runs the enrichment analysis, the multiple hypothesis correction, and finally
+ * provides the result in graph data structure.
+ * <p>
+ * {@code BingoParameters parameters =
+ *        ParameterFactory.makeParametersForChEBIBinomialOverRep("pathToChEBIOntologyOboFile");}<br>
+ * {@code BiNChe binche = new BiNChe();}<br>
+ * {@code binche.setParameters(parameters);}<br>
+ * {@code binche.loadDesiredElementsForEnrichmentFromFile("pathToFileWithIdentifiersToAnalyze");}<br>
+ * {@code binche.execute();}<br>
+ * {@code ChebiGraph chebiGraph = }
+   {@code             new ChebiGraph(binche.getEnrichedNodes(),
+                                     binche.getOntology(),
+                                     binche.getInputNodes());} <br>
+ *<p>
+ *
+ * The resulting ChebiGraph object contains the enrichment analysis in graph object.
+ * A {@link net.sourceforge.metware.binche.graph.PrunningStrategy} can be later applied to this object.
+ *
+ * @author Pablo Moreno, Stephan Beisken
+ */
 public class BiNChe {
 
     private static final Logger LOGGER = Logger.getLogger(BiNChe.class);
@@ -195,8 +215,8 @@ public class BiNChe {
      * Given a categoryID (ChEBI Identifier number), this method returns the entities that where classified into that
      * category.
      *
-     * @param categoryID
-     * @return
+     * @param categoryID the ChEBI Identifier number for which we want elements classified as.
+     * @return the set of identifiers classified as the given category ID.
      */
     public Set<String> getElementsInCategory(Integer categoryID) {
         return this.classifiedEntities.get(categoryID + "");
