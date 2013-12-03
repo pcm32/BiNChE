@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Abstract class which holds most of the relevant control flow for pruning strategies of
+ * 3 phases.
+ *
  * Created with IntelliJ IDEA.
  * User: pmoreno
  * Date: 4/6/13
@@ -22,6 +25,14 @@ public abstract class Abstract3PhasePruningStrategy {
     List<ChEBIGraphPruner> loopPruners;
     List<ChEBIGraphPruner> finalPruners;
 
+    /**
+     * Given a ChEBIGraph, this strategy is applied as follow: preloop pruners run one time each, then the loop pruners
+     * are iterated over the graph until they produce no different in the graph, to end up invoking the final pruners
+     * that run only one time each.
+     *
+     * @param graph to be pruned.
+     * @return an integer with the number of nodes from the graph that could be removed.
+     */
     public Integer applyStrategy(ChebiGraph graph) {
         int initial = graph.getVertexCount();
         for (ChEBIGraphPruner pruner : preLoopPruners) {

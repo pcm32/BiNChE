@@ -28,7 +28,7 @@ import uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl;
  * 6) metadata properties to carry over to new ontology (semicolon-separated)
  * 7) [optional] relationship(s) to infer over (semicolon-separated) for annotation file and inherited inferences
  * 
- * @author tudose, hastings
+ * @author Ilinca Tudose, Janna Hastings
  *
  */
 public class PreProcessOboFile {
