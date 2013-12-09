@@ -18,7 +18,7 @@ public class WeightedEnrichPruningStrategy extends Abstract3PhasePruningStrategy
         finalPruners.add(new ZeroDegreeVertexPruner());
         loopPruners = new LinkedList<ChEBIGraphPruner>();
         preLoopPruners = Arrays.asList(
-                new MoleculeLeavesPruner(), new RootChildrenPruner(4,false), new LowPValueBranchPruner(0.05)
+                new MoleculeLeavesPruner(), new RootChildrenPruner(4,false), new HighPValueBranchPruner(0.05)
         );
 
     }

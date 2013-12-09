@@ -33,6 +33,11 @@ public class ChebiVertex {
     private Double foldOfEnrichment;
     private Double samplePercentage;
 
+    /**
+     * Retrieves the non-corrected (FDR) p-value.
+     *
+     * @return the p-value as Double.
+     */
     public Double getpValue() {
         return pValue;
     }
@@ -42,7 +47,6 @@ public class ChebiVertex {
     }
 
     public ChebiVertex(int id, String chebiId, String chebiName) {
-
         this.id = id;
         this.chebiId = chebiId;
         this.chebiName = chebiName;
@@ -56,27 +60,22 @@ public class ChebiVertex {
     }
 
     public int getId() {
-
         return id;
     }
 
     public String getChebiId() {
-
         return chebiId;
     }
 
     public String getChebiName() {
-
         return chebiName;
     }
 
     public void setColor(Color color) {
-
         this.color = color;
     }
 
     public Color getColor() {
-
         return color;
     }
 
@@ -119,28 +118,28 @@ public class ChebiVertex {
     }
 
     /**
-     * @return the corrPValue
+     * @return the corrected p-value
      */
     public Double getCorrPValue() {
         return corrPValue;
     }
 
     /**
-     * @param corrPValue the corrPValue to set
+     * @param corrPValue the corrected p-value to set
      */
     public void setCorrPValue(Double corrPValue) {
         this.corrPValue = corrPValue;
     }
 
     /**
-     * @return the foldOfEnrichment
+     * @return the fold of enrichment for this node.
      */
     public Double getFoldOfEnrichment() {
         return foldOfEnrichment;
     }
 
     /**
-     * @param foldOfEnrichment the foldOfEnrichment to set
+     * @param foldOfEnrichment the fold of enrichment to set.
      */
     public void setFoldOfEnrichment(Double foldOfEnrichment) {
         this.foldOfEnrichment = foldOfEnrichment;

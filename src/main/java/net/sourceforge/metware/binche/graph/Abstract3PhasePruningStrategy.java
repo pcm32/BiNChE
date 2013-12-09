@@ -9,13 +9,15 @@ import java.util.List;
 
 /**
  * Abstract class which holds most of the relevant control flow for pruning strategies of
- * 3 phases.
+ * 3 phases (pre-loop, loop, and final phases).
+ *
+ * @author Pablo Moreno
  *
  * Created with IntelliJ IDEA.
  * User: pmoreno
  * Date: 4/6/13
  * Time: 12:41
- * To change this template use File | Settings | File Templates.
+ *
  */
 public abstract class Abstract3PhasePruningStrategy {
 
