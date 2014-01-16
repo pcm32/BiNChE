@@ -21,6 +21,12 @@ package net.sourceforge.metware.binche.graph;
 import java.awt.*;
 import java.text.DecimalFormat;
 
+/**
+ * Vertex of the {@link ChebiGraph}, which is used to store the result of the enrichment analysis
+ * in a graph based structure.
+ *
+ * @author Stephan Beisken, Pablo Moreno
+ */
 public class ChebiVertex {
 
     private int id;
@@ -42,10 +48,23 @@ public class ChebiVertex {
         return pValue;
     }
 
+    /**
+     * Sets the pValue
+     *
+     * @param pValue
+     */
     public void setpValue(Double pValue) {
         this.pValue = pValue;
     }
 
+    /**
+     * Initializes the vertex with an internal id, the ChEBI ID and the ChEBI Name of the entity represented
+     * by the vertex.
+     *
+     * @param id normally the integer part of the ChEBI ID, but could be something different.
+     * @param chebiId the usual ChEBI:integer
+     * @param chebiName the name of the ChEBI Entity
+     */
     public ChebiVertex(int id, String chebiId, String chebiName) {
         this.id = id;
         this.chebiId = chebiId;
@@ -53,28 +72,62 @@ public class ChebiVertex {
 
         color = new Color(255, 255, 255, 128);
     }
-    
+
+    /**
+     * Initializes the vertex with an internal id, the ChEBI ID and the ChEBI Name of the entity represented
+     * by the vertex, additionally setting whether the entity is a well defined molecule or a class of molecules.
+     *
+     * @param id
+     * @param chebiId
+     * @param chebiName
+     * @param molecule true if the entity is a molecule and not a molecule class.
+     */
     public ChebiVertex(int id, String chebiId, String chebiName, Boolean molecule) {
         this(id, chebiId, chebiName);
         this.isMolecule = molecule;
     }
 
+    /**
+     * Gets the integer identifier.
+     *
+     * @return the identifier.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Gets the ChEBI ID of the entity.
+     *
+     * @return the ChEBI ID.
+     */
     public String getChebiId() {
         return chebiId;
     }
 
+    /**
+     * Gets the ChEBI name of the entity represented.
+     *
+     * @return the ChEBI name of the entity.
+     */
     public String getChebiName() {
         return chebiName;
     }
 
+    /**
+     * Sets the color to be used for the entity when the graph is drawn.
+     *
+     * @param color
+     */
     public void setColor(Color color) {
         this.color = color;
     }
 
+    /**
+     * Gets the color assigned to the entity.
+     *
+     * @return
+     */
     public Color getColor() {
         return color;
     }
@@ -84,6 +137,11 @@ public class ChebiVertex {
         return (chebiName);
     }
 
+    /**
+     * Returns true if the entity represents a molecule and not a molecule class.
+     *
+     * @return true if entity is a molecule.
+     */
     public boolean isMolecule() {
         return isMolecule;
     }
@@ -125,6 +183,8 @@ public class ChebiVertex {
     }
 
     /**
+     * Sets the corrected p-value
+     *
      * @param corrPValue the corrected p-value to set
      */
     public void setCorrPValue(Double corrPValue) {
@@ -132,6 +192,7 @@ public class ChebiVertex {
     }
 
     /**
+     *
      * @return the fold of enrichment for this node.
      */
     public Double getFoldOfEnrichment() {
@@ -139,6 +200,8 @@ public class ChebiVertex {
     }
 
     /**
+     * Sets the fold of enrichment for the entity represented by this node.
+     *
      * @param foldOfEnrichment the fold of enrichment to set.
      */
     public void setFoldOfEnrichment(Double foldOfEnrichment) {
@@ -146,6 +209,8 @@ public class ChebiVertex {
     }
 
     /**
+     * Gets the percentage of the sample that is covered by this entity.
+     *
      * @return the samplePercentage
      */
     public Double getSamplePercentage() {
@@ -153,6 +218,8 @@ public class ChebiVertex {
     }
 
     /**
+     * Sets the sample percentage.
+     *
      * @param samplePercentage the samplePercentage to set
      */
     public void setSamplePercentage(Double samplePercentage) {

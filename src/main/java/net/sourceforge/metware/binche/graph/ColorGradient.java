@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Utility class to return a shade of green based on the linear function calculated from the input values.
+ * Utility class to return a shade of red based on the linear function calculated from the input values.
  */
 public class ColorGradient {
 
@@ -82,7 +82,7 @@ public class ColorGradient {
     }
 
     /**
-     * Gets the shade of green with alpha based on value
+     * Gets the shade of red with alpha based on value
      *
      * @param value the input value
      * @return the shade of green

@@ -28,6 +28,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
+ * This pruner removes vertices that have zero degree (considering incoming and outgoing edges). This type
+ * of vertices appear after some of the pruners are applied, leaving islands.
+ *
  * @name    ZeroDegreeVertexPruner
  * @date    2012.10.25
  * @version $Rev$ : Last Changed $Date$

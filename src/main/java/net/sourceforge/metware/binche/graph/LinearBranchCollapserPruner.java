@@ -23,9 +23,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
- * @name LinearBranchCollapserPruner @date 2012.10.24
+ * This pruner searches for linear branches in the graph (that is, no vertex protrude from a linear path),
+ * to collapse them into an initial and final node.
  *
- * @version $Rev$ : Last Changed $Date$
+ * @name LinearBranchCollapserPruner
  * @author pmoreno
  * @author $Author$ (this version) @brief ...class description...
  *

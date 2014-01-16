@@ -16,7 +16,6 @@ public class EmptyPruningStrategy extends Abstract3PhasePruningStrategy implemen
         finalPruners = new LinkedList<ChEBIGraphPruner>();
         loopPruners = new LinkedList<ChEBIGraphPruner>();
         preLoopPruners = new LinkedList<ChEBIGraphPruner>();
-
     }
 
 }

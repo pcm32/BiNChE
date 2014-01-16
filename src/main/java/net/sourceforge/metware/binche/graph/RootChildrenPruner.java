@@ -21,6 +21,9 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 /**
+ * This pruner aims to delete the roots (the more general entities in the ontology) and its children up to a defined
+ * level.
+ *
  * @name RootChildrenPruner
  * @date 2012.10.25
  *
@@ -39,6 +42,13 @@ public class RootChildrenPruner implements ChEBIGraphPruner {
     private boolean reExecution;
     private int executionCount = 0;
 
+    /**
+     * Initializes the root pruner, setting the level of entities that will be pruned starting
+     * from the roots and down.
+     *
+     * @param level a non negative integer; 1 only prunes roots, 2 prunes the root and its direct neighbours, and so on.
+     * @param allowReExecution whether the pruner can be executed multiple times on a given graph.
+     */
     public RootChildrenPruner(int level, boolean allowReExecution) {
         this.level = level;
         this.reExecution = allowReExecution;

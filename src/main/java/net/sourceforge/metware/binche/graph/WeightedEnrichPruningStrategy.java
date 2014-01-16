@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
+ * Prunning strategy devised for the weighted enrichment analysis.
+ *
  * Created with IntelliJ IDEA.
  * User: pmoreno
  * Date: 4/6/13

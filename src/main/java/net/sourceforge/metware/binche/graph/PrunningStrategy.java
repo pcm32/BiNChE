@@ -1,6 +1,9 @@
 package net.sourceforge.metware.binche.graph;
 
 /**
+ * Defines the main behaviour of a prunning strategy, which is a set of pruners applied in a particular
+ * manner.
+ *
  * Created with IntelliJ IDEA.
  * User: pmoreno
  * Date: 4/6/13
