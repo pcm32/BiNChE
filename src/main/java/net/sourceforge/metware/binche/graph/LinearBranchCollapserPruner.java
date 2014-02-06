@@ -27,9 +27,8 @@ import org.apache.log4j.Logger;
  * to collapse them into an initial and final node.
  *
  * @name LinearBranchCollapserPruner
- * @author pmoreno
- * @author $Author$ (this version) @brief ...class description...
- *
+ * @author Pablo Moreno
+ * @author Stephan Beisken
  */
 public class LinearBranchCollapserPruner implements ChEBIGraphPruner {
 

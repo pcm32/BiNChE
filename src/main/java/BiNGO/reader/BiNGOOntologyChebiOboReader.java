@@ -16,9 +16,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Reads the ChEBI Ontology Obo file. It requires InChIs to asses whether an entry is a molecule or not.
+ * Reads the ChEBI Ontology Obo file. It requires InChIs to asses whether an entry is a molecule or not.</br>
+ * It extends the {@link BiNGOOntologyOboReader} to provide the necessary adjustments for the ChEBI Ontology.
  * 
- * @author pmoreno
+ * @author Pablo Moreno
  */
 public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
 
@@ -148,21 +149,6 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
 
                     containedTerm.addContainer(term.getId());
                 }
-
-                /*} else {
-                    Integer id2 = new Integer(id);
-                    OntologyTerm term = new OntologyTerm(name, id2);
-                    if (!fullOntology.containsTerm(id2)) {
-                        fullOntology.add(term);
-                        for (String s : is_a) {
-                            term.addParent(new Integer(s));
-                        }
-                        //for (String s : part_of) {
-                        //    term.addContainer(new Integer(s));
-                        //}
-                    }
-                }*/
-                //}
             }
         }
 
@@ -191,7 +177,7 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
             Set<String> has_role = new HashSet<String>();
             boolean obsolete = false;
             boolean molecule=false;
-            // TODO we should change this for a buffered strategy.
+            // Buffered strategy
             while (line!=null && !line.trim().equals("[Term]") && !line.trim().equals("[Typedef]") && !line.trim().startsWith("!")) {
                 if (!line.trim().isEmpty()) {
                     String ref = line.substring(0, line.indexOf(":")).trim();

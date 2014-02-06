@@ -7,7 +7,8 @@ package net.sourceforge.metware.binche.graph;
 /**
  * Interface that defines the facade of algorithms that process the ChebiGraph to prune it.
  *
- * @author Pablo Moreno, Stephan Beisken.
+ * @author Pablo Moreno
+ * @author Stephan Beisken.
  */
 public interface ChEBIGraphPruner {
     

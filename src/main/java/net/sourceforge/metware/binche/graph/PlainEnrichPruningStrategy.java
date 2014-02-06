@@ -14,12 +14,6 @@ import java.util.LinkedList;
  * and {@link ZeroDegreeVertexPruner}.<p>
  *
  * @author Pablo Moreno
- *
- * Created with IntelliJ IDEA.
- * User: pmoreno
- * Date: 4/6/13
- * Time: 10:58
- * To change this template use File | Settings | File Templates.
  */
 public class PlainEnrichPruningStrategy extends Abstract3PhasePruningStrategy implements PrunningStrategy {
 

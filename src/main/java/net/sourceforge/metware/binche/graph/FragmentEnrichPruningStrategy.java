@@ -11,11 +11,6 @@ import java.util.LinkedList;
  *
  *
  * @author Pablo Moreno
- *
- * Created with IntelliJ IDEA.
- * User: pmoreno
- * Date: 4/6/13
- * Time: 10:58
  */
 public class FragmentEnrichPruningStrategy extends Abstract3PhasePruningStrategy implements PrunningStrategy {
 

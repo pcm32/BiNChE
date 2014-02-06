@@ -14,7 +14,6 @@ import java.util.HashSet;
  *
  * @name    AllHighPValuePruner
  * @date    2013.04.23
- * @version $Rev$ : Last Changed $Date$
  * @author  Pablo Moreno, Stephan Beisken
  * @brief   Removes all nodes that have a p-value above a set threshold.
  *

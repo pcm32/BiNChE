@@ -22,18 +22,13 @@ import org.apache.log4j.Logger;
 
 /**
  * This pruner aims to delete the roots (the more general entities in the ontology) and its children up to a defined
- * level.
+ * level. Removes the defined level of children from the root class of the ontology.
  *
  * @name RootChildrenPruner
  * @date 2012.10.25
  *
- * @version $Rev$ : Last Changed $Date$
- * @author pmoreno
- * @author $Author$ (this version)
- * @brief ...class description...
- *
- * Removes the defined level of children from the root class of the ontology.
- *
+ * @author Pablo Moreno
+ * @author Stephan Beisken
  */
 public class RootChildrenPruner implements ChEBIGraphPruner {
 

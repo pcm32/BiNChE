@@ -12,12 +12,6 @@ import java.util.List;
  * 3 phases (pre-loop, loop, and final phases).
  *
  * @author Pablo Moreno
- *
- * Created with IntelliJ IDEA.
- * User: pmoreno
- * Date: 4/6/13
- * Time: 12:41
- *
  */
 public abstract class Abstract3PhasePruningStrategy {
 

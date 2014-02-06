@@ -31,13 +31,8 @@ import org.apache.log4j.Logger;
  * This pruner removes vertices that have zero degree (considering incoming and outgoing edges). This type
  * of vertices appear after some of the pruners are applied, leaving islands.
  *
- * @name    ZeroDegreeVertexPruner
- * @date    2012.10.25
- * @version $Rev$ : Last Changed $Date$
- * @author  pmoreno
- * @author  $Author$ (this version)
- * @brief   Removes vertices that have zero degree (considering incoming and outgoing edges). Keeps track of removed.
- *
+ * @author Pablo Moreno
+ * @author Stephan Beisken
  */
 public class ZeroDegreeVertexPruner implements ChEBIGraphPruner {
 

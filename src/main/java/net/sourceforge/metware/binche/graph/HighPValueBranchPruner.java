@@ -29,9 +29,8 @@ import org.apache.log4j.Logger;
  *
  * @name HighPValueBranchPruner
  * @date 2012.10.21
- * @author Pablo Moreno, Stephan Beisken
- * @brief Gets rid of branches that have high pvalues.
- *
+ * @author Pablo Moreno
+ * @author Stephan Beisken
  */
 public class HighPValueBranchPruner implements ChEBIGraphPruner {
 

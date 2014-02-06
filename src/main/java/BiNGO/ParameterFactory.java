@@ -65,7 +65,8 @@ public class ParameterFactory {
     }
 
     /**
-     * Provides parameters settings for the ChEBI weighted analysis enrichment analysis.
+     * Provides parameters settings for the ChEBI weighted enrichment analysis. This type of analysis uses the SaddleSum
+     * algorithm to include the weights into the enrichment calculation.
      *
      * @param ontologyFile the path to the obo ontology file to be used.
      * @return the {@link BingoParameters} objects containing parameters for this type of analysis.
@@ -89,6 +90,13 @@ public class ParameterFactory {
 		return parametersSaddle;
 	}
 
+    /**
+     * Provides parameters settings for the ChEBI fragment-based enrichment analysis. It is a weighted analysis where
+     * the ontology is limited to the. Apparently this is not used, as it is the same as the weighted analysis.
+     *
+     * @param ontologyFile
+     * @return
+     *
     public static BingoParameters makeParametersForChEBISaddleSum(String ontologyFile) {
 
     	BingoParameters parametersSaddle = new BingoParameters();
@@ -106,6 +114,6 @@ public class ParameterFactory {
     	parametersSaddle.setSelectedNodes(null);
 
     	return parametersSaddle;
-    }
+    }*/
    
 }

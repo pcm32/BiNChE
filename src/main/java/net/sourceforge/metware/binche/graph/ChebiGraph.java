@@ -46,7 +46,8 @@ import net.sourceforge.metware.binche.BiNChENode;
  * Class providing access to a directed graph plus visualisation functionality required to write
  * and display the graph. The graph is tailored to deal with the ChEBI ontology.
  *
- * @author Stephan Beisken, Pablo Moreno
+ * @author Stephan Beisken
+ * @author Pablo Moreno
  */
 public class ChebiGraph {
 

@@ -28,9 +28,8 @@ import org.apache.log4j.Logger;
  *
  * @name MoleculeLeavesPruner
  * @date 2012.10.18
- * @author Pablo Moreno, Stephan Beisken
- * @brief Prunes leaves that are molecules but not molecule classes.
- *
+ * @author Pablo Moreno
+ * @author Stephan Beisken
  */
 public class MoleculeLeavesPruner implements ChEBIGraphPruner {
 

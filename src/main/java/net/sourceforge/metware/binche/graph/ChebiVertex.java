@@ -25,7 +25,8 @@ import java.text.DecimalFormat;
  * Vertex of the {@link ChebiGraph}, which is used to store the result of the enrichment analysis
  * in a graph based structure.
  *
- * @author Stephan Beisken, Pablo Moreno
+ * @author Stephan Beisken
+ * @author Pablo Moreno
  */
 public class ChebiVertex {
 

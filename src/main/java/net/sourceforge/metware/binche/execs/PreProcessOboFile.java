@@ -17,18 +17,19 @@ import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl;
 
 /**
- * Pre-process an OBO file for use in the ontology enrichment tool
+ * Pre-process an OBO file for use in the ontology enrichment tool.</p>
  * 
- * Execute with Parameters:
- * 1) obo file SOURCE
- * 2) obo file OUTPUT
- * 3) boolean carryDownInferredRelations
- * 4) boolean writeSeparateAnnotationFile
- * 5) root ontology id(s) to extract subtrees from (semicolon-separated)
- * 6) metadata properties to carry over to new ontology (semicolon-separated)
- * 7) [optional] relationship(s) to infer over (semicolon-separated) for annotation file and inherited inferences
+ * Execute with Parameters:</br>
+ * 1) obo file SOURCE</br>
+ * 2) obo file OUTPUT</br>
+ * 3) boolean carryDownInferredRelations</br>
+ * 4) boolean writeSeparateAnnotationFile</br>
+ * 5) root ontology id(s) to extract subtrees from (semicolon-separated)</br>
+ * 6) metadata properties to carry over to new ontology (semicolon-separated)</br>
+ * 7) [optional] relationship(s) to infer over (semicolon-separated) for annotation file and inherited inferences</br>
  * 
- * @author Ilinca Tudose, Janna Hastings
+ * @author Ilinca Tudose
+ * @author Janna Hastings
  *
  */
 public class PreProcessOboFile {

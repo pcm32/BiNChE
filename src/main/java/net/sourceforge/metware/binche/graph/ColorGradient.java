@@ -26,6 +26,9 @@ import java.util.List;
 
 /**
  * Utility class to return a shade of red based on the linear function calculated from the input values.
+ *
+ * @author Stephan Beisken
+ * @author Pablo Moreno
  */
 public class ColorGradient {
 
