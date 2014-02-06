@@ -58,19 +58,6 @@ public class BiNGOOntologyChebiOboReader extends BiNGOOntologyOboReader {
     }
 
     @Override
-    protected int parseHeader() throws Exception {
-
-        int i = 0;
-        while (!lines[i].trim().equals("[Term]")) {
-            i++;
-        }
-        curator = "unknown";
-        ontologyType = "unknown";
-        return i;
-
-    } 
-
-    @Override
     protected void parse(int c) throws Exception {
 
         ontology = new Ontology(curator, ontologyType);
