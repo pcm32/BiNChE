@@ -204,8 +204,8 @@ public class PreProcessOboFile {
 								// Class is in the right subtree , so add the relation
 								man.applyChange(new AddAxiom(infOnt, factory.getOWLSubClassOfAxiom(current, exists)));
 								if (writeSeparateAnnotationFile) {
-                                                                writeToAnnotationFile(cout, current, exists);
-                                                            }
+                                    writeToAnnotationFile(cout, current, exists);
+                                }
 								
 //COMMENTED OUT AS THIS USES THE WRONG DIRECTION, CURRENTLY CARRIES UP THE TARGET HIERARCHY RATHER THAN DOWN THE SOURCE HIERARCHY
 //TODO: 								
@@ -236,13 +236,13 @@ public class PreProcessOboFile {
 						boolean inTree = true;
 						for (OWLClass referencedClass : classesInSignature){
 							if(!classSubSet.contains(referencedClass)) {
-                                                        inTree = false;
-                                                    }
+                               inTree = false;
+                            }
 						}
 						Set<OWLObjectProperty> propertiesInSignature = x.getObjectPropertiesInSignature();
 						if (inTree && (propertiesOfInterest.containsAll(propertiesInSignature) || propertiesInSignature.isEmpty())) {
-                                                    man.applyChange(new AddAxiom(infOnt, x));
-                                                }
+                            man.applyChange(new AddAxiom(infOnt, x));
+                        }
 					}
 					// get annotations from the source ontology
 					Set<OWLAnnotation> annotations = current.getAnnotations(ont);
@@ -263,8 +263,8 @@ public class PreProcessOboFile {
 			System.out.println("Ontology saved. Need to do some post-processing corrections now.");
 			postProcess(newOntIRI+".temp", newOntIRI);
 			if (writeSeparateAnnotationFile) {
-                            cout.close();
-                        }
+                cout.close();
+            }
 			System.out.println("Finished all " + (System.currentTimeMillis() - start) + " milliseconds. ");
 		} catch (Exception e) {
 			e.printStackTrace();
