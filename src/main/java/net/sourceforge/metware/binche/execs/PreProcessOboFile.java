@@ -158,12 +158,11 @@ public class PreProcessOboFile {
 			reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
 			reasoner.precomputeInferences(InferenceType.CLASS_ASSERTIONS);
 			// Fresh empty ontology
-			OWLOntology infOnt = man.createOntology();
+			OWLOntology infOnt = man.createOntology(IRI.create("ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi.owl"));
 
 			long start = System.currentTimeMillis();
 			Set<OWLClass> classSubSet = reasoner.getSubClasses(graph.getOWLClassByIdentifier(chebiIDsForSubtrees.get(0)), false).getFlattened();
 			classSubSet.add(graph.getOWLClassByIdentifier(chebiIDsForSubtrees.get(0)));
-						
 			ArrayList<OWLProperty> propertiesOfInterest = new ArrayList<OWLProperty>();
 			for (String iri: propertiesToInferUpon){
 				propertiesOfInterest.add(graph.getOWLObjectProperty(iri));
