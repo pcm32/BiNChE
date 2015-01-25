@@ -83,11 +83,11 @@ public class OfficialChEBIOboLoader {
         tmpStructOnt.delete();
         
         ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null), 
-                false, 
-                false, 
+                true,
+                true,
                 BiNChEOntologyPrefs.RoleAndStructOntology.getRootChEBIEntries(), 
-                Arrays.asList("rdfs:label","InChI"), 
-                Arrays.asList("http://purl.obolibrary.org/obo/chebi#has_role"));
+                Arrays.asList("rdfs:label","InChI"),
+                Arrays.asList("http://purl.obolibrary.org/obo/RO_0000087"));
         File tmpStructRoleOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null)+".temp");
         tmpStructRoleOnt.delete();
         File structRoleAnnot = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null).replace(".obo",".txt"));
