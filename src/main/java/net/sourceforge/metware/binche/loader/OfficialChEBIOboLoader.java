@@ -90,6 +90,9 @@ public class OfficialChEBIOboLoader {
                 Arrays.asList("http://purl.obolibrary.org/obo/chebi#has_role"));
         File tmpStructRoleOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null)+".temp");
         tmpStructRoleOnt.delete();
+        File structRoleAnnot = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null).replace(".obo",".txt"));
+        String fullPath = binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null);
+        structRoleAnnot.renameTo(new File(fullPath.substring(0,fullPath.lastIndexOf(File.separator))+File.separator+"chebi_roles.anno"));
         
         tmpFileObo.delete();
     }
