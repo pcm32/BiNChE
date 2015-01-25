@@ -70,7 +70,7 @@ public class OfficialChEBIOboLoader {
                 true, 
                 BiNChEOntologyPrefs.RoleOntology.getRootChEBIEntries(), 
                 Arrays.asList("rdfs:label"), new ArrayList<String>());
-        File tmpRoleOnt = new File(BiNChEOntologyPrefs.RoleOntology.name()+".temp");
+        File tmpRoleOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleOntology.name(),null)+".temp");
         tmpRoleOnt.delete();
         
         ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.StructureOntology.name(), null), 
@@ -79,7 +79,7 @@ public class OfficialChEBIOboLoader {
                 BiNChEOntologyPrefs.StructureOntology.getRootChEBIEntries(), 
                 Arrays.asList("rdfs:label","InChI"), 
                 new ArrayList<String>());
-        File tmpStructOnt = new File(BiNChEOntologyPrefs.StructureOntology.name()+".temp");
+        File tmpStructOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.StructureOntology.name(),null)+".temp");
         tmpStructOnt.delete();
         
         ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null), 
@@ -88,7 +88,7 @@ public class OfficialChEBIOboLoader {
                 BiNChEOntologyPrefs.RoleAndStructOntology.getRootChEBIEntries(), 
                 Arrays.asList("rdfs:label","InChI"), 
                 Arrays.asList("http://purl.obolibrary.org/obo/chebi#has_role"));
-        File tmpStructRoleOnt = new File(BiNChEOntologyPrefs.RoleAndStructOntology.name()+".temp");
+        File tmpStructRoleOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null)+".temp");
         tmpStructRoleOnt.delete();
         
         tmpFileObo.delete();
