@@ -35,20 +35,26 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
+ * This class downloads and processes the ChEBI OBO file, to maximize its utility for the enrichment analysis. The
+ * main processing class is {@link PreProcessOboFile}, which calls the reasoner to infer to assertions.
+ *
  * @name    OfficialChEBIOboLoader
  * @date    2013.02.11
- * @version $Rev$ : Last Changed $Date$
- * @author  pmoreno
- * @author  $Author$ (this version)
- * @brief   ...class description...
- *
+ * @author  Pablo Moreno
+ * @brief   Handles the download and processing of the official ChEBI ontology OBO file.
  */
 public class OfficialChEBIOboLoader {
 
     private static final Logger LOGGER = Logger.getLogger( OfficialChEBIOboLoader.class );
     
     private final String oboURL = "ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi.obo";
-    
+
+    /**
+     * The constructor loads the OBO file from the ChEBI ftp and executes the reasoning steps.
+     *
+     * @throws IOException
+     * @throws BackingStoreException
+     */
     public OfficialChEBIOboLoader() throws IOException, BackingStoreException {
         Preferences binchePrefs = Preferences.userNodeForPackage(BiNChe.class);
         
@@ -64,7 +70,7 @@ public class OfficialChEBIOboLoader {
                 true, 
                 BiNChEOntologyPrefs.RoleOntology.getRootChEBIEntries(), 
                 Arrays.asList("rdfs:label"), new ArrayList<String>());
-        File tmpRoleOnt = new File(BiNChEOntologyPrefs.RoleOntology.name()+".temp");
+        File tmpRoleOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleOntology.name(),null)+".temp");
         tmpRoleOnt.delete();
         
         ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.StructureOntology.name(), null), 
@@ -73,21 +79,31 @@ public class OfficialChEBIOboLoader {
                 BiNChEOntologyPrefs.StructureOntology.getRootChEBIEntries(), 
                 Arrays.asList("rdfs:label","InChI"), 
                 new ArrayList<String>());
-        File tmpStructOnt = new File(BiNChEOntologyPrefs.StructureOntology.name()+".temp");
+        File tmpStructOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.StructureOntology.name(),null)+".temp");
         tmpStructOnt.delete();
         
         ppof.getTransitiveClosure(tmpFileObo.getAbsolutePath(), binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null), 
-                false, 
-                false, 
+                true,
+                true,
                 BiNChEOntologyPrefs.RoleAndStructOntology.getRootChEBIEntries(), 
-                Arrays.asList("rdfs:label","InChI"), 
-                Arrays.asList("http://purl.obolibrary.org/obo/chebi#has_role"));
-        File tmpStructRoleOnt = new File(BiNChEOntologyPrefs.RoleAndStructOntology.name()+".temp");
+                Arrays.asList("rdfs:label","InChI"),
+                Arrays.asList("http://purl.obolibrary.org/obo/RO_0000087"));
+        File tmpStructRoleOnt = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null)+".temp");
         tmpStructRoleOnt.delete();
+        File structRoleAnnot = new File(binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null).replace(".obo",".txt"));
+        String fullPath = binchePrefs.get(BiNChEOntologyPrefs.RoleAndStructOntology.name(),null);
+        structRoleAnnot.renameTo(new File(fullPath.substring(0,fullPath.lastIndexOf(File.separator))+File.separator+"chebi_roles.anno"));
         
         tmpFileObo.delete();
     }
-    
+
+    /**
+     * Main method to run the obo file download and process.
+     *
+     * @param args
+     * @throws BackingStoreException
+     * @throws IOException
+     */
     public static void main(String[] args) throws BackingStoreException, IOException {
         new OfficialChEBIOboLoader();
     }
