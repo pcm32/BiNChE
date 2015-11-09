@@ -667,8 +667,9 @@ public class AnnotationParser {
         OntologyTerm child = flOntology.getTerm(id);
         int[] parents = child.getParentsAndContainers();
         for (int t = 0; t < parents.length; t++) {
-            if (!parentsSet.contains(new Integer(parents[t]))) {
-                parentsSet.add(new Integer(parents[t]));
+            Integer parent = new Integer(parents[t]);
+            if (!parentsSet.contains(parent)) {
+                parentsSet.add(parent);
                 if (ontology.getTerm(parents[t]) != null) {
                     parsedAnnotation.add(node, parents[t]);
                 }
@@ -687,16 +688,17 @@ public class AnnotationParser {
 
         OntologyTerm child = ontology.getTerm(id);
         int[] parents = child.getParentsAndContainers();
-        //if (startID == 6906){for (int t = 0; t < parents.length; t++) {System.out.println(id + "\t" + parents[t]);}}
+
         for (int t = 0; t < parents.length; t++) {
+            Integer parent = new Integer(parents[t]);
             if (parents[t] == startID) {
                 status = false;
                 Exception e = new Exception();
                 System.out.println("Your ontology file contains a cycle at ID " + startID);
                 LOGGER.log(Level.ERROR, "Your ontology file contains a cycle at ID " + startID + " " + e);
-            } else if (!parentsSet.contains(new Integer(parents[t]))) {
+            } else if (!parentsSet.contains(parent)) {
                 if (ontology.getTerm(parents[t]) != null) {
-                    parentsSet.add(new Integer(parents[t]));
+                    parentsSet.add(parent);
                     up_go(startID, parents[t], ontology);
                 } else {
                     System.out.println("term not in ontology: " + parents[t]);

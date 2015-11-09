@@ -101,7 +101,7 @@ public class BiNGOAnnotationFlatFileReader {
             } else {
                 TextFileReader reader = new TextFileReader(filename);
                 reader.read();
-                File outputDir = new File("bincheOutput/");
+                File outputDir = new File("logs/bincheOutput/");
                 if (!outputDir.exists()) {
                     System.out.println("-----Creating directory " +outputDir +"-----");
                     outputDir.mkdir();
