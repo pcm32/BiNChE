@@ -21,7 +21,10 @@
                 <enabled>true</enabled>
             </releases>
             <name>Cytoscape Snapshots</name>
+            <!--
             <url>http://cytoscape.wodaklab.org/nexus/content/repositories/public/</url>
+            -->
+            <url>http://code.cytoscape.org/nexus/content/repositories/public/</url>
         </repository>
         <repository>
                         <id>BerkeleyBOP</id>
@@ -57,8 +60,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
                     </configuration>
                 </plugin>
                 <plugin>
